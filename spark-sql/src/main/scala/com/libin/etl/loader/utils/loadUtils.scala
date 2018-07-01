@@ -11,6 +11,8 @@ import scala.io.Source
 
 object loadUtils {
 
+  case class stu(name: String, age: Int, height: Int)
+
   /**
     * 读取配置中的文件
     *
