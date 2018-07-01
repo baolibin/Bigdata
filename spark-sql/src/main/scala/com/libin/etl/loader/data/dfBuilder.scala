@@ -23,6 +23,16 @@ object dfBuilder {
     ss.read.json(url)
   }
 
+  def readTextToDf(ss: SparkSession, fileName: String): DataFrame = {
+    val url: String = this.getClass.getClassLoader.getResource(fileName).toString
+    ss.read.text(url)
+  }
+
+  def readParquetToDf(ss: SparkSession, fileName: String): DataFrame = {
+    val url: String = this.getClass.getClassLoader.getResource(fileName).toString
+    ss.read.parquet(url)
+  }
+
   /**
     * 使用Seq+toDf创建DataFrame
     *

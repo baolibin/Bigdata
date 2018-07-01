@@ -27,7 +27,7 @@ object dfJobScheduler {
     // 测试读取json配置数据
     // loadUtils.readResourceFile("stu.json").foreach(println)
     // 读取df操作
-    val df: DataFrame = dfBuilder.readJsonToDf(dfScheduler.ss, FileUtils.stuFile)
+    val df: DataFrame = dfBuilder.readJsonToDf(dfScheduler.ss, FileUtils.STU_File)
 
     /**
       * DataFrame基本操作

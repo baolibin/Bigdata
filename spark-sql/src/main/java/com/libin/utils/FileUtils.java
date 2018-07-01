@@ -8,5 +8,9 @@ package com.libin.utils;
  */
 
 public class FileUtils {
-    public static final String stuFile = "stu.json";
+    public static final String STU_File = "stu.json";
+    public static final String SCHOOL_File = "school.json";
+
+    public static final String PEOPLE_File = "people.txt";
+    public static final String USERS_File = "users.parquet";
 }
