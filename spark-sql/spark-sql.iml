@@ -13,6 +13,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: com.databricks:spark-csv_2.11:1.5.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.11.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-csv:1.1" level="project" />
+    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-sql_2.11:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.univocity:univocity-parsers:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.spark:spark-sketch_2.11:2.2.0" level="project" />
