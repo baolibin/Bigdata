@@ -6,7 +6,150 @@
 
     <groupId>groupId</groupId>
     <artifactId>spark-mllib</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>infrastructure</name>
+    <url>http://maven.apache.org</url>
 
-    
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.scalanlp/breeze -->
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze_2.11</artifactId>
+            <version>0.12</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scalanlp/breeze-natives -->
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze-natives_2.12</artifactId>
+            <version>0.13</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-network-common -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-network-common_2.11</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>11.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_2.11</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.databricks/spark-csv -->
+        <dependency>
+            <groupId>com.databricks</groupId>
+            <artifactId>spark-csv_2.11</artifactId>
+            <version>1.5.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-repl -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-repl_2.11</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.chen0040</groupId>
+            <artifactId>spark-ml-commons</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- maven-thrift-plugin -->
+            <plugin>
+                <groupId>org.apache.thrift.tools</groupId>
+                <artifactId>maven-thrift-plugin</artifactId>
+                <version>0.1.11</version>
+                <configuration>
+                    <thriftExecutable>thrift</thriftExecutable>
+                    <generator>java</generator>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>thrift-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <!--<version>${scala.maven.plugin.version}</version>-->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-scaladocs</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                        <arg>-unchecked</arg>
+                        <arg>-deprecation</arg>
+                        <arg>-feature</arg>
+                        <arg>-optimise</arg>
+                        <arg>-target:jvm-1.6</arg>
+                    </args>
+                </configuration>
+            </plugin>
+            <!-- maven-compiler-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <fork>true</fork>
+                    <verbose>true</verbose>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- maven-source-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.0.4</version>
+                <configuration>
+                    <!--includes>src/main/java</includes -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
