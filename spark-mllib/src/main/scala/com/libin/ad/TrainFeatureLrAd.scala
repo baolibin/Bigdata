@@ -72,8 +72,8 @@ object TrainFeatureLrAd {
     println("precision:" + precision)
     println("recall:" + recall)
 
-    //val ModelPath = "E://xiaomi/LogisticRegressionWithLBFGS"
-    //model.save(sc, ModelPath)
+    val ModelPath = "E://sparkmllibData/LogisticRegressionWithLBFGS"
+    model.save(sc, ModelPath)
 
     val test_feature_data = sc.textFile("E://sparkmllibData/ad_test_data.txt")
       .flatMap(line => {
