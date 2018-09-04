@@ -3,7 +3,7 @@
 常用的大数据相关处理技术框架
 
 ## Spark MLlib
-* [spark-mllib](spark-mllib/README.md)  
+* [spark-mllib](spark-mllib)  
 
 ## Spark Sql
 * [spark-sql](spark-sql/README.md)  
