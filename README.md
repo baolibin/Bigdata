@@ -6,25 +6,25 @@
 * [spark-mllib](spark-mllib)  
 
 ## Spark Sql
-* [spark-sql](spark-sql/README.md)  
+* [spark-sql](spark-sql)  
 
 ## Spark Core
-* [spark-core](spark-core/README.md)  
+* [spark-core](spark-core)  
 
 ## Spark GraphX
-* [spark-graphx](spark-graphX/README.md)  
+* [spark-graphx](spark-graphX)  
 
 ## Hadoop
-* [hadoop](bigdata-hadoop/README.md)  
+* [hadoop](bigdata-hadoop)  
 
 ## Hive
-* [hive](bigdata-hive/README.md)  
+* [hive](bigdata-hive)  
 
 ## HBase
-* [hbase](bigdata-hbase/README.md)  
+* [hbase](bigdata-hbase)  
 
 ## Oozie
-* [oozie](bigdata-oozie/README.md)  
+* [oozie](bigdata-oozie)  
 
 ## Spark Streaming
-* [spark-streaming](spark-streaming/README.md)  
+* [spark-streaming](spark-streaming)  
