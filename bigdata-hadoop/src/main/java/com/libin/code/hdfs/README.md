@@ -9,9 +9,10 @@
     3.DFSAdmin：(org.apache.hadoop.hdfs.tools)向系统管理员提供管理HDFS的工具,如升级、管理安全模式等。
     上面3个接口都是直接或间接持有DFSClient(org.apache.hadoop.hdfs)提供的接口方法对HDFS进行管理和操作的。
 
-DFSAdmin是一个真正实现分布式文件系统客户端功能的类，使用户进行HDFS操作的起点。  
-DFSAdmin会连接到HDFS，对外提供关联文件/目录，读写文件以及管理与配置HDFS系统等功能。
-DFSAdmin通过ClientProtocol(org.apache.hadoop.hdfs.protocol)接口调用NameNode的接口，通过DataTransferProtocol(org.apache.hadoop.hdfs.protocol.datatransfer)与DataNode交互数据。
+* DFSAdmin是一个真正实现分布式文件系统客户端功能的类，使用户进行HDFS操作的起点。    
+* DFSAdmin会连接到HDFS，对外提供关联文件/目录，读写文件以及管理与配置HDFS系统等功能。  
+* DFSAdmin通过ClientProtocol(org.apache.hadoop.hdfs.protocol)接口调用NameNode的接口。
+* DFSAdmin通过DataTransferProtocol(org.apache.hadoop.hdfs.protocol.datatransfer)与DataNode交互数据。  
 
 ##
 ##### 2.RPC通信
