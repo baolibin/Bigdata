@@ -5,9 +5,9 @@
 * MapReduce源码分析
 
 ## Hdfs
-* Hdfs应用
-* Hdfs原理
-* Hdfs源码分析
+* [Hdfs应用](src/main/java/com/libin/api/hdfs)
+* [Hdfs原理](src/main/java/com/libin/doc/hdfs)
+* [Hdfs源码分析](src/main/java/com/libin/code/hdfs)
 
 ## Yarn
 * Yarn原理
