@@ -12,3 +12,5 @@
 ![数据流处理](./src/main/image/2.png)
 
     Spark Streaming使用DSTream来表示一个连续的数据流。
+    DSTream被表示为一系列连续的RDDs,其中每个RDD包含来自一定时间间隔的数据。
+    
