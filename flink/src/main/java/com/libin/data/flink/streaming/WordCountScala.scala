@@ -19,7 +19,7 @@ object WordCountScala {
     val port = 9000
     val stream = env.socketTextStream(hostname, port, '\n')
 
-    import org.apache.flink.api.scala._
+    /*import org.apache.flink.api.scala._
     val wcStream =
       stream
         .flatMap(x => x.split("\t"))
@@ -30,6 +30,6 @@ object WordCountScala {
         .reduce((a, b) => wc(a.word, a.count + b.count))
 
     wcStream.print().setParallelism(1)
-    env.execute("socket wc")
+    env.execute("socket wc")*/
   }
 }

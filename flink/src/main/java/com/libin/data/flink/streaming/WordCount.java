@@ -31,7 +31,8 @@ public class WordCount {
                 }
             }
         }).keyBy("word")
-                .timeWindow(Time.seconds(2), Time.seconds(1)) //指定时间窗口大小为2秒，指定时间间隔为1秒
+                //.timeWindow(Time.seconds(2), Time.seconds(1)) //指定时间窗口大小为2秒，指定时间间隔为1秒
+                .timeWindow(Time.seconds(2))
                 //.sum("count");
                 .reduce(new ReduceFunction<WordCountCount>() {
                     public WordCountCount reduce(WordCountCount t1, WordCountCount t2) throws Exception {
