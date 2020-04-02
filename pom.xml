@@ -15,12 +15,12 @@
         <module>bigdata-hive</module>
         <module>bigdata-oozie</module>
         <module>bigdata-project</module>
-        <module>flink</module>
         <module>spark-core</module>
         <module>spark-graphx</module>
         <module>spark-mllib</module>
         <module>spark-sql</module>
         <module>spark-streaming</module>
+        <module>bigdata-flink</module>
     </modules>
 
 
