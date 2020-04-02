@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.libin.bigdata</groupId>
-    <artifactId>bigdata-project</artifactId>
+    <artifactId>bigdata-oozie</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     
