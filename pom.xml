@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.libin.bigdata</groupId>
+    <artifactId>bigdata</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>bigdata-hadoop</module>
+        <module>bigdata-hbase</module>
+        <module>bigdata-hive</module>
+        <module>bigdata-oozie</module>
+        <module>bigdata-project</module>
+        <module>flink</module>
+        <module>spark-core</module>
+        <module>spark-graphx</module>
+        <module>spark-mllib</module>
+        <module>spark-sql</module>
+        <module>spark-streaming</module>
+    </modules>
+
+
+    
+</project>
