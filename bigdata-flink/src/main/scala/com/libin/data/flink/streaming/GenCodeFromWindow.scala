@@ -2,6 +2,7 @@ package com.libin.data.flink.streaming
 
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.windowing.time.Time
+import org.apache.flink.streaming.api.scala.createTypeInformation
 
 /**
  * Copyright (c) 2020/4/2 libin Inc. All Rights Reserved.
@@ -10,6 +11,9 @@ import org.apache.flink.streaming.api.windowing.time.Time
  * Purpose : nc -lk 9999
  */
 object GenCodeFromWindow {
+	
+	implicit val inTypeInfo = createTypeInformation[String]
+	
 	def main(args: Array[String]) {
 		// create env
 		val env = StreamExecutionEnvironment.getExecutionEnvironment

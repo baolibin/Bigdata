@@ -6,5 +6,8 @@ package com.libin.data.flink.batch;
  * <p>
  * Purpose : 离线处理
  */
-public class WordCount {
+public class WordCountJava {
+    public static void main(String[] args) {
+
+    }
 }
