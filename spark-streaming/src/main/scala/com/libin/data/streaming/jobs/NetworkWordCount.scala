@@ -1,5 +1,6 @@
 package com.libin.data.streaming.jobs
 
+import com.libin.data.streaming.utils.StreamingExamples
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
@@ -18,6 +19,7 @@ object NetworkWordCount {
 		
 		// Create a DStream that will connect to hostname:port, like localhost:9999
 		val lines = ssc.socketTextStream("localhost", 9999)
+		StreamingExamples.setStreamingLogLevels()
 		
 		// Split each line into words
 		val words = lines.flatMap(_.split(" "))
