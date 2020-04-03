@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming
+package com.libin.data.flink.streaming.jobs
 
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup

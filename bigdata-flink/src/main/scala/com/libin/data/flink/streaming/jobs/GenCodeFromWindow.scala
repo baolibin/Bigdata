@@ -1,8 +1,7 @@
-package com.libin.data.flink.streaming
+package com.libin.data.flink.streaming.jobs
 
-import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.scala.createTypeInformation
 
 /**
  * Copyright (c) 2020/4/2 libin Inc. All Rights Reserved.
