@@ -20,11 +20,17 @@ object GenCodeFromWindow {
 		
 		val lines = ssc.socketTextStream("localhost", 9999)
 		
+		// reduceByKeyAndWindow
 		val res = lines.flatMap(_.split(" "))
 			.map((_, 1))
 			.reduceByKeyAndWindow((a: Int, b: Int) => (a + b), Seconds(10), Seconds(5))
 		
+		// countByWindow
+		val resByCount = lines.flatMap(_.split(" "))
+			.countByWindow(Seconds(10), Seconds(5))
+		
 		res.print()
+		resByCount.print()
 		
 		ssc.start() // Start the computation
 		ssc.awaitTermination() // Wait for the computation to terminate
@@ -71,3 +77,20 @@ Time: 1585905795000 ms
 (a,6)
 (c,1)
  */
+
+
+/**
+-------------------------------------------
+Time: 1585911530000 ms
+-------------------------------------------
+(d,1)
+(b,6)
+(,3)
+(e,1)
+(a,6)
+(c,1)
+-------------------------------------------
+Time: 1585911530000 ms
+-------------------------------------------
+18
+*/
