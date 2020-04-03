@@ -87,6 +87,12 @@
             <artifactId>scopt_2.10</artifactId>
             <version>3.2.0</version>
         </dependency>
+        <!-- logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
