@@ -15,7 +15,7 @@ object WordCountScala {
 
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
-    val hostname = "39.98.57.193"
+    val hostname = "localhost"
     val port = 9000
     val stream = env.socketTextStream(hostname, port, '\n')
 

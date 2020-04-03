@@ -1,8 +1,7 @@
-package com.libin.data.flink
+package com.libin.data.flink.streaming
 
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.windowing.time.Time
-import org.apache.flink.streaming.api.scala._
 
 /**
  * Copyright (c) 2020/4/2 libin Inc. All Rights Reserved.
@@ -39,38 +38,3 @@ object GenCodeFromWindow {
 		env.execute("Window Stream WordCount")
 	}
 }
-
-// 滚动: countWindowAll(long size): Windows this DataStream into tumbling count windows.
-// 滑动: countWindowAll(long size, long slide): Windows this DataStream into sliding count windows.
-
-// 滚动: timeWindowAll(Time size): Windows this DataStream into tumbling time windows.
-// 滑动: timeWindowAll(Time size, Time slide): Windows this DataStream into sliding time windows.
-
-
-/**
- * Input:
- * a
- * a
- * a
- * a
- * a
- * b
- * b
- * b
- * b
- * b
- * a
- * b
- * c
- * d
- * e
- * Output:
- * 6> (a,5)
- * 2> (b,4)
- * 2> (b,1)
- * 4> (c,1)
- * 2> (b,1)
- * 6> (a,1)
- * 5> (d,1)
- * 1> (e,1)
- */

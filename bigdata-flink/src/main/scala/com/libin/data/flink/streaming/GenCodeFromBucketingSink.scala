@@ -1,4 +1,4 @@
-package com.libin.data.flink
+package com.libin.data.flink.streaming
 
 import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.streaming.connectors.fs.StringWriter

@@ -1,9 +1,9 @@
-package com.libin.data.flink
+package com.libin.data.flink.streaming
 
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 
 /**
  * Copyright (c) 2020/4/2 libin Inc. All Rights Reserved.
