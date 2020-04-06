@@ -8,7 +8,9 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   * Copyright (c) 2019/02/16. libin Inc. All Rights Reserved.
   * Authors: libin <2578858653@qq.com>
   * <p>
-  * Purpose : nc -lk 9999
+  * Purpose : Spark Streaming的WordCount
+  * Linux：		nc -lk 9999
+  * windows：  nc -l -p 9999
   */
 object NetworkWordCount {
 	def main(args: Array[String]): Unit = {

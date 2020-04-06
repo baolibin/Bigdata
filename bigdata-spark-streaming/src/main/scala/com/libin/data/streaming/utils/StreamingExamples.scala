@@ -20,6 +20,8 @@ object StreamingExamples extends Logging {
 			logInfo("Setting log level to [WARN] for streaming example." +
 				" To override add a custom log4j.properties to the classpath.")
 			Logger.getRootLogger.setLevel(Level.WARN)
+		}else{
+			Logger.getRootLogger.setLevel(Level.WARN)
 		}
 	}
 }

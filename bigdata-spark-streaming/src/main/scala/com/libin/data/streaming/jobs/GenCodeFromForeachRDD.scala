@@ -9,7 +9,10 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
  * Copyright (c) 2020/4/3 libin Inc. All Rights Reserved.
  * Authors: libin<2578858653@qq.com>
  *
- * Purpose :  nc -lk 9999
+ * Purpose : Spark Streaming的foreachRDD算子使用
+ *
+ * Linux：		nc -lk 9999
+ * windows：  nc -l -p 9999
  */
 object GenCodeFromForeachRDD {
 	def main(args: Array[String]): Unit = {
@@ -17,7 +20,7 @@ object GenCodeFromForeachRDD {
 		val ssc = new StreamingContext(conf, Seconds(5))
 		
 		StreamingExamples.setStreamingLogLevels()
-		val lines = ssc.socketTextStream("areyouok", 9999)
+		val lines = ssc.socketTextStream("localhost", 9999)
 		
 		lines.map((_, 1))
 			.foreachRDD {

@@ -8,7 +8,9 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
  * Copyright (c) 2020/4/3 libin Inc. All Rights Reserved.
  * Authors: libin<2578858653@qq.com>
  *
- * Purpose : nc -lk 9999
+ * Purpose : Spark Streaming的Window算子使用
+ * Linux：		nc -lk 9999
+ * windows：  nc -l -p 9999
  */
 object GenCodeFromWindow {
 	def main(args: Array[String]): Unit = {
