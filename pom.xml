@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>bigdata-flink</module>
         <module>bigdata-hadoop</module>
         <module>bigdata-hbase</module>
         <module>bigdata-hive</module>
@@ -18,9 +19,8 @@
         <module>spark-core</module>
         <module>spark-graphx</module>
         <module>spark-mllib</module>
-        <module>spark-sql</module>
-        <module>spark-streaming</module>
-        <module>bigdata-flink</module>
+        <module>bigdata-spark-sql</module>
+        <module>bigdata-spark-streaming</module>
     </modules>
 
 

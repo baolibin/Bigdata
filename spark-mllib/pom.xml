@@ -92,10 +92,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <!--<version>${scala.maven.plugin.version}</version>-->
+                <version>${scala.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -120,7 +120,7 @@
                         <arg>-target:jvm-1.6</arg>
                     </args>
                 </configuration>
-            </plugin>
+            </plugin>-->
             <!-- maven-compiler-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

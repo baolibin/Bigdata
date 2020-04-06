@@ -7,5 +7,8 @@ package com.libin.data.streaming.jobs
   * Purpose :
   */
 object GenCodeFromCheckpoint {
+    def main(args: Array[String]): Unit = {
+        println("hello")
+    }
 
 }

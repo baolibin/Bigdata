@@ -2,73 +2,39 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <artifactId>bigdata</artifactId>
         <groupId>com.libin.bigdata</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>bigdata-flink</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>bigdata-spark-sql</artifactId>
     <packaging>jar</packaging>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>bigdata-spark-sql</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <scala.version.major>2.11</scala.version.major>
-        <scala.version.minor>8</scala.version.minor>
-        <scala.version>${scala.version.major}.${scala.version.minor}</scala.version>
-        <flink.version>1.9.2</flink.version>
-        <parquet.version>1.10.0</parquet.version>
+        <scala.version>2.11</scala.version>
+        <spark.version>2.2.0</spark.version>
     </properties>
 
     <dependencies>
-        <!-- scala -->
         <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>2.2.0</version>
         </dependency>
-        <!-- flink -->
+        <!-- https://mvnrepository.com/artifact/com.databricks/spark-csv -->
         <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-java</artifactId>
-            <version>${flink.version}</version>
+            <groupId>com.databricks</groupId>
+            <artifactId>spark-csv_2.11</artifactId>
+            <version>1.5.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-scala_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-java_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-streaming-scala_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-filesystem_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-hadoop-compatibility_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-statebackend-rocksdb_${scala.version.major}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -170,14 +136,6 @@
                     <artifactSet>
                         <includes>
                             <include>org.scala-lang:*</include>
-                            <!-- flink -->
-                            <!--<include>org.apache.flink:flink-java</include>
-                            <include>org.apache.flink:flink-connector-filesystem_${scala.version.major}</include>
-                            <include>org.apache.flink:flink-hadoop-compatibility_${scala.version.major}</include>
-                            <include>org.apache.flink:flink-statebackend-rocksdb_${scala.version.major}</include>
-                            <include>org.apache.flink:flink-streaming-contrib</include>
-                            <include>org.apache.flink:flink-streaming-scala_${scala.version.major}</include>
-                            <include>org.apache.flink:flink-scala_${scala.version.major}</include>-->
                         </includes>
                     </artifactSet>
                 </configuration>
