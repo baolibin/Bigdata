@@ -3,7 +3,7 @@ package com.libin.data.streaming.jobs
 import kafka.serializer.StringDecoder
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.dstream.DStream
+import org.apache.spark.streaming.dstream.{DStream, InputDStream}
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.streaming.kafka.KafkaUtils
 
@@ -35,10 +35,10 @@ object GenCodeFromKafka {
         val conf = new SparkConf().setMaster("local[2]").setAppName("GenCodeFromKafka")
         val ssc = new StreamingContext(conf, Seconds(5))
 
-//        val stream: DStream[(String, String)] = KafkaUtils
-//                .createDirectStream[String, String, StringDecoder, StringDecoder](
-//                    ssc, kafkaParams, topics
-//                )
+        /*val stream: InputDStream[(String, String)] = KafkaUtils
+                .createDirectStream[String, String, StringDecoder, StringDecoder,(String, String)](
+                    ssc, kafkaParams, topics
+                )*/
 
     }
 }
