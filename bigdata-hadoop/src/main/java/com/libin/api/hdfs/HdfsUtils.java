@@ -16,7 +16,7 @@ import org.apache.hadoop.io.IOUtils;
  * Copyright (c) 2018/09/16. xixi Inc. All Rights Reserved.
  * Authors: libin <2578858653@qq.com>
  * <p>
- * Purpose :
+ * Purpose : 很久之前，14年时候刚开始学习时候的代码，待整体重新梳理一下
  */
 public class HdfsUtils {
     static final String PATH = "hdfs://192.168.1.100:9000/";

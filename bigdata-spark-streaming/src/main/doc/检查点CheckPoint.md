@@ -10,3 +10,4 @@
 ##### 什么时候启用checkpoint机制？
     1、使用了有状态的转换、比如reduceByKeyAndWindow操作。
     2、作业失败重启
+
