@@ -16,6 +16,9 @@
         <module>bigdata-hive</module>
         <module>bigdata-oozie</module>
         <module>bigdata-project</module>
+        <module>bigdata-doris</module>
+        <module>bigdata-druid</module>
+        <module>bigdata-kafka</module>
         <module>spark-core</module>
         <module>spark-graphx</module>
         <module>spark-mllib</module>

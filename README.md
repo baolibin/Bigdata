@@ -24,9 +24,9 @@
 * [Hive](bigdata-hive)  
 * [Hbase](bigdata-hbase)  
 * [Oozie](bigdata-oozie)  
-* [Kafka](kafka)  
-* [Doris](doris)  
-* [Druid](druid)  
+* [Kafka](bigdata-kafka)  
+* [Doris](bigdata-doris)  
+* [Druid](bigdata-druid)  
 * [Talos](talos) 
 * [Pegasus](pegasus) 
 
@@ -37,4 +37,7 @@
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
 
 ## 6、大数据学习相关资料
-    
+    1、官网
+    2、技术博客网站
+    3、书籍
+    4、论文
