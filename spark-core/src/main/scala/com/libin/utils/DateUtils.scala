@@ -24,4 +24,16 @@ object DateUtils {
         } catch {
             case e: Exception => None
         }
+    
+    /**
+     * DateTime转为日期字符串
+     *
+     * @param input 日期
+     */
+    def parseDateTimeToStr(input: DateTime): Option[String] =
+        try {
+            Some(input.toString(DATE_FORMAT))
+        } catch {
+            case e: Exception => None
+        }
 }
