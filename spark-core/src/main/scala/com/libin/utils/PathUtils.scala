@@ -59,7 +59,7 @@ object PathUtils {
         fsStatus
                 .map(_.getPath.toString.trim)
                 // 合格的数据目录
-                .filter(_.contains(SeparatorUtils.splitEqual))
+                .filter(_.contains(SeparatorUtils.SEPARATOR_EQUAL))
                 .filter {
                     x =>
                         // 当前分区数据目录下面存在SUCCESS文件，确保数据已经正常生成完毕
@@ -70,7 +70,7 @@ object PathUtils {
                         pathArr.exists(_.contains(SeparatorUtils.pathSuccess))
                 }
                 // 取出路径中数据分区信息
-                .map(_.split(SeparatorUtils.splitEqual).last)
+                .map(_.split(SeparatorUtils.SEPARATOR_EQUAL).last)
                 .filter(_.length == 8)
                 // 取最近的一份数据
                 .maxBy(_.toLong)
