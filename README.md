@@ -30,6 +30,7 @@
 * [Talos](talos) 
 * [Pegasus](pegasus) 
 * [Griffin](griffin)
+* [Elasticsearch](Elasticsearch)
 
 ## 5、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
