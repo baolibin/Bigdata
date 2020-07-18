@@ -14,7 +14,7 @@
         <module>bigdata-hadoop</module>
         <module>bigdata-hbase</module>
         <module>bigdata-hive</module>
-        <module>bigdata-oozie</module>
+        <module>bigdata-info</module>
         <module>bigdata-project</module>
         <module>bigdata-doris</module>
         <module>bigdata-druid</module>

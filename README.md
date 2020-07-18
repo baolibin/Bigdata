@@ -21,16 +21,16 @@
 * [Flink](bigdata-flink)  
 
 ## 4、Hadoop生态圈一些其它技术框架
-* [Hive](bigdata-hive)  
-* [Hbase](bigdata-hbase)  
-* [Oozie](bigdata-oozie)  
-* [Kafka](bigdata-kafka)  
-* [Doris](bigdata-doris)  
-* [Druid](bigdata-druid)  
-* [Talos](talos) 
-* [Pegasus](pegasus) 
-* [Griffin](griffin)
-* [Elasticsearch](Elasticsearch)
+* [Hive](bigdata-hive/README.md)  
+* [Hbase](bigdata-hbase/README.md)  
+* [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
+* [Kafka](bigdata-kafka/README.md)  
+* [Doris](bigdata-doris/README.md)  
+* [Druid](bigdata-druid/README.md)  
+* [Talos](bigdata-info/src/main/java/com/libin/talos/README.md) 
+* [Pegasus](bigdata-info/src/main/java/com/libin/pegasus/README.md) 
+* [Griffin](bigdata-info/src/main/java/com/libin/griffin/README.md)
+* [ElasticSearch](bigdata-info/src/main/java/com/libin/elasticsearch/README.md)
 
 ## 5、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
