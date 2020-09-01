@@ -6,7 +6,7 @@
 * [1.1、Hadoop学习入口](bigdata-hadoop)  
 * [1.2、MapReduce相关API操作](bigdata-hadoop/src/main/java/com/libin/api/mapreduce)  
 * [1.3、HDFS相关API操作](bigdata-hadoop/src/main/java/com/libin/api/hdfs) 
-* [1.4、YARN资源调度器](bigdata-hadoop/src/main/java/com/libin/api/yarn) 
+* [1.4、YARN资源调度器](bigdata-hadoop/src/main/java/com/libin/doc/yarn) 
     
 ## 2、Spark
     Spark是基于内存计算的大数据并行计算框架，可用于构建大型的、低延迟的数据分析应用程序
