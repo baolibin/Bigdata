@@ -9,7 +9,7 @@ import org.apache.flink.streaming.api.windowing.time.Time
  * <p>
  * Purpose :  服务器上执行 nc -l 9000  , 运行代码
  */
-object WordCountScala {
+object GenCodeFromWordCount {
 	
 	case class wc(word: String, count: Long)
 	

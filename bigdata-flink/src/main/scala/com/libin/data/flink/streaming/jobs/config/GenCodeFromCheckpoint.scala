@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs
+package com.libin.data.flink.streaming.jobs.config
 
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup
@@ -15,13 +15,13 @@ object GenCodeFromCheckpoint {
 	def main(args: Array[String]): Unit = {
 		// create env
 		val env = StreamExecutionEnvironment.getExecutionEnvironment
-		
+
 		// 设置env属性值
 		env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 		env.setParallelism(16)
 		env.enableCheckpointing(20000)
 		env.setStateBackend(new FsStateBackend("checkpoint path")) // kafka offset,确保 exactly-once
-		
+
 		// 设置config属性值
 		val config = env.getCheckpointConfig
 		config.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
@@ -31,6 +31,6 @@ object GenCodeFromCheckpoint {
 		config.setMinPauseBetweenCheckpoints(5 * 60 * 1000); // Checkpoint之间的最小间隔；
 		config.setCheckpointTimeout(10 * 60 * 1000); // Checkpoint的超时时间；
 		config.setTolerableCheckpointFailureNumber(3); // 连续3次checkpoint失败，才会导致作业失败重启；默认值是0 。
-		
+
 	}
 }

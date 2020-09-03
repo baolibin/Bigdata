@@ -11,6 +11,6 @@
     barriers将数据流的记录分为进入当前快照的记录和进入下一个快照的记录，每个barriers都携带了快照的ID，
     快照的数据在barriers的前面推送。barriers非常轻量级，不会中断流的流动。同一时间，会有多个checkpoint在并发进行。
     2.1、单流的barrier
-![单流的barrier](./images/checkpoint1.png)
+![单流的barrier](images/flink检查点.png)
     
 

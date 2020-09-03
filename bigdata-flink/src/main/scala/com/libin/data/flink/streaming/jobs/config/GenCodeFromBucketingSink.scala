@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs
+package com.libin.data.flink.streaming.jobs.config
 
 import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.streaming.connectors.fs.StringWriter
@@ -12,9 +12,9 @@ import org.apache.flink.streaming.connectors.fs.bucketing.{BucketingSink, DateTi
  */
 object GenCodeFromBucketingSink {
 	def main(args: Array[String]): Unit = {
-		
+
 		val resultDS: DataStream[Long] = null
-		
+
 		val sink = new BucketingSink[Long]("output path")
 		sink.setBucketer(new DateTimeBucketer[Long]("yyyy-MM-dd--HHmm"))
 		sink.setWriter(new StringWriter[Long]())
