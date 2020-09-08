@@ -14,6 +14,7 @@
 
 ![Flink架构](images/flink架构.jpg)
 
-
+    Flink主要包括DataStream API、DataSet API、Table API、SQL、Graph API和FlinkML等。
+    现在Flink也有自己的生态圈，涉及离线数据处理、实时数据处理、SQL操作、图计算和机器学习库等。
 
 
