@@ -10,6 +10,9 @@
 * [2、Flnik状态state](src/main/docs/2_状态state.md)
 * [3、Flnik时间操作time](src/main/docs/3_时间time.md)
 * [4、Flnik窗口操作windows](src/main/docs/4_窗口windows.md)
+* [5、Flnik广播变量](src/main/docs/flink广播变量.md)
+* [6、Flnik累加器](src/main/docs/flink累加器.md)
+* [7、Flnik分布式缓存](src/main/docs/flink分布式缓存.md)
 
 
 ##### 3、Flink编程
