@@ -5,11 +5,7 @@
 * [HBase数据模型](src/main/scala/com/libin/doc/HBase数据模型.md)
 
 
-* HBase架构图
-![HBase架构图](image/架构图.jpeg)
-
 ##### 2、HBase操作
-    
 
 
 ##### 3、HBase相关算法
@@ -21,7 +17,5 @@
 ##### 4、HBase相关学习资料
 * [HBase官网地址](http://hbase.apache.org/)
 * [HBase gitbook地址](http://hbase.apache.org/book.html)
-
-
 
 
