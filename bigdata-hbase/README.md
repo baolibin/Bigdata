@@ -19,7 +19,12 @@
 * [HBase布隆过滤器](src/main/scala/com/libin/doc/HBase算法/布隆过滤器.md)
 
 
-##### 4、HBase相关学习资料
+##### 4、HBase依赖服务
+* [ZooKeeper](src/main/scala/com/libin/doc/依赖服务组件/ZooKeeper.md)
+* [Hdfs](src/main/scala/com/libin/doc/依赖服务组件/Hdfs.md)
+
+
+##### 5、HBase相关学习资料
 * [HBase官网地址](http://hbase.apache.org/)
 * [HBase gitbook地址](http://hbase.apache.org/book.html)
 
