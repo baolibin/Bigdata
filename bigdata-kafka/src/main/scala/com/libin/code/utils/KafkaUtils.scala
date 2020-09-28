@@ -1,4 +1,4 @@
-package com.libin.code.Client
+package com.libin.code.utils
 
 /**
  * Copyright (c) 2020/9/26. libin Inc. All Rights Reserved.
@@ -6,6 +6,6 @@ package com.libin.code.Client
  * <p>
  * Purpose : 
  */
-object KafkaClient {
+object KafkaUtils {
 
 }

@@ -1,4 +1,4 @@
-package com.libin.code.Utils
+package com.libin.code.streaming
 
 /**
  * Copyright (c) 2020/9/26. libin Inc. All Rights Reserved.
@@ -6,6 +6,6 @@ package com.libin.code.Utils
  * <p>
  * Purpose : 
  */
-object KafkaUtils {
+object SparkStreamingKafkaJob {
 
 }

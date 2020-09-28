@@ -1,4 +1,4 @@
-package com.libin.code.streaming
+package com.libin.code.client
 
 /**
  * Copyright (c) 2020/9/26. libin Inc. All Rights Reserved.
@@ -6,6 +6,6 @@ package com.libin.code.streaming
  * <p>
  * Purpose : 
  */
-object StreamingKafkaJob {
+object KafkaClient {
 
 }
