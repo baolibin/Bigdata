@@ -14,6 +14,8 @@
     直到新消息到达。为了避免这点,Kafka 有个参数可以让consumer阻塞知道新消息到达。
 
 2. Kafka一致性语义
-
+    At Least Once：消息不丢,但可能重复
+    At Most Once：消息会丢,但不会重复
+    Exactly Once：消息不丢,也不重复。
 
 
