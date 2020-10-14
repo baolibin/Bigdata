@@ -30,3 +30,14 @@
     通过一级分配将Executor、内存、CPU等资源分配给Application。
     Driver通过二级分配将Executor等资源分配给每一个任务，Application最后通过Driver告诉Executor运行任务。
 
+##### Spark核心模块
+    （1）SparkContext
+    SparkContext隐藏了网络通信、分布式部署、消息通信、存储体系、计算引擎、度量系统、文件服务、Web UI等内容，
+    应用程序开发者只需要使用SparkContext提供的API完成功能开发。
+    （2）SparkEnv
+    Spark执行环境SparkEnv是Spark中的Task运行所必需的组件。
+    SparkEnv内部封装了RPC环境（RpcEnv）、序列化管理器、广播管理器（BroadcastManager）、map任务输出跟踪器（MapOutputTracker）、
+    存储体系、度量系统（MetricsSystem）、输出提交协调器（OutputCommitCoordinator）等Task运行所需的各种组件。
+    （3）调度系统
+    
+    
