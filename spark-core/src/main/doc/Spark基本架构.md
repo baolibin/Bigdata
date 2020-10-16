@@ -39,5 +39,7 @@
     SparkEnv内部封装了RPC环境（RpcEnv）、序列化管理器、广播管理器（BroadcastManager）、map任务输出跟踪器（MapOutputTracker）、
     存储体系、度量系统（MetricsSystem）、输出提交协调器（OutputCommitCoordinator）等Task运行所需的各种组件。
     （3）调度系统
-    
+    调度系统主要由DAGScheduler和TaskScheduler组成，它们都内置在SparkContext中。
+    DAGScheduler负责创建Job、将DAG中的RDD划分到不同的Stage、给Stage创建对应的Task、批量提交Task等功能。
+    TaskScheduler负责按照FIFO或者FAIR等调度算法对批量Task进行调度；为Task分配资源；将Task发送到集群管理器的当前应用的Executor上，由Executor负责执行等工作。
     
