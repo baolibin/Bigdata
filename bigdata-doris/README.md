@@ -23,6 +23,8 @@
     将 Doris 使用在生产环境中。
 
 ##### 2、Doris学习资料
+* [Doris中文官网](http://doris.apache.org/master/zh-CN/)
+* [Doris官网中文文档](http://doris.apache.org/master/zh-CN/installing/compilation.html)
 * [Doris官网](http://doris.apache.org/)
 * [Doris文档](http://doris.apache.org/documentation/cn/index.html)
 * [GitHub代码-百度](https://github.com/baidu-doris/incubator-doris)
