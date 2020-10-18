@@ -24,7 +24,6 @@
 ## 4、Hadoop生态圈一些其它技术框架
 * [Hive](bigdata-hive/README.md)  
 * [Hbase](bigdata-hbase/README.md)  
-* [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
 * [Kafka](bigdata-kafka/README.md)  
 * [Doris](bigdata-doris/README.md)  
 * [Druid](bigdata-druid/README.md)  
@@ -32,17 +31,31 @@
 * [Pegasus](bigdata-info/src/main/java/com/libin/pegasus/README.md) 
 * [Griffin](bigdata-info/src/main/java/com/libin/griffin/README.md)
 * [ElasticSearch](bigdata-info/src/main/java/com/libin/elasticsearch/README.md)
+* [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
 
-## 5、大数据一些相关项目
+## 5、大数据相关技能前奏
+* [Scala]()  
+* [Java]()  
+* [SQL]()  
+* [Maven]()  
+* [Git]()  
+* [Linux Shell]()  
+* [大数据算法]()  
+* [大数据相关计算机理论知识]()  
+* [大数据产品技能]()  
+* [大数据应用场景]()  
+* [大数据相关硬件知识]()  
+
+## 6、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
 * [Id-Mapping](bigdata-project/src/main/java/idmapping/readme.md)  
 * [数据仓库](bigdata-project/src/main/java/dataWarehouse/readme.md)  
 * [实时仓库](bigdata-project/src/main/java/realTimeWarehouse/readme.md)  
-* [特征工程](bigdata-project/src/main/java/featureEngineering/readme.md)  
+* [特征系统](bigdata-project/src/main/java/featureEngineering/readme.md)  
 
 
-## 6、大数据学习相关资料
-* [Apache官网](http://griffin.apache.org/)
+## 7、大数据学习相关资料
+* [Apache官网](http://www.apache.org/)
 
     1、官网
     2、技术博客网站
