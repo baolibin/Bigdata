@@ -22,4 +22,7 @@
     spark是批处理，将DAG划分为不同的stage，一个完成之后才可以进行下一个；
     flink是标准的流执行模式，一个事件在一个节点处理完之后可以直接发往下一个节点处理；
     
-
+###### 5、checkpoint和spark比较
+    Flink的checkpoint机制对比spark有什么不同和优势？
+    spark streaming的checkpoint仅仅是针对driver的故障恢复做了数据和元数据的ck。
+    而flink的ck机制采用轻量级的分布式快照，实现了每个算子的快照，以及流动中数据的快照。
