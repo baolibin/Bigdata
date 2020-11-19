@@ -26,3 +26,5 @@
     Flink的checkpoint机制对比spark有什么不同和优势？
     spark streaming的checkpoint仅仅是针对driver的故障恢复做了数据和元数据的ck。
     而flink的ck机制采用轻量级的分布式快照，实现了每个算子的快照，以及流动中数据的快照。
+
+###### 6、Flink CEP是啥？
