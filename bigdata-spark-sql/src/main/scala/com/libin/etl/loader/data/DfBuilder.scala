@@ -34,6 +34,13 @@ object DfBuilder {
     }
 
     /**
+     * 一次读取多个Parquet目录
+     */
+    def readMultiParquetFileToDf(ss: SparkSession, fileName: String*): Unit = {
+        ss.read.parquet(fileName: _*)
+    }
+
+    /**
      * 使用Seq+toDf创建DataFrame
      *
      * @param ss SparkSession
