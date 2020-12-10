@@ -53,8 +53,26 @@
 * [实时仓库](bigdata-project/src/main/java/realTimeWarehouse/readme.md)  
 * [特征系统](bigdata-project/src/main/java/featureEngineering/readme.md)  
 
+## 7、数据相关知识点
+* [数据产生]()  
+* [数据收集]()
+* [数据压缩]()
+* [数据加解密]()
+* [数据计算处理]()
+* [数据存储]()
+* [数据延迟]()
+* [数据质量]()
+* [数据治理]()
+* [数据监控]()
+* [数据可视化]()
+* [数据字典]()
+* [数据血缘]()      
+* [数据分析]()      
+* [数据建模]()      
+* [数据集市]()       
+* [数据仓库]()           
 
-## 7、大数据学习相关资料
+## 8、大数据学习相关资料
 * [Apache官网](http://www.apache.org/)
 
     1、官网
