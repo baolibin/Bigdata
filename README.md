@@ -73,9 +73,19 @@
 * [数据仓库]()           
 
 ## 8、大数据学习相关资料
+#####  8.1、大数据学习网站
 * [Apache官网](http://www.apache.org/)
+* [DataFunTalk知乎](https://www.zhihu.com/org/datafuntalk/posts)
+* [美团大数据](https://tech.meituan.com/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE.html)
+* [InfoQ大数据](https://www.infoq.cn/topic/bigdata)
 
-    1、官网
-    2、技术博客网站
-    3、书籍
-    4、论文
+##### 8.2、大数据学习书籍       
+* [Hadoop权威指南]()       
+* [Hadoop技术内幕（3本）]()       
+* [Hadoop实战]()
+
+##### 8.3、大数据论文
+* [The Google File System (HDFS)]()
+* [BigTable (HBase)]()
+* [MapReduce]()
+* [Spark]()
