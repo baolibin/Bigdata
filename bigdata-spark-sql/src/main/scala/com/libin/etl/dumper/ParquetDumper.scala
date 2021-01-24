@@ -88,6 +88,20 @@ object ParquetDumper extends SparkJobBase {
 
     }
 
+    /**
+      * *******************************目前需求场景使用这个方法*******************************
+      *
+      * 根据输入的单行事实数据，聚合为parquet格式存储，字段自动对齐。
+      *
+      * 使用frame.groupByKey(_.userId).mapGroups实现。
+      *
+      * @param sparkSession SparkSession
+      * @param featureRdd   事实数据
+      *
+      * @return 聚合后DataFrame
+      *
+      * ***********************************************************************************
+      */
     def processDataFrameParquetTest(sparkSession: SparkSession,
                                     featureRdd: RDD[FeatureDataStruct]): Unit = {
         val columnsList: List[(Int, String)] = featureRdd.map(x => (x.featureId, x.featureKey)).collect().toList
@@ -96,6 +110,9 @@ object ParquetDumper extends SparkJobBase {
         val culumnLink = columns.split(separator).map(x => "\"" + x + "\"").mkString(separator)
         val sortedFeatureId: List[Int] = columnsList.map(_._1).sorted
 
+        /**
+          * 把字段聚合为一行,缺失值进行填充。
+          */
         import sparkSession.implicits._
         val frame = featureRdd.toDS()
         val dataset = frame.groupByKey(_.userId).mapGroups {
@@ -124,6 +141,9 @@ object ParquetDumper extends SparkJobBase {
         // println(dataset.schema)
         // println(dataset.show())
 
+        /**
+          * 进行字段拆分,1列变多列。
+          */
         import org.apache.spark.sql.functions._
         import sparkSession.implicits._
         var newDF = dataset.withColumn("splitCols", split($"value", separator))
@@ -157,6 +177,9 @@ object ParquetDumper extends SparkJobBase {
         // println(newDF.schema)
         // println(newDF.show())
 
+        /**
+          * 拆分后字段名重命名为输出格式化字段。
+          */
         // 字段到key的映射
         var count = -1
         val colKeyMap = columnsList.sortBy(_._1).map {
@@ -188,7 +211,15 @@ object ParquetDumper extends SparkJobBase {
         // newDF
     }
 
-
+    /**
+      * 根据输入的单行事实数据，聚合为parquet格式存储，字段自动对齐。
+      *
+      * 使用sparkSession.sql(sql)执行。
+      *
+      * @param sparkSession SparkSession
+      * @param featureRdd   事实数据
+      * @return 聚合后DataFrame
+      */
     def processDataFrameParquet(sparkSession: SparkSession,
                                 featureRdd: RDD[FeatureDataStruct]): DataFrame = {
         val columnsList: List[(Int, String)] = featureRdd.map(x => (x.featureId, x.featureKey)).collect().toList
