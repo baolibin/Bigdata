@@ -10,7 +10,7 @@ import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructT
  * Purpose :
  */
 
-object DfBuilder {
+object DfBuilderLoader {
     /**
      * 读取配置文件中的数据创建DataFrame
      *

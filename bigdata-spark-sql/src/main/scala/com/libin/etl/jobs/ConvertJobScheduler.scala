@@ -1,7 +1,7 @@
 package com.libin.etl.jobs
 
 import com.libin.common.SparkJobBase
-import com.libin.etl.loader.data.{DfBuilder, RddBuilder}
+import com.libin.etl.loader.data.{DfBuilderLoader, RddBuilderLoader}
 import com.libin.etl.utils.LoadUtils.stu
 import com.libin.utils.FileUtils
 import org.apache.spark.rdd.RDD
@@ -30,7 +30,7 @@ object ConvertJobScheduler {
         convertScheduler.logger.info("convertJobScheduler start ...")
 
         // 创建RDD
-        val rdd: RDD[stu] = RddBuilder.createRdd(convertScheduler.sc)
+        val rdd: RDD[stu] = RddBuilderLoader.createRdd(convertScheduler.sc)
 
         import convertScheduler.ss.implicits._
         println("rdd.toDF().show() ...")
@@ -40,8 +40,8 @@ object ConvertJobScheduler {
 
         // --------------------------------------------------------------------------------
         // join操作
-        val stuDf: DataFrame = DfBuilder.readJsonToDf(convertScheduler.ss, FileUtils.STU_File)
-        val schoolDf: DataFrame = DfBuilder.readJsonToDf(convertScheduler.ss, FileUtils.SCHOOL_File)
+        val stuDf: DataFrame = DfBuilderLoader.readJsonToDf(convertScheduler.ss, FileUtils.STU_File)
+        val schoolDf: DataFrame = DfBuilderLoader.readJsonToDf(convertScheduler.ss, FileUtils.SCHOOL_File)
 
         // stuDf.createOrReplaceTempView("stu_df")
         // schoolDf.createOrReplaceTempView("school_df")
@@ -51,8 +51,8 @@ object ConvertJobScheduler {
         // --------------------------------------------------------------------------------
         // 读取test,parquet格式
         println(s"dfBuilder.readTextToDf(convertScheduler.ss,${FileUtils.PEOPLE_File}).show() ...")
-        DfBuilder.readTextToDf(convertScheduler.ss, FileUtils.PEOPLE_File).show()
+        DfBuilderLoader.readTextToDf(convertScheduler.ss, FileUtils.PEOPLE_File).show()
         println(s"dfBuilder.readParquetToDf(convertScheduler.ss,${FileUtils.USERS_File}).show() ...")
-        DfBuilder.readParquetToDf(convertScheduler.ss, FileUtils.USERS_File).show()
+        DfBuilderLoader.readParquetToDf(convertScheduler.ss, FileUtils.USERS_File).show()
     }
 }

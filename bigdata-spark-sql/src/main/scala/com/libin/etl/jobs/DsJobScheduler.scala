@@ -1,7 +1,7 @@
 package com.libin.etl.jobs
 
 import com.libin.common.SparkJobBase
-import com.libin.etl.loader.data.DsBuilder
+import com.libin.etl.loader.data.DsBuilderLoader
 import com.libin.etl.utils.LoadUtils.stu
 import org.apache.spark.sql.Dataset
 
@@ -25,7 +25,7 @@ object DsJobScheduler {
         val dsScheduler: DsJobScheduler = apply()
         dsScheduler.logger.info("dsJobScheduler start ...")
 
-        val ds: Dataset[stu] = DsBuilder.createDsBySeq(dsScheduler.ss)
+        val ds: Dataset[stu] = DsBuilderLoader.createDsBySeq(dsScheduler.ss)
 
         ds.show()
     }

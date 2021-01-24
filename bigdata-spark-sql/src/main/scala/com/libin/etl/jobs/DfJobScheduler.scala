@@ -1,7 +1,7 @@
 package com.libin.etl.jobs
 
 import com.libin.common.SparkJobBase
-import com.libin.etl.loader.data.DfBuilder
+import com.libin.etl.loader.data.DfBuilderLoader
 import com.libin.etl.utils.LogUtils
 import com.libin.utils.FileUtils
 import org.apache.spark.sql.DataFrame
@@ -29,7 +29,7 @@ object DfJobScheduler {
         // 测试读取json配置数据
         // loadUtils.readResourceFile("stu.json").foreach(println)
         // 读取df操作
-        val df: DataFrame = DfBuilder.readJsonToDf(dfScheduler.ss, FileUtils.STU_File)
+        val df: DataFrame = DfBuilderLoader.readJsonToDf(dfScheduler.ss, FileUtils.STU_File)
 
         /**
          * DataFrame基本操作

@@ -29,7 +29,11 @@
             <artifactId>spark-sql_2.11</artifactId>
             <version>${spark.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.databricks/spark-csv -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.databricks</groupId>
             <artifactId>spark-csv_2.11</artifactId>
@@ -40,6 +44,18 @@
             <artifactId>joda-time</artifactId>
             <version>${joda.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.typelevel/shapeless-scalaz -->
+        <dependency>
+            <groupId>org.typelevel</groupId>
+            <artifactId>shapeless-scalaz_2.11</artifactId>
+            <version>0.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>

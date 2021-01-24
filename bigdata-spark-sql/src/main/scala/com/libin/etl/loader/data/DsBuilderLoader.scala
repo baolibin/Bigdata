@@ -10,7 +10,7 @@ import org.apache.spark.sql.{Dataset, SparkSession}
  * Purpose :
  */
 
-object DsBuilder {
+object DsBuilderLoader {
 
     /**
      * 读取配置文件中的数据创建Dataset

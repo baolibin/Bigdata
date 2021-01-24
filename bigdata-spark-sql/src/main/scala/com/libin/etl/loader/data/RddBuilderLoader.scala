@@ -14,7 +14,7 @@ import org.apache.spark.sql.Row
  * Purpose :
  */
 
-object RddBuilder extends SparkJobBase {
+object RddBuilderLoader extends SparkJobBase {
 
     /**
      * 返回RDD类型
