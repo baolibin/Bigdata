@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs
+package com.libin.data.flink.streaming.etl
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment, createTypeInformation}

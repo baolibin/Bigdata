@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs
+package com.libin.data.flink.streaming.etl
 
 /**
  * Copyright (c) 2020/9/6. libin Inc. All Rights Reserved.

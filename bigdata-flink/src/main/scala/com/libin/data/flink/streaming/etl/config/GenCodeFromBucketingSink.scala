@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs.config
+package com.libin.data.flink.streaming.etl.config
 
 import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.streaming.connectors.fs.StringWriter

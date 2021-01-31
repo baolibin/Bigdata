@@ -1,4 +1,4 @@
-package com.libin.data.flink.streaming.jobs
+package com.libin.data.flink.streaming.etl
 
 import com.libin.data.flink.base.streaming.FlinkStreamingTrait
 import com.libin.data.flink.streaming.loader.FlinkStreamingLoader
