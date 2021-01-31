@@ -11,6 +11,9 @@ import org.apache.flink.streaming.api.windowing.time.Time
   */
 object GenCodeFromWordCount {
 
+    /**
+      * 经典的WordCount代码
+      */
     def main(args: Array[String]): Unit = {
         val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
         val hostname = "localhost"
