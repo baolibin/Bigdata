@@ -1,6 +1,7 @@
-package com.libin.data.flink.batch
+package com.libin.data.flink.batch.etl
 
-import org.apache.flink.api.scala.{ExecutionEnvironment, _}
+import com.libin.data.flink.base.batch.FlinkBatchTrait
+import org.apache.flink.api.scala._
 
 /**
   * Copyright (c) 2020/4/3 libin Inc. All Rights Reserved.
@@ -8,12 +9,11 @@ import org.apache.flink.api.scala.{ExecutionEnvironment, _}
   *
   * Purpose : Flink的word count代码
   */
-object WordCount {
+object WordCount extends FlinkBatchTrait {
     def main(args: Array[String]): Unit = {
-        val env = ExecutionEnvironment.getExecutionEnvironment
-        val text = env.fromElements("Who's there?", "I think I hear them. Stand, ho! Who's there?")
-
-        val counts = text.flatMap {
+        // val env = ExecutionEnvironment.getExecutionEnvironment
+        val text: DataSet[String] = env.fromElements("Who's there?", "I think I hear them. Stand, ho! Who's there?")
+        val counts: AggregateDataSet[(String, Int)] = text.flatMap {
             _.toUpperCase.split("\\s+").filter(_.nonEmpty)
         }.map {
             (_, 1)

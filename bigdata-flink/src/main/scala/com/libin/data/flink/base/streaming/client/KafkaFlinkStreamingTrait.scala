@@ -1,4 +1,4 @@
-package com.libin.data.flink.base.client
+package com.libin.data.flink.base.streaming.client
 
 /**
  * Copyright (c) 2020/4/3 libin Inc. All Rights Reserved.
