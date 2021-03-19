@@ -89,3 +89,17 @@
 * [BigTable (HBase)]()
 * [MapReduce]()
 * [Spark]()
+
+## 9、必会知识点
+* [9.1、Spark Core]()
+    - [1）、Spark Shuffle过程？ 和MR Shuffle区别？]()
+
+* [9.2、Spark SQL]()
+
+* [9.3、Spark Streaming]()
+
+* [9.4、Flink Streaming]()
+
+* [9.5、Flink Batch]()
+
+
