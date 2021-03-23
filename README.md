@@ -126,6 +126,7 @@
     - [4）、SparkSession、SparkContext和SQLContext区别？]()
     - [5）、Spark SQL用过哪些算子？遇到哪些问题？如何解决的？]()
     - [6）、Spark SQL程序调优？]()
+    - [6）、Spark SQL运行原理？]()
 
 * [9.3、Spark Streaming](bigdata-project/src/main/doc/sparkstreaming.md)
     - [1）、Spark Streaming如何保证数据仅且消费一次？]()
@@ -139,6 +140,8 @@
     - [9）、Spark Streaming中foreachRDD如何使用？]()
     - [10）、Spark Streaming的启动时序图？]()
     - [11）、Spark Streaming程序调优？]()
+    - [12）、Spark Streaming窗口大小？每个窗口处理的数据量？]()
+    - [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
     - [1）、Flink如何保证数据仅且消费一次？]()
@@ -163,3 +166,5 @@
 
 * [9.8、Kafka](bigdata-project/src/main/doc/kafka.md)
     - [1）、Kafka如何保证消息的顺序？]()
+    - [2）、Kafka的receiver和direct区别？]()
+    - [3）、Kafka和Flink保证仅消费一次？]()
