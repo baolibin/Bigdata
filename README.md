@@ -131,7 +131,7 @@
 * [9.3、Spark Streaming](bigdata-project/src/main/doc/sparkstreaming.md)
     - [1）、Spark Streaming如何保证数据仅且消费一次？]()
     - [2）、Spark Streaming中DataFrame和DataSet区别？]()
-    - [3）、Spark Streaming如何做checkoutPoint检查点？]()
+    - [3）、Spark Streaming如何做checkPoint检查点？]()
     - [4）、Spark Streaming如何设置batch大小？]()
     - [5）、Spark Streaming程序消费过慢如何解决？]()
     - [6）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？]()
@@ -142,10 +142,11 @@
     - [11）、Spark Streaming程序调优？]()
     - [12）、Spark Streaming窗口大小？每个窗口处理的数据量？]()
     - [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
+    - [14）、Spark Streaming面对高峰数据如何处理？]()
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
     - [1）、Flink如何保证数据仅且消费一次？]()
-    - [2）、Flink如何做checkoutPoint检查点？]()
+    - [2）、Flink如何做checkPoint检查点？]()
     - [3）、Flink程序消费过慢如何解决？]()
     - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
     - [5）、Flink中时间有几种？]()
@@ -155,6 +156,28 @@
     - [9）、Flink中StreamExecutionEnvironment初始化流程？]()
     - [10）、用过DataStream里面的哪些方法？]()
     - [11）、Flink程序调优？]()
+    - [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
+    - [13）、Flink的checkpoint存储有哪些(状态存储)？]()
+    - [14）、Flink如何实现exactly-once？]()
+    - [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
+    - [16）、Flink的checkpoint和spark streaming比较？]()
+    - [17）、Flink CEP编程中当状态没有达到时候,数据会保存在哪里？]()
+    - [18）、3种时间语义？]()
+    - [19）、Flink面对高峰数据如何处理？]()
+    - [20）、Flink程序运行慢如何优化处理？]()
+    - [21）、Flink程序延迟高如何解决？]()
+    - [22）、Flink如何做容错？]()
+    - [23）、Flink有没有重启策略？说说有哪几种?]()
+    - [24）、Flink分布式快照原理是什么?]()
+    - [25）、Flink的Kafka连接器有什么特别的地方?]()
+    - [26）、Flink的内存管理?]()
+    - [27）、Flink序列化都有哪些?怎么实现的?]()
+    - [28）、Flink的window出现了数据倾斜,如何解决?]()
+    - [29）、Flink在使用聚合函数GroupBy、KeyBy、Distinct等函数出现数据热点如何解决?]()
+    - [30）、Flink如何处理反压?和spark streaming和storm区别有了解么?]()
+    - [31）、Flink的Operator Chains算子链了解么?]()
+    - [32）、Flink什么时候会把Operator Chain在一起行程算子链?]()
+    - [33）、Flink1.7特性?Flink1.9特性]()
 
 * [9.5、Flink Batch](bigdata-project/src/main/doc/flinkbatch.md)
     - [1）、Flink中ExecutionEnvironment初始化流程？]()
@@ -168,3 +191,11 @@
     - [1）、Kafka如何保证消息的顺序？]()
     - [2）、Kafka的receiver和direct区别？]()
     - [3）、Kafka和Flink保证仅消费一次？]()
+
+
+
+
+
+
+
+
