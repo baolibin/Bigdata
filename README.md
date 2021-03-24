@@ -146,12 +146,12 @@
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
     - [1）、Flink如何保证数据仅且消费一次？](#9.4.1)
-    - [2）、Flink如何做checkPoint检查点？]()
+    - [2）、Flink如何做checkPoint检查点？分布式快照原理是啥?]()
     - [3）、Flink程序消费过慢如何解决？]()
     - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
     - [5）、Flink中时间有几种？]()
     - [6）、Flink中窗口有几种？]()
-    - [7）、Flink中state如何理解？]()
+    - [7）、Flink中state如何理解？状态机制?]()
     - [8）、Flink中Operator是啥？]()
     - [9）、Flink中StreamExecutionEnvironment初始化流程？]()
     - [10）、用过DataStream里面的哪些方法？]()
@@ -178,6 +178,36 @@
     - [31）、Flink的Operator Chains算子链了解么?]()
     - [32）、Flink什么时候会把Operator Chain在一起行程算子链?]()
     - [33）、Flink1.7特性?Flink1.9特性]()
+    - [34）、Flink组件栈有哪些?]()
+    - [35）、Flink运行需要依赖哪些组件?必须依赖Hadoop么?]()
+    - [36）、Flink基础编程模型?]()
+    - [37）、Flink集群有哪些角色?各有什么作用?]()
+    - [38）、Flink中Task Slot概念?Slot和parallelism区别?]()
+    - [39）、Flink中常用算子有哪些?]()
+    - [40）、Flink分区策略?]()
+    - [41）、Flink并行度如何设置?]()
+    - [42）、Flink分布式缓存用过没?如何使用?]()
+    - [43）、Flink广播变量,使用时候需要注意什么?]()
+    - [44）、Flink Table&SQL熟悉不?TableEnvironment这个类有什么作用?]()
+    - [45）、Flink SQL实现原理是什么?如何实现SQL的解析?]()
+    - [46）、Flink如何支持流批一体的?]()
+    - [47）、Flink如何支如何做到高效的数据转换?]()
+    - [48）、Flink如何做内存管理?]()
+    - [49）、Flink Job提交流程?]()
+    - [50）、Flink的三层图结构是哪几个图?]()
+    - [51）、Flink中JobManager在集群中扮演的角色?]()
+    - [52）、Flink中JobManager在集群启动中扮演的角色?]()
+    - [53）、Flink中TaskManager在集群中扮演的角色?]()
+    - [54）、Flink中TaskManager在集群启动时候扮演的角色?]()
+    - [55）、Flink计算资源的调度是如何实现的?]()
+    - [56）、简述Flink的数据抽象以及数据交换过程?]()
+    - [57）、FlinkSQL的实现原理?]()
+    - [58）、Flink压测和监控?]()
+    - [59）、有了Spark为啥还要用Flink?]()
+    - [60）、Flink的应用架构有哪些?]()
+
+
+
 
 * [9.5、Flink Batch](bigdata-project/src/main/doc/flinkbatch.md)
     - [1）、Flink中ExecutionEnvironment初始化流程？]()
@@ -195,7 +225,10 @@
 
 
 
-## <span id="9.4.1">Flink如何保证数据仅且消费一次？</span>
+--- 
+
+
+###### <span id="9.4.1">Flink如何保证数据仅且消费一次？</span>
 
 
 
