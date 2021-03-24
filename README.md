@@ -145,7 +145,7 @@
     - [14）、Spark Streaming面对高峰数据如何处理？]()
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
-    - [1）、Flink如何保证数据仅且消费一次？]()
+    - [1）、Flink如何保证数据仅且消费一次？](#9.4.1)
     - [2）、Flink如何做checkPoint检查点？]()
     - [3）、Flink程序消费过慢如何解决？]()
     - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
@@ -191,6 +191,19 @@
     - [1）、Kafka如何保证消息的顺序？]()
     - [2）、Kafka的receiver和direct区别？]()
     - [3）、Kafka和Flink保证仅消费一次？]()
+
+
+
+
+## <span id="9.4.1">Flink如何保证数据仅且消费一次？</span>
+
+
+
+
+
+
+
+
 
 
 
