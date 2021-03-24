@@ -92,8 +92,8 @@
 
 ## 9、必会知识点
 * [9.1、Spark Core](bigdata-project/src/main/doc/sparkcore.md)
-    - [1）、Spark作业提交流程？]()
-    - [2）、Spark的内存模型？]()
+    - [1）、Spark作业提交流程？](./bigdata-project/src/main/doc/sparkcore.md)
+    - [2）、Spark的内存模型？](bigdata-project/src/main/doc/sparkcore.md)
     - [3）、SparkContext创建流程？源码级别？]()
     - [4）、简述Spark个版本区别？1.x与2.x？]()
     - [5）、使用Spark中遇到过哪些问题？如何解决的？]()
@@ -172,7 +172,7 @@
     - [14）、Spark Streaming面对高峰数据如何处理？]()
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
-    - [1）、Flink如何保证数据仅且消费一次？](#9.4.1)
+    - [1）、Flink如何保证数据仅且消费一次？]()
     - [2）、Flink如何做checkPoint检查点？分布式快照原理是啥?]()
     - [3）、Flink程序消费过慢如何解决？]()
     - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
@@ -233,9 +233,6 @@
     - [59）、有了Spark为啥还要用Flink?]()
     - [60）、Flink的应用架构有哪些?]()
 
-
-
-
 * [9.5、Flink Batch](bigdata-project/src/main/doc/flinkbatch.md)
     - [1）、Flink中ExecutionEnvironment初始化流程？]()
     - [2）、用过DataSet里面的哪些方法？]()
@@ -248,27 +245,4 @@
     - [1）、Kafka如何保证消息的顺序？]()
     - [2）、Kafka的receiver和direct区别？]()
     - [3）、Kafka和Flink保证仅消费一次？]()
-
-
-
-
---- 
-
-
-###### <span id="9.4.1">Flink如何保证数据仅且消费一次？</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
