@@ -34,17 +34,17 @@
 * [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
 
 ## 5、大数据相关技能前奏
-* [Scala]()  
-* [Java]()  
-* [SQL]()  
-* [Maven]()  
-* [Git]()  
-* [Linux Shell]()  
-* [大数据算法]()  
-* [大数据相关计算机理论知识]()  
-* [大数据产品技能]()  
-* [大数据应用场景]()  
-* [大数据相关硬件知识]()  
+* [Scala](bigdata-project/src/main/bigdata/scala.md)  
+* [Java](bigdata-project/src/main/bigdata/java.md)  
+* [SQL](bigdata-project/src/main/bigdata/sql.md)  
+* [Maven](bigdata-project/src/main/bigdata/maven.md)  
+* [Git](bigdata-project/src/main/bigdata/git.md)  
+* [Linux Shell](bigdata-project/src/main/bigdata/linux.md)  
+* [大数据算法](bigdata-project/src/main/bigdata/大数据算法.md)  
+* [大数据相关计算机理论知识](bigdata-project/src/main/bigdata/大数据相关计算机理论知识.md)  
+* [大数据产品技能](bigdata-project/src/main/bigdata/大数据产品技能.md)  
+* [大数据应用场景](bigdata-project/src/main/bigdata/大数据应用场景.md)  
+* [大数据相关硬件知识](bigdata-project/src/main/bigdata/大数据相关硬件知识.md)  
 
 ## 6、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
@@ -54,23 +54,23 @@
 * [特征系统](bigdata-project/src/main/java/featureEngineering/readme.md)  
 
 ## 7、数据相关知识点
-* [数据产生]()  
-* [数据收集]()
-* [数据压缩]()
-* [数据加解密]()
-* [数据计算处理]()
-* [数据存储]()
-* [数据延迟]()
-* [数据质量]()
-* [数据治理]()
-* [数据监控]()
-* [数据可视化]()
-* [数据字典]()
-* [数据血缘]()      
-* [数据分析]()      
-* [数据建模]()      
-* [数据集市]()       
-* [数据仓库]()           
+* [数据产生](bigdata-project/src/main/data/数据产生.md)  
+* [数据收集](bigdata-project/src/main/data/数据收集.md)
+* [数据压缩](bigdata-project/src/main/data/数据压缩.md)
+* [数据加解密](bigdata-project/src/main/data/数据加解密.md)
+* [数据计算处理](bigdata-project/src/main/data/数据计算处理.md)
+* [数据存储](bigdata-project/src/main/data/数据存储.md)
+* [数据延迟](bigdata-project/src/main/data/数据延迟.md)
+* [数据质量](bigdata-project/src/main/data/数据质量.md)
+* [数据治理](bigdata-project/src/main/data/数据治理.md)
+* [数据监控](bigdata-project/src/main/data/数据监控.md)
+* [数据可视化](bigdata-project/src/main/data/数据可视化.md)
+* [数据字典](bigdata-project/src/main/data/数据字典.md)
+* [数据血缘](bigdata-project/src/main/data/数据血缘.md)      
+* [数据分析](bigdata-project/src/main/data/数据分析.md)      
+* [数据建模](bigdata-project/src/main/data/数据建模.md)      
+* [数据集市](bigdata-project/src/main/data/数据集市.md)       
+* [数据仓库](bigdata-project/src/main/data/数据仓库.md)           
 
 ## 8、大数据学习相关资料
 #####  8.1、大数据学习网站
@@ -296,14 +296,14 @@
     - [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
     - [27）、HBase的RowFilter和BloomFilter原理？]()
 
-* [9.8、HDFS](bigdata-project/src/main/doc)
+* [9.8、HDFS](bigdata-project/src/main/doc/hdfs.md)
     - [1）、自己写个HDFS需要实现哪些模块？]()
 
-* [9.9、MapReduce](bigdata-project/src/main/doc)
+* [9.9、MapReduce](bigdata-project/src/main/doc/mapreduce.md)
 
-* [9.10、YARN](bigdata-project/src/main/doc)
+* [9.10、YARN](bigdata-project/src/main/doc/yarn.md)
 
-* [9.11、Java](bigdata-project/src/main/doc)
+* [9.11、Java](bigdata-project/src/main/doc/java.md)
     - [1）、说说Java中有哪些数据结构？]()
     - [2）、Java中有几种基本类型，各占多少字节？]()
     - [3）、Java中String可以被继承不？String、StringBuffer和StringBuilder有什么区别？]()
@@ -329,7 +329,7 @@
     - [23）、Java中进程和线程的区别？]()
     - [24）、深拷贝和浅拷贝区别？]()
 
-* [9.12、Scala](bigdata-project/src/main/doc)
+* [9.12、Scala](bigdata-project/src/main/doc/scala.md)
 
 * [9.13、Kafka](bigdata-project/src/main/doc/kafka.md)
     - [1）、Kafka如何保证消息的顺序？]()
@@ -363,5 +363,5 @@
     - [29）、Kafka中zookeeper作用是什么？]()
     - [30）、Kafka的ACK机制？]()
 
-* [9.14、SQL](bigdata-project/src/main/doc)
+* [9.14、SQL](bigdata-project/src/main/doc/sql.md)
 
