@@ -4,7 +4,7 @@
     - [3）、SparkContext创建流程？源码级别？](#3、SparkContext创建流程？源码级别？)
     - [4）、简述Spark个版本区别？1.x与2.x？](#4、简述Spark个版本区别？1.x与2.x？)
     - [5）、使用Spark中遇到过哪些问题？如何解决的？](#5、使用Spark中遇到过哪些问题？如何解决的？)
-    - [6）、Spark的Shuffle过程？ 和MR Shuffle区别？](#6、Spark的Shuffle过程？和MR Shuffle区别？)
+    - [6）、Spark的Shuffle过程？ 和MR Shuffle区别？](#6、Spark的Shuffle过程？和MR的Shuffle区别？)
     - [7）、Spark中的数据倾斜问题有啥好的解决方案？](#7、Spark中的数据倾斜问题有啥好的解决方案？)
     - [8）、Spark有哪些聚合类的算子，我们应该怎么避免使用这些算子？ReduceByKey和GroupByKey的区别？](#8、Spark有哪些聚合类的算子，我们应该怎么避免使用这些算子？ReduceByKey和GroupByKey的区别？)
     - [9）、Spark On Yarn作业执行流程？yarn-client和yarn-cluster的区别？](#9sparkonyarnyarn-clientyarn-cluster)
@@ -47,7 +47,7 @@
     - [46）、spark-submit时候如何引用外部的jar包？](#46spark-submitjar)
     - [47）、Spark中RDD有哪些特性？](#47、Spark中RDD有哪些特性？)
     - [48）、Spark的一个工作流程？](#48、Spark的一个工作流程？)
-    - [49）、Spark on yarn与standalone区别？](#49、Spark on yarn与standalone区别？)
+    - [49）、Spark on yarn与standalone区别？](#49sparkonyarnstandalone)
     - [50）、Spark优化之内存管理？](#50、Spark优化之内存管理？)
     - [51）、Spark优化之广播变量？](#51、Spark优化之广播变量？)
     - [52）、Spark优化之数据本地性？](#52、Spark优化之数据本地性？)
@@ -64,7 +64,7 @@
 
 ###### 5、使用Spark中遇到过哪些问题？如何解决的？
 
-###### 6、Spark的Shuffle过程？和MR Shuffle区别？
+###### 6、Spark的Shuffle过程？和MR的Shuffle区别？
 
 ###### 7、Spark中的数据倾斜问题有啥好的解决方案？
 
@@ -150,7 +150,7 @@
 
 ###### 48、Spark的一个工作流程？
 
-###### 49、Spark on yarn与standalone区别？
+###### 49、SparkOnYarn与standalone区别？
 
 ###### 50、Spark优化之内存管理？
 
