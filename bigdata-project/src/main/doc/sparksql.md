@@ -1,4 +1,4 @@
-* [9.2、Spark SQL](bigdata-project/src/main/doc/sparksql.md)
+* [9.2、Spark SQL]()
     - [1）、Spark SQL和Hive区别？Spark SQL一定比Hive快么？](#1spark-sqlhivespark-sqlhive)
     - [2）、Spark SQL有使用过么？在哪些项目中使用过？](#2spark-sql)
     - [3）、Spark SQL中UDF使用？](#3spark-sqludf)
