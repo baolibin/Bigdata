@@ -55,9 +55,36 @@
 
 ---
 ###### 1、Spark作业提交流程？
-    
+    Spark作业提交流程：
+    1、将我们编写的Spark程序打包成jar包。
+    2、使用spark-submit脚本将任务提交到集群中运行。
+    3、运行SparkSubmit的main方法，通过反射的方式创建我们编写主类的实例对象，然后调用主类的main方法开始执行我们编写的代码。
+    4、当代码运行到SparkContext时，就开始初始化SparkContext。
+    5、在初始化SparkContext时候会创建DAGScheduler和TaskScheduler。
 ###### 2、Spark的内存模型？
-
+    Spark集群在提交应用程序时候会创建Driver和Execotor两种JVM进程。
+    Driver内存：Driver作为主控进程，负责创建Spark作业的上下文，将提交的作业Job转化为计算任务Task，分发到Executor进程中进行执行。
+    Execotor内存：在工作节点上执行具体的计算任务，并将结果返回给Driver，同时提供RDD的持久化机制。
+    
+    堆内内存划分
+    2.1.1、执行Execution内存
+    主要用于存放Shuffle、Join、Sort、Aggregation等计算过程中的临时数据。
+    2.1.2、存储Storage内存
+    主要用于存储spark的cache数据，例如RDD的缓存、unroll数据；
+    2.1.3、用户内存User Memory
+    主要用于存储RDD转换操作所需要的数据，例如RDD依赖等信息。
+    2.1.4、预留内存Reserved Memory
+    系统预留内存，会用来存储Spark内部对象。
+    
+    堆外内存划分
+    为了进一步优化内存的使用以及提高Shuffle时排序的效率，Spark引入了堆外（Off-heap）内存，
+    使之可以直接在工作节点的系统内存中开辟空间，存储经过序列化的二进制数据。
+    
+    Spark为存储内存和执行内存的管理提供了统一的接口——MemoryManager，同一个 Executor内的任务都调用这个接口的方法来申请或释放内存。
+    MemoryManager的具体实现上，Spark 1.6之后默认为统一管理（Unified Memory Manager）方式，
+    1.6之前采用的静态管理（Static Memory Manager）方式仍被保留，可通过配置 spark.memory.useLegacyMode 参数启用。
+    两种方式的区别在于对空间分配的方式。
+    
 ###### 3、SparkContext创建流程？源码级别？
 
 ###### 4、简述Spark个版本区别？1.x与2.x？
