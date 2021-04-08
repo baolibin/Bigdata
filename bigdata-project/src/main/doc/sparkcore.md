@@ -72,9 +72,9 @@
     2.1.2、存储Storage内存
     主要用于存储spark的cache数据，例如RDD的缓存、unroll数据；
     2.1.3、用户内存User Memory
-    主要用于存储RDD转换操作所需要的数据，例如RDD依赖等信息。
+    主要用于存储内部元数据、用户自定义的数据结构等，根据用户实际定义进行使用。
     2.1.4、预留内存Reserved Memory
-    系统预留内存，会用来存储Spark内部对象。
+    默认300M的系统预留内存，主要用于程序运行，参见SPARK-12081。
     
     堆外内存划分
     为了进一步优化内存的使用以及提高Shuffle时排序的效率，Spark引入了堆外（Off-heap）内存，
@@ -86,6 +86,12 @@
     两种方式的区别在于对空间分配的方式。
     
 ###### 3、SparkContext创建流程？源码级别？
+    SparkContext初始化,包括事件总线(LiveListenerBus),UI界面,心跳,JobProgressListener,资源动态分配(ExecutorAllocationManager)等等
+    初始化的核心包括:
+    DAGScheduler:
+    TaskScheduler:
+    *SchedulerBackend:
+    SparkEnv:
 
 ###### 4、简述Spark个版本区别？1.x与2.x？
 
