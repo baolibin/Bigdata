@@ -94,18 +94,68 @@
     SparkEnv:Spark运行时环境,Executor依赖SparkEnv,它内部包含有很多组件，例如serializerManager,RpcEnv,BlockManager。(Driver中也有SparkEnv，这个是为了Local[*]模式下能运行)
 
 ###### 4、简述Spark个版本区别？1.x与2.x？
+    spark2.x增加Tungsten执行引擎,比spark1.x快10倍.
+    spark2.x增加了SparkSession,把spark1.x的SQLContext和HiveContext整合了.
+    spark2.x统一DataFrames 和 Datasets 的 API
+    spark2.x的Spark Streaming基于Spark SQL构建了high-level API.使得Spark Streaming更好的受益于Spark SQL的易用性和性能提升.
 
 ###### 5、使用Spark中遇到过哪些问题？如何解决的？
+    数据倾斜
 
 ###### 6、Spark的Shuffle过程？和MR的Shuffle区别？
+    Shuffle是数据的重新分发过程,将各个节点的同一类数据汇聚到某一节点上进行计算.
+    
+    Spark和Mr的Shuffle区别:
+    1)本质上相同，都是把Map端数据分类处理后交由Reduce的过程。
+    2)数据流有所区别，MR按map, spill, merge, shuffle, sort, reduce等各阶段逐一实现。Spark基于DAG数据流，可实现更复杂数据流操作（根据宽/窄依赖实现）
+    3)实现功能上有所区别，MR在map中做了排序操作，而Spark假定大多数应用场景Shuffle数据的排序操作不是必须的，而是采用Aggregator机制（Hashmap每个元素<K,V>形式）实现。
+    (为了减少内存使用，Aggregator是在磁盘进行，也就是说，尽管Spark是“基于内存的计算框架”，但是Shuffle过程需要把数据写入磁盘)
 
 ###### 7、Spark中的数据倾斜问题有啥好的解决方案？
+    导致数据倾斜的问题基本是使用shuffle算子引起的，所以我们先去找到代码中的shuffle的算子，比如distinct、groupBYkey、reduceBykey、aggergateBykey、join、cogroup、repartition等
+    1).数据做预处理(hive etl ,spark sql...)
+    2).采样倾斜key并分拆join操作
+    3).谁用随机前缀和扩容rdd进行join
+    4).提高shuffle操作的并行度
+    5).将reduce join转整map join(比如广播...)
+    6).两阶段聚合（局部聚合+全局聚合）
+    7).过滤少数导致倾斜的key
 
 ###### 8、Spark有哪些聚合类的算子，我们应该怎么避免使用这些算子？ReduceByKey和GroupByKey的区别？
+    groupByKey,reduceByKey,aggregateByKey,sortByKey,join等
+    
+    ReduceByKey更适合使用在大数据集上,在每个分区移动数据之前将输出数据进行combine操作.
+    foldByKey,aggregateByKey都是由combineByKey实现，并且mapSideCombine=true，因此可以使用这些函数替代goupByKey。
 
 ###### 9、SparkOnYarn作业执行流程？yarn-client和yarn-cluster的区别？
+    Spark On Yarn的优势
+    1.Spark支持资源动态共享，运行于Yarn的框架都共享一个集中配置好的资源池
+    2.可以很方便的利用Yarn的资源调度特性来做分类,隔离以及优先级控制负载，拥有更灵活的调度策略
+    3.Yarn可以自由地选择executor数量
+    4.Yarn是唯一支持Spark安全的集群管理器，使用Yarn，Spark可以运行于Kerberized Hadoop之上，在它们进程之间进行安全认证 
+    
+    在yarn-cluster模式下，driver运行在AM中，负责向Yarn（RM）申请资源，并监督Application的运行情况，
+    当Client（这里的Client指的是Master节点）提交作业后，就会关掉Client，作业会继续在yarn上运行，这也是Cluster模式不适合交互类型作业的原因。
+    在Yarn-client模式下，Driver运行在Client上，通过AM向RM获取资源。本地Driver负责与所有的executor container进行交互，并将最后的结果汇总。结束掉终端，相当于kill掉这个spark应用。
 
 ###### 10、Spark中Job、Task、RDD、DAG、Stage的理解？
+    Job-Stage-Task之间的关系:
+    一个Spark程序可以被划分为一个或多个Job，划分的依据是RDD的Action算子，每遇到一个RDD的Action操作就生成一个新的Job。
+    每个spark Job在具体执行过程中因为shuffle的存在，需要将其划分为一个或多个可以并行计算的stage，划分的依据是RDD间的Dependency关系，当遇到Wide Dependency时划分不同的Stage。
+    Stage是由Task组组成的并行计算，因此每个stage中可能存在多个Task，这些Task执行相同的程序逻辑，只是它们操作的数据不同。一般RDD的一个Partition对应一个Task,Task可以分为ResultTask和ShuffleMapTask。
+
+    Application: 用户编写的Spark应用程序,包括一个Driver和多个executors
+    Application jar: 包含用户程序的Jar包
+    Driver Program: 运行main()函数并创建SparkContext进程
+    Cluster manager: 在集群上获取资源的外部服务，如standalone manager,yarn,Mesos
+    deploy mode: 部署模式，区别在于driver process运行的位置
+    worker node: 集群中可以运行程序代码的节点（机器）
+    Executor: 运行在worker node上执行具体的计算任务，存储数据的进程
+    Task: 被分配到一个Executor上的计算单元
+    Job: 由多个任务组成的并行计算阶段，因RDD的Action产生
+    Stage: 每个Job被分为小的计算任务组，每组称为一个stage
+    DAGScheduler: 根据Job构建基于Stage的DAG，并提交Stage给TaskScheduler
+    TaskScheduler: 将TaskSet提交给worker运行，每个executor运行什么task在此分配
 
 ###### 11、Spark中RDD如何通过记录更新的方式容错？
 
@@ -154,6 +204,8 @@
 ###### 33、Spark中有哪些聚合类的算子？应该避免什么类型的算子?
 
 ###### 34、Spark中并行度怎么设置比较合理一些？
+    并行度和数据规模无关,和内存与CPU有关.
+    每个core承载2-4个partition
 
 ###### 35、Spark中数据的位置由谁来管理？
 
@@ -192,4 +244,6 @@
 ###### 52、Spark优化之数据本地性？
 
 ###### 53、Spark中task有几种类型？
-
+    有2种:
+    resultTask类型，最后一个task
+    shuffleMapTask类型，除了最后一个task都是
