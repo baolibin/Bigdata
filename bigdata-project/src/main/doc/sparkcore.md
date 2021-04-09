@@ -88,10 +88,10 @@
 ###### 3、SparkContext创建流程？源码级别？
     SparkContext初始化,包括事件总线(LiveListenerBus),UI界面,心跳,JobProgressListener,资源动态分配(ExecutorAllocationManager)等等
     初始化的核心包括:
-    DAGScheduler:
-    TaskScheduler:
-    *SchedulerBackend:
-    SparkEnv:
+    DAGScheduler:负责创建Job,RDD的Stage划分以及提交.
+    TaskScheduler:负责Task的调度,调度的Task是由DAGScheduler创建的.
+    *SchedulerBackend:负责连接Master并注册当前的程序；申请资源(Executor)和task具体到Executor的执行和管理,具体类型和deploy Mode有关比如standalone或者on yarn
+    SparkEnv:Spark运行时环境,Executor依赖SparkEnv,它内部包含有很多组件，例如serializerManager,RpcEnv,BlockManager。(Driver中也有SparkEnv，这个是为了Local[*]模式下能运行)
 
 ###### 4、简述Spark个版本区别？1.x与2.x？
 
