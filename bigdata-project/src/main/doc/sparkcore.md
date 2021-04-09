@@ -117,7 +117,7 @@
     2).采样倾斜key并分拆join操作
     3).谁用随机前缀和扩容rdd进行join
     4).提高shuffle操作的并行度
-    5).将reduce join转整map join(比如广播...)
+    5).将reduce join变为map join实现(比如广播...)
     6).两阶段聚合（局部聚合+全局聚合）
     7).过滤少数导致倾斜的key
 
@@ -147,9 +147,9 @@
     Application: 用户编写的Spark应用程序,包括一个Driver和多个executors
     Application jar: 包含用户程序的Jar包
     Driver Program: 运行main()函数并创建SparkContext进程
-    Cluster manager: 在集群上获取资源的外部服务，如standalone manager,yarn,Mesos
-    deploy mode: 部署模式，区别在于driver process运行的位置
-    worker node: 集群中可以运行程序代码的节点（机器）
+    Cluster Manager: 在集群上获取资源的外部服务，如standalone manager,yarn,Mesos
+    Deploy Mode: 部署模式，区别在于driver process运行的位置
+    Worker Node: 集群中可以运行程序代码的节点（机器）
     Executor: 运行在worker node上执行具体的计算任务，存储数据的进程
     Task: 被分配到一个Executor上的计算单元
     Job: 由多个任务组成的并行计算阶段，因RDD的Action产生
@@ -158,14 +158,44 @@
     TaskScheduler: 将TaskSet提交给worker运行，每个executor运行什么task在此分配
 
 ###### 11、Spark中RDD如何通过记录更新的方式容错？
+    一般而言，分布式数据集的容错性具备两种方式：数据检查点和记录数据的更新
+    checkpoint机制——数据检查点
+    记录更新机制（在Saprk中对应Lineage机制）
+
+    RDD只支持粗粒度转换，即只记录单个块上执行的单个操作，然后将创建RDD的一系列变换序列记录下来，以便恢复丢失的分区。
+    Lineage本质上很类似于数据库中的重做日志（Redo Log），只不过这个重做日志粒度很大，是对全局数据做同样的重做进而恢复数据。
+
+    Rdd在Lineage依赖方面划分成两种依赖：窄依赖（Narrow Dependencies)与宽依赖，根据父RDD分区是对应1个还是多个子RDD分区来区分窄依赖(父分区对应一个子分区)和宽依赖(父分区对应多个子分区)
+
+    容错原理:
+    在容错机制中，如果一个节点死机了，而且运算窄依赖，则只要把丢失的父RDD分区重算即可，不依赖于其他节点。而宽依赖需要父RDD的所有分区都存在，重算就很昂贵了。
+    可以这样理解开销的经济与否：在窄依赖中，在子RDD的分区丢失、重算父RDD分区时，父RDD相应分区的所有数据都是子RDD分区的数据，并不存在冗余计算。
+    在宽依赖情况下，丢失一个子RDD分区重算的每个父RDD的每个分区的所有数据并不是都给丢失的子RDD分区用的，会有一部分数据相当于对应的是未丢失的子RDD分区中需要的数据，这样就会产生冗余计算开销，这也是宽依赖开销更大的原因。
+    因此如果使用Checkpoint算子来做检查点，不仅要考虑Lineage是否足够长，也要考虑是否有宽依赖，对宽依赖加Checkpoint是最物有所值的。
 
 ###### 12、Spark常用调优方法？
+    原则一：避免创建重复的RDD
+    原则二：尽可能复用同一个RDD
+    原则三：对多次使用的RDD进行持久化
+    原则四：尽量避免使用shuffle类算子
+    原则五：使用map-side预聚合的shuffle操作
+    原则六：使用高性能的算子
+    原则七：广播大变量
+    原则八：使用Kryo优化序列化性能
+    原则九：优化数据结构
 
 ###### 13、Spark中宽依赖和窄依赖如何理解？
 
 ###### 14、Spark中Job和Task如何理解？
+    Task: 被分配到一个Executor上的计算单元
+    Job: 由多个任务组成的并行计算阶段，因RDD的Action产生
 
 ###### 15、Spark中Transformation和action区别是什么？列举出常用的方法？
+    spark中的数据都是抽象为RDD的，它支持两种类型的算子操作：Transformation和Action。
+    Transformation算子的代码不会真正被执行。只有当我们的程序里面遇到一个action算子的时候，代码才会真正的被执行。
+    
+    Transformation算子主要包括：map、mapPartitions、flatMap、filter、union、groupByKey、repartition、cache等。
+    Action算子主要包括：reduce、collect、show、count、foreach、saveAsTextFile等。
 
 ###### 16、Spark中persist()和cache()的区别？
 
@@ -247,3 +277,8 @@
     有2种:
     resultTask类型，最后一个task
     shuffleMapTask类型，除了最后一个task都是
+---
+参考:
+* [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
+* [2.Spark性能优化指南——高级篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-pro.html)
+
