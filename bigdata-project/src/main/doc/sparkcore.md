@@ -115,7 +115,7 @@
     导致数据倾斜的问题基本是使用shuffle算子引起的，所以我们先去找到代码中的shuffle的算子，比如distinct、groupBYkey、reduceBykey、aggergateBykey、join、cogroup、repartition等
     1).数据做预处理(hive etl ,spark sql...)
     2).采样倾斜key并分拆join操作
-    3).谁用随机前缀和扩容rdd进行join
+    3).采用随机前缀和扩容rdd进行join
     4).提高shuffle操作的并行度
     5).将reduce join变为map join实现(比如广播...)
     6).两阶段聚合（局部聚合+全局聚合）
@@ -185,6 +185,16 @@
     原则九：优化数据结构
 
 ###### 13、Spark中宽依赖和窄依赖如何理解？
+    Spark中RDD的高效与DAG（有向无环图）有很大的关系，在DAG调度中需要对计算的过程划分Stage，划分的依据就是RDD之间的依赖关系。
+    RDD之间的依赖关系分为两种，宽依赖(wide dependency/shuffle dependency)和窄依赖（narrow dependency）。
+    
+    1)窄依赖:就是指父RDD的每个分区只被一个子RDD分区使用，子RDD分区通常只对应常数个父RDD分区
+    窄依赖有分为两种：
+    OneToOneDependency: 一种是一对一的依赖
+    RangeDependency:范围的依赖，它仅仅被org.apache.spark.rdd.UnionRDD使用。
+    UnionRDD是把多个RDD合成一个RDD，这些RDD是被拼接而成，即每个parent RDD的Partition的相对顺序不会变，只不过每个parent RDD在UnionRDD中的Partition的起始位置不同
+    
+    2)宽依赖:就是指父RDD的每个分区都有可能被多个子RDD分区使用，子RDD分区通常对应父RDD所有分区。
 
 ###### 14、Spark中Job和Task如何理解？
     Task: 被分配到一个Executor上的计算单元
@@ -198,8 +208,18 @@
     Action算子主要包括：reduce、collect、show、count、foreach、saveAsTextFile等。
 
 ###### 16、Spark中persist()和cache()的区别？
+    RDD 可以使用 persist() 方法或 cache() 方法进行持久化。数据将会在第一次 action 操作时进行计算，并缓存在节点的内存中。
+    Spark 的缓存具有容错机制，如果一个缓存的 RDD 的某个分区丢失了，Spark 将按照原来的计算过程，自动重新计算并进行缓存。
+    
+    // Persist this RDD with the default storage level (`MEMORY_ONLY`).
+    def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
+    
+    // Persist this RDD with the default storage level (`MEMORY_ONLY`).
+    def cache(): this.type = persist()
 
 ###### 17、Spark中map和mapPartitions的区别？
+    map是对rdd中的每一个元素进行操作.比如一个partition中有1万条数据。ok，那么你的function要执行和计算1万次。
+    mapPartitions则是对rdd中的每个分区的迭代器进行操作.function一次接收所有的partition数据。
 
 ###### 18、Spark中Worker和Executor的异同？
 
@@ -277,6 +297,8 @@
     有2种:
     resultTask类型，最后一个task
     shuffleMapTask类型，除了最后一个task都是
+###### 54、Spark中repartition和coalesce区别?
+
 ---
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
