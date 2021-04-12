@@ -2,7 +2,26 @@
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
+    Flink是由source --> transformation --> sink三部分组成；也就是说Flink要实现ExactlyOnce语义与这三者脱不了干系；
+    
+    数据源Source，首先要支持ExactlyOnce，比如Kafka;
+    接着需要对Flink开启checkpoint机制；即开启状态后端，保存其偏移量及中间状态数据；
+    Sink端需要支持写覆盖也就是我们经常说的幂等性或者支持事务（两阶段提升）
+    
+    Flink读取Kafka数据中的checkpoint具体操作如下:
+         使用FlinkKafkaConsumer，开启CheckPointing，偏移量会保存通过CheckPoint保存到StateBackend中，并且默认会将偏移量写入Kafka的特殊topic中，即：__consumer_offsets
+         FlinkKafkaConsumr的setCommitOffsetsOnCheckpoints参数默认true，即将偏移量写入到Kafka特殊的Topic中，
+         目的是为了监控或重启任务没有指定savePoint时可以接着一起的偏移量继续消费并且设置CheckpointingMode.EXACTLY_ONCE
+    Barrier【隔离带】可以保证一个流水线中的所有算子都处理成功了，才会对该条数据做CheckPoint
+    存储系统不支持覆盖的话，就得要支持事务，成功了提交事务和更新偏移量，如果失败可以回滚且不更新偏移量
+    
 ###### [2）、Flink如何做checkPoint检查点？分布式快照原理是啥?]()
+    Flink使用的检查点算法是分布式快照算法（基于Chandy-Lamport算法的分布式快照），将检查点的保存和数据分开处理，不需要暂停整个应用。
+    
+    检查点分界线(checkpoint barrier):
+    Flink检查点算法用到了一种称为分界线(barrier)的特殊数据格式,用来把一条流上数据按照不同的检查点分开.
+    分界线之前到来的数据导致的状态修改,都被包含在当前分界线所属的检查点中,而基于分界线之后的数据导致的所有修改,都被包含在之后的检查点中.
+
 ###### [3）、Flink程序消费过慢如何解决？]()
 ###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
 ###### [5）、Flink中时间有几种？]()
