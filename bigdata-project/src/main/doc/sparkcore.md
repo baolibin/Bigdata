@@ -291,17 +291,38 @@
 ###### 25、Spark使用到的安全协议有哪些？
 
 ###### 26、Spark部署模式有哪些？
+    Spark 支持多种分布式部署模式，主要支持三种部署模式，分别是：Standalone、Spark on YARN和 Spark on Mesos模式。
+    
+    Standalone模式为Spark自带的一种集群管理模式，即独立模式，自带完整的服务，可单独部署到一个集群中，无需依赖任何其他资源管理系统。
+    它是 Spark 实现的资源调度框架，其主要的节点有 Driver 节点、Master 节点和 Worker 节点。Standalone模式也是最简单最容易部署的一种模式。
+    
+    Spark on YARN模式，即 Spark 运行在Hadoop YARN框架之上的一种模式。
+    Hadoop YARN（Yet Another Resource Negotiator，另一种资源协调者）是一种新的 Hadoop 资源管理器，它是一个通用资源管理系统，可为上层应用提供统一的资源管理和调度。
+    
+    Spark on Mesos模式，即 Spark 运行在Apache Mesos框架之上的一种模式。
+    Apache Mesos是一个更强大的分布式资源管理框架，负责集群资源的分配，它允许多种不同的框架部署在其上，包括YARN。它被称为是分布式系统的内核。
 
 ###### 27、Spark的cache后能不能接其它算子？是不是action操作?
+    cache可以接其他算子，但是接了算子之后，起不到缓存应有的效果，因为会重新触发cache。
+    cache类算子的返回值必须复制给一个变量，在接下来的job中，直接使用这个变量就能读取到内存中缓存的数据。
+    cache不是action操作。
 
 ###### 28、Spark中reduceByKey是action算子不？reduec呢?
+    不是，很多人都会以为是action，reduce rdd是action
 
 ###### 29、Spark中数据本地性是哪个阶段确定的？
-
+    dag划分stage的时候，确定的具体的task运行在哪台机器上
 ###### 30、Spark中RDD的弹性提现在哪里？
-
+    1）自动的进行内存和磁盘的存储切换；
+    2）基于Lingage的高效容错；
+    3）task如果失败会自动进行特定次数的重试；
+    4）stage如果失败会自动进行特定次数的重试，而且只会计算失败的分片；
+    5）checkpoint和persist，数据计算之后持久化缓存
+    6）数据调度弹性，DAG TASK调度和资源无关
+    7）数据分片的高度弹性
 ###### 31、Spark中容错机制？
-
+    1）.数据检查点,会发生拷贝，浪费资源
+    2）.记录数据的更新，每次更新都会记录下来，比较复杂且比较消耗性能
 ###### 32、Spark中RDD的缺陷？
 
 ###### 33、Spark中有哪些聚合类的算子？应该避免什么类型的算子?
@@ -325,7 +346,18 @@
 ###### 41、介绍一下join操作优化经验？
 
 ###### 42、Spark有哪些组件？
-
+    Application：基于 Spark 的用户程序，即由用户编写的调用 Spark API 的应用程序，它由集群上的一个驱动（Driver）程序和多个执行器（Executor）程序组成。
+                其中应用程序的入口为用户所定义的 main 方法。
+    SparkContext：是 Spark 所有功能的主要入口点，它是用户逻辑与 Spark 集群主要的交互接口。
+                  通过SparkContext，可以连接到集群管理器（Cluster Manager），能够直接与集群 Master 节点进行交互，并能够向 Master 节点申请计算资源，
+                  也能够将应用程序用到的 JAR 包或 Python 文件发送到多个执行器（Executor）节点上。
+    Cluster Manager：即集群管理器，它存在于 Master 进程中，主要用来对应用程序申请的资源进行管理。
+    Worker Node：任何能够在集群中能够运行 Spark 应用程序的节点。
+    Task：由SparkContext发送到Executor节点上执行的一个工作单元。
+    Driver：也即驱动器节点，它是一个运行Application中main()函数并创建SparkContext的进程。
+            Driver节点也负责提交Job，并将Job转化为Task，在各个Executor进程间协调 Task 的调度。Driver节点可以不运行于集群节点机器上。
+    Executor：也即执行器节点，它是在一个在工作节点（Worker Node）上为Application启动的进程，它能够运行 Task 并将数据保存在内存或磁盘存储中，也能够将结果数据返回给Driver。
+    
 ###### 43、Spark的工作机制？
 
 ###### 44、Spark中的宽窄依赖？
