@@ -25,6 +25,17 @@
 ###### [3）、Flink程序消费过慢如何解决？]()
 ###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
 ###### [5）、Flink中时间有几种？]()
+    对于流式数据处理，最大的特点就是数据具有时间的属性，Flink根据时间的产生位置分为三种类型:
+    1)事件生成时间（Event Time）:
+        事件时间是每个独立事件在产生它的设备上发生的时间，这个时间在事件进入Flink之前就已经嵌入到事件中，时间顺序取决于事件产生的地方，和下游数据处理系统的时间无关。
+    2)事件注入时间（Ingestion Time）、
+        注入时间是数据进入Flink系统的时间，接入时间依赖Source Operator 所在主机的系统时钟。
+        因为接入时间在数据接入过程生成后，时间戳不在发生变化，和后续处理数据的Operator所在机器的时钟没有关系，所以不会因为某台机器时钟不同步或网络延迟而导致计算结果不准确的问题。
+    3)事件处理时间(Processing Time)。
+        处理时间是指数据在操作算子计算过程中获取到的所在主机时间。当用户选择使用Processing Time 时，所有和时间相关的计算算子，
+        例如Linux计算,在当前的任务中所有算子将直接使用其所在主机的系统时间。
+    在Flink 中默认情况下使用Processing Time ,如果想用其它的时间类型，则在创建StreamExecutionEnvironment 中调用setStreamTimeCharacteristic()设定时间概念。
+
 ###### [6）、Flink中窗口有几种？]()
 ###### [7）、Flink中state如何理解？状态机制?]()
 ###### [8）、Flink中Operator是啥？]()
