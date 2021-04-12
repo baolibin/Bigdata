@@ -222,13 +222,35 @@
     mapPartitions则是对rdd中的每个分区的迭代器进行操作.function一次接收所有的partition数据。
 
 ###### 18、Spark中Worker和Executor的异同？
+     Master和Worker是Spark的守护进程，即Spark在特定模式下正常运行所必须的进程。Driver和Executor是临时程序，当有具体任务提交到Spark集群才会开启的程序。
+     Master:
+     Spark特有资源调度系统的leader,掌握整个系统的资源信息.例似于Yarn中的RM
+     1)监听worker,查看worker工作是否正常
+     2)对worker和application进行管理(接收worker注册信息并管理所有worker节点,接收client提交的application信息,调度等待的application并向worker提交)
+     
+     Worker:
+     Spark特有资源调度系统的slave,每个节点掌握着节点的所有资源信息,例似于Yarn中的NM
+     1)通过RegisterWorker注册到Master
+     2)定时发送心跳给Master
+     3)根据master发送的application配置进程环境,并启动ExecutorBackend(执行task需要的临时进程)
 
 ###### 19、Spark中提供的2中共享变量是啥？
+    Spark为此提供了两种共享变量，一种是Broadcast Variable（广播变量），另一种是Accumulator（累加变量）。
+    
+    Broadcast Variable会将使用到的变量，仅仅为每个节点拷贝一份，更大的用处是优化性能，减少网络传输以及内存消耗。
+    Accumulator主要用于多个节点对一个变量进行共享性的操作。Accumulator只提供了累加的功能。但是确给我们提供了多个task对一个变量并行操作的功能。
+    但是task只能对Accumulator进行累加操作，不能读取它的值。只有Driver程序可以读取Accumulator的值。
 
 ###### 20、菲波那切数列可以用Spark做出来么？
 
 ###### 21、看过哪些Spark源码？
-
+    1).作业提交流程,deploy模块
+    2).作业初始化,sparkcontext流程
+    3).内存模块
+    4).存储模块
+    5).执行模块
+    6).数据集RDD模块
+    7).数据shuffle模块
 ###### 22、Spark通信机制？
 
 ###### 23、Spark的存储级别有哪些？
@@ -298,6 +320,30 @@
     resultTask类型，最后一个task
     shuffleMapTask类型，除了最后一个task都是
 ###### 54、Spark中repartition和coalesce区别?
+    1)spark分区partition的理解：
+    spark中是以vcore级别调度task的。
+        如果读取的是hdfs，那么有多少个block，就有多少个partition
+        举例来说：sparksql 要读表T, 如果表T有1w个小文件，那么就有1w个partition
+        这时候读取效率会较低。假设设置资源为 --executor-memory 2g --executor-cores 2 --num-executors 5。
+        步骤是拿出1-10号10个小文件（也就是10个partition） 分别给5个executor读取（spark调度会以vcore为单位，实际就是5个executor，10个task读10个partition）
+        如果5个executor执行速度相同，再拿11-20号文件 依次给这5个executor读取,而实际执行速度不会完全相同，那就是哪个task先执行完，哪个task领取下一个partition读取执行，
+        以此类推。这样往往读取文件的调度时间大于读取文件本身，而且会频繁打开关闭文件句柄，浪费较为宝贵的io资源，执行效率也大大降低。
+    2)coalesce与repartition的区别:
+    repartition(numPartitions:Int):RDD[T]和coalesce(numPartitions:Int，shuffle:Boolean=false):RDD[T]  
+    repartition只是coalesce接口中shuffle为true的实现
+
+    3)例子:
+    有1w的小文件，资源也为--executor-memory 2g --executor-cores 2 --num-executors 5。
+        repartition(4)：产生shuffle。这时会启动5个executor像之前介绍的那样依次读取1w个分区的文件，然后按照某个规则%4,写到4个文件中，这样分区的4个文件基本毫无规律，比较均匀。
+        coalesce(4):这个coalesce不会产生shuffle。那启动5个executor在不发生shuffle的时候是如何生成4个文件呢，其实会有1个或2个或3个甚至更多的executor在空跑
+        （具体几个executor空跑与spark调度有关，与数据本地性有关，与spark集群负载有关），他并没有读取任何数据！
+
+    我们常认为coalesce不产生shuffle会比repartition 产生shuffle效率高，而实际情况往往要根据具体问题具体分析，coalesce效率不一定高:
+    coalesce与repartition 他们两个都是RDD的分区进行重新划分，repartition只是coalesce接口中shuffle为true的实现（假设源RDD有N个分区，需要重新划分成M个分区）
+    1）如果N<M。一般情况下N个分区有数据分布不均匀的状况，利用HashPartitioner函数将数据重新分区为M个，这时需要将shuffle设置为true(repartition实现,coalesce也实现不了)。
+    2）如果N>M并且N和M相差不多，(假如N是1000，M是100)那么就可以将N个分区中的若干个分区合并成一个新的分区，最终合并为M个分区，这时可以将shuff设置为false（coalesce实现）
+    3）如果N>M并且两者相差悬殊，这时你要看executor数与要生成的partition关系，如果executor数小于等于要生成partition数，coalesce效率高，
+    反之如果用coalesce会导致(executor数-要生成partiton数)个excutor空跑从而降低效率。
 
 ---
 参考:
