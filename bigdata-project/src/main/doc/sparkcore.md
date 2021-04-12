@@ -324,7 +324,10 @@
     1）.数据检查点,会发生拷贝，浪费资源
     2）.记录数据的更新，每次更新都会记录下来，比较复杂且比较消耗性能
 ###### 32、Spark中RDD的缺陷？
-
+    1）不支持细粒度的写和更新操作（如网络爬虫），spark写数据是粗粒度的
+    所谓粗粒度，就是批量写入数据，为了提高效率。但是读数据是细粒度的也就是
+    说可以一条条的读
+    2）不支持增量迭代计算，Flink支持
 ###### 33、Spark中有哪些聚合类的算子？应该避免什么类型的算子?
 
 ###### 34、Spark中并行度怎么设置比较合理一些？
@@ -332,18 +335,40 @@
     每个core承载2-4个partition
 
 ###### 35、Spark中数据的位置由谁来管理？
+    每个数据分片都对应具体物理位置，数据的位置被blockManager管理
 
 ###### 36、Spark中数据本地性有哪几种？
+    Spark中的数据本地性有三种：
+    1).PROCESS_LOCAL是指读取缓存在本地节点的数据
+    2).NODE_LOCAL是指读取本地节点硬盘数据
+    3).ANY是指读取非本地节点数据
+    通常读取数据PROCESS_LOCAL>NODE_LOCAL>ANY，尽量使数据以PROCESS_LOCAL或NODE_LOCAL方式读取。
+    其中PROCESS_LOCAL还和cache有关，如果RDD经常用的话将该RDD cache到内存中，注意，由于cache是lazy的，所以必须通过一个action的触发，才能真正的将该RDD cache到内存中。
 
 ###### 37、Spark如何处理不被序列化的数据？
+    将不能序列化的内容封装成object
 
 ###### 38、Spark中collect功能是啥？其底层是如何实现的?
+    driver通过collect把集群中各个节点的内容收集过来汇总成结果，collect返回结果是Array类型的，
+    collect把各个节点上的数据抓过来，抓过来数据是Array型，collect对Array抓过来的结果进行合并
 
 ###### 39、Spark作业在没有获得足够资源就开始启动了,可能会导致什么问题？
+    task的调度线程和Executor资源申请是异步的。
+    会导致执行该job时候集群资源不足，导致执行job结束也没有分配足够的资源，分配了部分Executor，该job就开始执行task。
+    如果想等待申请完所有的资源再执行job的：
+        需要将spark.scheduler.maxRegisteredResourcesWaitingTime设置的很大；
+        spark.scheduler.minRegisteredResourcesRatio 设置为1，
+    但是应该结合实际考虑否则很容易出现长时间分配不到资源，job一直不能运行的情况。
 
 ###### 40、Spark中map和flatmap有啥区别？
+    map：是将函数用于RDD中的每个元素，将返回值构成新的RDD。
+    flatMap：是将函数应用于RDD中的每个元素，将返回的迭代器的所有内容构成新的RDD,这样就得到了一个由各列表中的元素组成的RDD,而不是一个列表组成的RDD。
 
 ###### 41、介绍一下join操作优化经验？
+    join其实常见的就分为两类： map-side join 和 reduce-side join。
+    当大表和小表join时，用map-side join能显著提高效率。将多份数据进行关联是数据处理过程中非常普遍的用法，不过在分布式计算系统中，这个问题往往会变的非常麻烦，
+    因为框架提供的join操作一般会将所有数据根据key发送到所有的reduce分区中去，也就是shuffle的过程。造成大量的网络以及磁盘IO消耗，运行效率极其低下，这个过程一般被称为reduce-side-join。
+    如果其中有张表较小的话，我们则可以自己实现在 map 端实现数据关联，跳过大量数据进行 shuffle 的过程，运行时间得到大量缩短，根据不同数据可能会有几倍到数十倍的性能提升。
 
 ###### 42、Spark有哪些组件？
     Application：基于 Spark 的用户程序，即由用户编写的调用 Spark API 的应用程序，它由集群上的一个驱动（Driver）程序和多个执行器（Executor）程序组成。
@@ -361,6 +386,7 @@
 ###### 43、Spark的工作机制？
 
 ###### 44、Spark中的宽窄依赖？
+    参考: 13、Spark中宽依赖和窄依赖如何理解？
 
 ###### 45、Spark如何划分stage？
 
