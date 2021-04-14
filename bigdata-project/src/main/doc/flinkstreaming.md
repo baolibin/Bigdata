@@ -133,12 +133,35 @@
     flink会进行优化将多个operator放在一个slot中运行，它能减少线程之间的切换，减少消息的序列化/反序列化，减少数据在缓冲区的交换，减少了延迟的同时提高整体的吞吐量。
 
 ###### [32）、Flink什么时候会把Operator Chain在一起行程算子链?]()
+    operator chain是指将满足一定条件的operator 链在一起，放在同一个task里面执行，是Flink任务优化的一种方式，
+    相同并行度的one to one操作，在Flink中，这样相连的operator 链接在一起形成一个task，原来的operator成为里面的subtask。
+    将operators链接成task是非常有效的优化：它能减少线程之间的切换和基于缓存区的数据交换，在减少时延的同时提升吞吐量。
+    在同一个task里面的operator的数据传输变成函数调用关系，这种方式减少数据传输过程。常见的chain例如：source->map->filter
+    
+    OperatorChain的优点: 1).减少线程切换
+                        2).减少序列化与反序列化
+                        3).减少延迟并且提高吞吐能力
+    OperatorChain组成条件: 1).上下游算子并行度一致
+                          2).上下游算子之间没有数据shuffle
+
 ###### [33）、Flink1.7特性?Flink1.9特性]()
 ###### [34）、Flink组件栈有哪些?]()
 ###### [35）、Flink运行需要依赖哪些组件?必须依赖Hadoop么?]()
 ###### [36）、Flink基础编程模型?]()
 ###### [37）、Flink集群有哪些角色?各有什么作用?]()
 ###### [38）、Flink中Task Slot概念?Slot和parallelism区别?]()
+    worker: 每一个worker(TaskManager)是一个JVM进程，它可能会在独立的线程上执行一个或多个subtask。
+    slots: 为了控制一个worker能接收多少个task，worker通过task slot来进行控制（一个worker至少一个task slot）。每个task slot表示TaskManager拥有资源的一个固定大小的子集。
+           假如一个TaskManager有三个slot，那么它会将其管理的内存分成三份给各个slot。不会涉及到CPU的隔离，slot目前仅仅用来隔离task的受管理的内存。
+    
+    Flink程序的执行具有并行、分布式的特性。
+    一个特定operator的subtask的个数被称之为其parallelism(并行度)。
+    Stream在operator之间传输数据的形式可以是one-to-one(forwarding)的模式也可以是redistributing的模式，具体是哪一种形式，取决于operator的种类。
+    
+    slot 和 parallelism关系:
+        slot 是指 taskmanager 的并发执行能力。
+        parallelism 是指 taskmanager 实际使用的并发能力。
+
 ###### [39）、Flink中常用算子有哪些?]()
 ###### [40）、Flink分区策略?]()
 ###### [41）、Flink并行度如何设置?]()
@@ -170,6 +193,8 @@
     指定了每个TaskManager内存 为3G 那么一个TM里面有3个Slot，每个Slot 分到1G内存 。
     
     Flink TaskManager的slot有点类似于Spark的executor.
+
+###### [63）、JobGraph生成?]()
 
 ---
 参考:
