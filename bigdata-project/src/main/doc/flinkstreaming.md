@@ -58,7 +58,7 @@
 ###### [7）、Flink中state如何理解？状态机制?]()
     state一般指一个具体的task/operator的状态。Flink中包含两种基础的状态：Keyed State和Operator State。
     1).Keyed State: 就是基于KeyedStream上的状态。这个状态是跟特定的key绑定的，对KeyedStream流上的每一个key，可能都对应一个state。
-    2).Operator State:  跟一个特定operator的一个并发实例绑定，整个operator只对应一个state。相比较而言，在一个operator上，可能会有很多个key，从而对应多个keyed state。
+    2).Operator State: 记录每个Task对应的状态,整个operator只对应一个state。相比较而言，在一个operator上，可能会有很多个key，从而对应多个keyed state。
                     (eg:Flink中的Kafka Connector，就使用了operator state。它会在每个connector实例中，保存该实例中消费topic的所有(partition, offset)映射。)
     
     Keyed State和Operator State，可以以两种形式存在：原始状态和托管状态(Raw and Managed State)。
@@ -84,8 +84,23 @@
     通过创建一个StateDescriptor，可以得到一个包含特定名称的状态句柄，可以分别创建ValueStateDescriptor、 ListStateDescriptor或ReducingStateDescriptor状态句柄。
     状态是通过RuntimeContext来访问的，因此只能在RichFunction中访问状态。这就要求UDF时要继承Rich函数，例如RichMapFunction、RichFlatMapFunction等。
 
-    
 ###### [8）、Flink中Operator是啥？]()
+    Task是Flink中执行的基本单位，Operator是算子（Transformation）。
+    
+    并行数据流(Parallel Dataflows): Flink中把整个流处理过程叫做Stream Dataflow,
+        从数据源提取数据的操作叫做Source Operator,中间的map(),聚合、统计等操作可以统称为Tranformation Operators,最后结果数据的流出被称为sink operator。
+        Flink的程序内在是并行和分布式的，数据流可以被分区成stream partitions，operators被划分为operator subtasks;这些subtasks在不同的机器或容器中分不同的线程独立运行。
+        operator subtasks的数量是operator的并行计算数，程序不同的operator阶段可能有不同的并行数。
+    
+    数据在两个operator之间传递的时候有两种模式：
+        1).one-to-one 模式：两个operator用此模式传递的时候，会保持数据的分区数和数据的排序；
+        2).Redistributing模式：这种模式会改变数据的分区数；每个一个operator subtask会根据选择transformation把数据发送到不同的目标subtasks,
+                           比如keyBy()会通过hashcode重新分区,broadcast()和rebalance()方法会随机重新分区；
+            
+    Tasks & Operator Chains:
+        对于分布式计算，Flink封装operator subtasks链化为tasks;每个task由一个线程执行；把tasks链化有助于优化，它减少了开销线程和线程之间的交接和缓冲；增加了吞吐量和减少延迟时间；
+        (eg:没链化之前, source和map是2个线程运行这2个task,链化之后,source和map合并为一个task，用一个线程执行,这样可以减少source operator和map operator两个线程之间的交接和缓存开销)
+    
 ###### [9）、Flink中StreamExecutionEnvironment初始化流程？]()
 ###### [10）、用过DataStream里面的哪些方法？]()
 ###### [11）、Flink程序调优？]()
@@ -139,3 +154,9 @@
 ###### [59）、有了Spark为啥还要用Flink?]()
 ###### [60）、Flink的应用架构有哪些?]()
 ###### [61）、Flink Barrier对齐?]()
+
+
+---
+参考:
+* [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
+
