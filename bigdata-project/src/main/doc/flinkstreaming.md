@@ -131,6 +131,19 @@
 ###### [24）、Flink分布式快照原理是什么?]()
 ###### [25）、Flink的Kafka连接器有什么特别的地方?]()
 ###### [26）、Flink的内存管理?]()
+    在flink中内存被分为三个部分，分别是Unmanaged区域，Managed区域，Network-Buffer区域
+        1).Unmanaged区域: 是指flink不管理这部分区域，它的管理由JVM管理，用于存放User Code
+        2).Managed区域: 是指flink管理这部分区域，它不受jvm管理不存在GC问题，用于存放Hashing,Sorting,Caching等数据
+        3).Network-Buffer区域: 是指flink在进行计算时需要通过网络进行交换数据的区域。用于存放Shuffles，Broadcasts数据。
+![Flink内存模型](./images/flink内存模型.png)  
+
+    flink在JVM的heap内有自己的内存管理空间。
+    为了解决大量对象在JVM的heap上创建会带来OOM和GC的问题，flink将大量使用的内存存放到堆外.
+    flink在堆外有一块预分配的固定大小的内存块MemorySegment，flink会将对象高效的序列化到这块内存中。
+    MemorySegment由许多小的内存cell组成，每个cell大小32kb，这也是flink分配内存的最小单位。你可以把 MemorySegment想象成是为Flink 定制的 java.nio.ByteBuffer。
+    它的底层可以是一个普通的 Java 字节数组（byte[]），也可以是一个申请在堆外的 ByteBuffer。每条记录都会以序列化的形式存储在一个或多个MemorySegment中。
+    如果MemorySegment中依然放不小所有的数据，flink会将数据写入磁盘，需要的时候再冲磁盘读出来。
+
 ###### [27）、Flink序列化都有哪些?怎么实现的?]()
 ###### [28）、Flink的window出现了数据倾斜,如何解决?]()
 ###### [29）、Flink在使用聚合函数GroupBy、KeyBy、Distinct等函数出现数据热点如何解决?]()
@@ -215,4 +228,4 @@
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
-
+* [2.Flink简明实战教程](https://liguohua-bigdata.gitbooks.io/simple-flink/content/book/memory/memory.html)
