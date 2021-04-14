@@ -103,6 +103,7 @@
     
 ###### [9）、Flink中StreamExecutionEnvironment初始化流程？]()
 ###### [10）、用过DataStream里面的哪些方法？]()
+    map,flatmap,filter,keyby,reduce,fold,aggregations,window,windowAll,union
 ###### [11）、Flink程序调优？]()
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
@@ -124,6 +125,13 @@
 ###### [29）、Flink在使用聚合函数GroupBy、KeyBy、Distinct等函数出现数据热点如何解决?]()
 ###### [30）、Flink如何处理反压?和spark streaming和storm区别有了解么?]()
 ###### [31）、Flink的Operator Chains算子链了解么?]()
+    flink的整个数据处理流程是由一个个operator组成的，数据从源头开始传递给一个个operator进行链式处理，每一个处理逻辑就是一个operator，
+    一个operator包含一个输入、一个处理逻辑、一个输出，operator是在TaskManager的slot中执行的，
+    
+    为了更高效地分布式执行，Flink会尽可能地将operator的subtask链接（chain）在一起形成task。每个task在一个线程中执行。
+    一个slot就是一个线程，一个operator只能在一个slot中执行，一个slot中可以运行多个operator(同一个job任务)，
+    flink会进行优化将多个operator放在一个slot中运行，它能减少线程之间的切换，减少消息的序列化/反序列化，减少数据在缓冲区的交换，减少了延迟的同时提高整体的吞吐量。
+
 ###### [32）、Flink什么时候会把Operator Chain在一起行程算子链?]()
 ###### [33）、Flink1.7特性?Flink1.9特性]()
 ###### [34）、Flink组件栈有哪些?]()
@@ -154,7 +162,14 @@
 ###### [59）、有了Spark为啥还要用Flink?]()
 ###### [60）、Flink的应用架构有哪些?]()
 ###### [61）、Flink Barrier对齐?]()
-
+###### [62）、Flink slot和cpu core区别?]()
+    Flink中每一个worker(TaskManager)都是一个JVM进程，它可能会在独立的线程（Solt）上执行一个或多个 subtask。Flink 的每个 TaskManager 为集群提供 Solt。
+    Solt 的数量通常与每个 TaskManager 节点的可用 CPU 内核数成比例，一般情况下 Slot 的数量就是每个节点的 CPU 的核数。
+    Slot的数量与CPU-core的数量一致为好。但考虑到超线程，可以让slotNumber=2*cpuCore。
+    
+    指定了每个TaskManager内存 为3G 那么一个TM里面有3个Slot，每个Slot 分到1G内存 。
+    
+    Flink TaskManager的slot有点类似于Spark的executor.
 
 ---
 参考:
