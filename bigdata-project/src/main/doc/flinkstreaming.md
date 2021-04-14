@@ -130,6 +130,13 @@
 ###### [23）、Flink有没有重启策略？说说有哪几种?]()
 ###### [24）、Flink分布式快照原理是什么?]()
 ###### [25）、Flink的Kafka连接器有什么特别的地方?]()
+    1).基于Receiver的方式: 
+        这种方式使用Receiver来获取数据。Receiver是使用Kafka的高层次Consumer API来实现的。
+        receiver从Kafka中获取的数据都是存储在Spark Executor的内存中的，然后Spark Streaming启动的job回去处理那些数据。
+    2).基于Direct的方式
+        在Spark1.3中引入的，能够确保更加健壮的机制。替代掉使用Receiver来接收数据后，这种方式会周期性地查询Kafka，来获得每个topic+partition的最新的offset，从而定义每个batch的offset的范围。
+        当处理数据的job启动时，就会使用Kafka的简单consumer api来获取Kafka指定offset范围的数据
+
 ###### [26）、Flink的内存管理?]()
     在flink中内存被分为三个部分，分别是Unmanaged区域，Managed区域，Network-Buffer区域
         1).Unmanaged区域: 是指flink不管理这部分区域，它的管理由JVM管理，用于存放User Code
