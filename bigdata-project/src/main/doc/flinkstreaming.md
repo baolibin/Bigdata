@@ -192,6 +192,15 @@
 ###### [21）、Flink程序延迟高如何解决？]()
 ###### [22）、Flink如何做容错？]()
 ###### [23）、Flink有没有重启策略？说说有哪几种?]()
+    1).固定延迟重启策略（Fixed Delay Restart Strategy）
+        固定延迟重启策略尝试给定次数重新启动作业。如果超过最大尝试次数，则作业最终会失败。在两次连续重启尝试之间，重启策略等待一段固定的时间。
+    2).故障率重启策略（Failure Rate Restart Strategy）
+        故障率重启策略在故障后重新启动作业，但是当failure rate超过（每个时间间隔的故障）时，作业最终会失败。在两次连续重启尝试之间，重启策略等待一段固定的时间。
+    3).无重启策略（No Restart Strategy）
+        作业直接失败，不尝试重启。
+    4).Fallback重启策略（Fallback Restart Strategy）
+        使用群集定义的重新启动策略。这对于启用检查点的流式传输程序很有帮助。默认情况下，如果没有定义其他重启策略，则选择固定延迟重启策略。
+
 ###### [24）、Flink分布式快照原理是什么?]()
 ###### [25）、Flink的Kafka连接器有什么特别的地方?]()
     1).基于Receiver的方式: 
@@ -257,13 +266,21 @@
 
 ###### [33）、Flink1.7特性?Flink1.9特性]()
 ###### [34）、Flink组件栈有哪些?]()
+![Flink组件](./images/flink组件.png) 
+
     Flink的架构体系遵行分层架构设计的理念，基本上分为三层，API&Libraries层、Runtine核心层以及物理部署层。
-    API&Libraries层：提供了支撑流计算和批计算的接口，同时在此基础之上抽象出不同的应用类型的组件库。
+    API层：API层主要实现了面向无界Stream的流处理和面向Batch的批处理API，其中面向流处理对应DataStream API，面向批处理对应DataSet API。
+    Libraries层： 该层也可以称为Flink应用框架层，根据API层的划分，在API层之上构建的满足特定应用的实现计算框架，也分别对应于面向流处理和面向批处理两类。
+                 面向流处理支持：CEP（复杂事件处理）、基于SQL-like的操作（基于Table的关系操作）；面向批处理支持：FlinkML（机器学习库）、Gelly（图处理）。
     Runtime核心层：负责对上层不同接口提供基础服务,支持分布式Stream作业的执行、JobGraph到ExecutionGraph的映射转换、任务调度等，将DataStream和DataSet转成统一的可执行的Task Operator.
     物理部署层：Flink 支持多种部署模式，本机，集群（Standalone/YARN）、云（GCE/EC2）、Kubenetes。
 
 ###### [35）、Flink运行需要依赖哪些组件?必须依赖Hadoop么?]()
 ###### [36）、Flink基础编程模型?]()
+    Flink 程序的基础构建单元是流（streams）与转换（transformations）。
+    DataSet API 中使用的数据集也是一种流。数据流（stream）就是一组永远不会停止的数据记录流，而转换（transformation）是将一个或多个流作为输入，并生成一个或多个输出流的操作。
+    执行时，Flink程序映射到streaming dataflows,由流(streams)和转换操作(transformation operators)组成。每个dataflow从一个或多个源(source)开始，在一个或多个接收器(sink)中结束。
+
     Flink核心是一个流式的数据流执行引擎，其针对数据流的分布式计算提供了数据分布、数据通信以及容错机制等功能。基于流执行引擎，Flink提供了诸多更高抽象层的API以便用户编写分布式任务：
     DataSet API: 对静态数据进行批处理操作，将静态数据抽象成分布式的数据集，用户可以方便地使用Flink提供的各种操作符对分布式数据集进行处理，支持Java、Scala和Python。
     DataStream API: 对数据流进行流处理操作，将流式的数据抽象成分布式的数据流，用户可以方便地对分布式数据流进行各种操作，支持Java和Scala。
@@ -274,6 +291,17 @@
         Gelly: Flink的图计算库，提供了图计算的相关API及多种图计算算法实现。
 
 ###### [37）、Flink集群有哪些角色?各有什么作用?]()
+    JobManager：
+        JobManager是Flink系统的协调者，它负责接收Flink Job，调度组成Job的多个Task的执行。同时，JobManager还负责收集Job的状态信息，并管理Flink集群中从节点TaskManager。
+    TaskManager：
+        TaskManager也是一个Actor，它是实际负责执行计算的Worker，在其上执行Flink Job的一组Task。
+        每个TaskManager负责管理其所在节点上的资源信息，如内存、磁盘、网络，在启动的时候将资源的状态向JobManager汇报。
+    Client：
+        当用户提交一个Flink程序时，会首先创建一个Client，该Client首先会对用户提交的Flink程序进行预处理，并提交到Flink集群中处理，
+        所以Client需要从用户提交的Flink程序配置中获取JobManager的地址，并建立到JobManager的连接，将Flink Job提交给JobManager。
+        Client会将用户提交的Flink程序组装一个JobGraph， 并且是以JobGraph的形式提交的。一个JobGraph是一个Flink Dataflow，它由多个JobVertex组成的DAG。
+        其中，一个JobGraph包含了一个Flink程序的如下信息：JobID、Job名称、配置信息、一组JobVertex等。
+
 ###### [38）、Flink中Task Slot概念?Slot和parallelism区别?]()
     worker: 每一个worker(TaskManager)是一个JVM进程，它可能会在独立的线程上执行一个或多个subtask。
     slots: 为了控制一个worker能接收多少个task，worker通过task slot来进行控制（一个worker至少一个task slot）。每个task slot表示TaskManager拥有资源的一个固定大小的子集。
@@ -336,6 +364,11 @@
             在系统级可以通过设置flink-conf.yaml文件中的parallelism.default属性来指定所有执行环境的默认并行度
 
 ###### [42）、Flink分布式缓存用过没?如何使用?]()
+    Flink提供了一个分布式缓存，类似于hadoop，可以使用户在并行函数中很方便的读取本地文件，并把它放在taskmanager节点中，防止task重复拉取。
+    此缓存的工作机制如下：程序注册一个文件或者目录(本地或者远程文件系统，例如hdfs或者s3)，通过ExecutionEnvironment注册缓存文件并为它起一个名称。
+    当程序执行，Flink自动将文件或者目录复制到所有taskmanager节点的本地文件系统，仅会执行一次。
+    用户可以通过这个指定的名称查找文件或者目录，然后从taskmanager节点的本地文件系统访问它。
+
 ###### [43）、Flink广播变量,使用时候需要注意什么?]()
 ###### [44）、Flink Table&SQL熟悉不?TableEnvironment这个类有什么作用?]()
 ###### [45）、Flink SQL实现原理是什么?如何实现SQL的解析?]()
@@ -383,6 +416,14 @@
     Flink首先会生成 StreamGraph，接着生成 JobGraph，然后将 jobGraph 提交给 Jobmanager 由它完成 jobGraph 到 ExecutionGraph 的转变，最后由 jobManager 调度执行。
 ![Flink任务调度](images/flink任务调度.png)    
 
+    3).时间机制上：
+    flink 支持三种时间机制事件时间，注入时间，处理时间，同时支持 watermark 机制处理滞后数据。
+    Spark Streaming 只支持处理时间，Structured streaming则支持了事件时间和watermark机制。
+    
+    4).容错机制上：
+    二者保证exactly-once的方式不同。
+    spark streaming 通过保存offset和事务的方式。
+    Flink则使用两阶段提交协议来解决这个问题。
 
 ---
 参考:

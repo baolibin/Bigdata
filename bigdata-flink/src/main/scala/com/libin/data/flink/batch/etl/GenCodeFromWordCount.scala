@@ -9,7 +9,7 @@ import org.apache.flink.api.scala._
   *
   * Purpose : Flink的word count代码
   */
-object WordCount extends FlinkBatchTrait {
+object GenCodeFromWordCount extends FlinkBatchTrait {
     def main(args: Array[String]): Unit = {
         // val env = ExecutionEnvironment.getExecutionEnvironment
         val text: DataSet[String] = env.fromElements("Who's there?", "I think I hear them. Stand, ho! Who's there?")
