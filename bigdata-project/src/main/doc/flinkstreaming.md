@@ -300,6 +300,31 @@
     8).CustomPartitionerWrapper：用户自定义分区器。需要用户自己实现 Partitioner 接口，来定义自己的分区逻辑。
 
 ###### [41）、Flink并行度如何设置?]()
+    TaskManager 和 Slot:
+        Flink的每个TaskManager为集群提供solt。 solt的数量通常与每个TaskManager节点的可用CPU内核数成比例。一般情况下你的slot数是你每个节点的cpu的核数。
+    并行度(Parallel):
+        一个Flink程序由多个任务组成(source、transformation和 sink)。 一个任务由多个并行的实例(线程)来执行， 一个任务的并行实例(线程)数目就被称为该任务的并行度。
+    并行度(Parallel)的设置:
+        一个任务的并行度设置可以从多个层次指定
+        1).Operator Level（算子层次）
+        一个算子、数据源和sink的并行度可以通过调用 setParallelism()方法来指定
+        DataStream<Tuple2<String, Integer>> dataStream = env
+                        .socketTextStream("localhost", 9999)
+                        .flatMap(new Splitter())
+                        .keyBy(0)
+                        .timeWindow(Time.seconds(5))
+                        .sum(1)
+                        .setParallelism(5);
+        2).Execution Environment Level（执行环境层次）
+            StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+            env.setParallelism(5);
+        3).Client Level（客户端层次）:
+            并行度可以在客户端将job提交到Flink时设定。
+            对于CLI客户端，可以通过-p参数指定并行度
+            ./bin/flink run -p 10 WordCount-java.jar
+        4).System Level（系统层次）（尽量不使用）
+            在系统级可以通过设置flink-conf.yaml文件中的parallelism.default属性来指定所有执行环境的默认并行度
+
 ###### [42）、Flink分布式缓存用过没?如何使用?]()
 ###### [43）、Flink广播变量,使用时候需要注意什么?]()
 ###### [44）、Flink Table&SQL熟悉不?TableEnvironment这个类有什么作用?]()
@@ -321,6 +346,7 @@
 ###### [60）、Flink的应用架构有哪些?]()
 ###### [61）、Flink Barrier对齐?]()
 ###### [62）、Flink slot和cpu core区别?]()
+    slot是jvm进程.
     Flink中每一个worker(TaskManager)都是一个JVM进程，它可能会在独立的线程（Solt）上执行一个或多个 subtask。Flink 的每个 TaskManager 为集群提供 Solt。
     Solt 的数量通常与每个 TaskManager 节点的可用 CPU 内核数成比例，一般情况下 Slot 的数量就是每个节点的 CPU 的核数。
     Slot的数量与CPU-core的数量一致为好。但考虑到超线程，可以让slotNumber=2*cpuCore。
