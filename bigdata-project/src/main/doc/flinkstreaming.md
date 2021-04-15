@@ -63,6 +63,7 @@
     - [62）、Flink slot和cpu core区别?]()
     - [63）、JobGraph生成?]()
     - [64）、Flink和SparkStreaming区别?]()
+    - [65）、Flink中什么场景会用到state?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -429,6 +430,12 @@
     二者保证exactly-once的方式不同。
     spark streaming 通过保存offset和事务的方式。
     Flink则使用两阶段提交协议来解决这个问题。
+
+###### [65）、Flink中什么场景会用到state?]()
+    Flink流计算中可能有各种方式来保存状态：
+    1).窗口操作
+    2).使用了KV操作的函数
+    3).继承了CheckpointedFunction的函数
 
 ---
 参考:
