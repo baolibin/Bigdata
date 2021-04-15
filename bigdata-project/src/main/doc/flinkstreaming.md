@@ -62,6 +62,7 @@
     - [61）、Flink Barrier对齐?]()
     - [62）、Flink slot和cpu core区别?]()
     - [63）、JobGraph生成?]()
+    - [64）、Flink和SparkStreaming区别?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -365,6 +366,9 @@
     Flink TaskManager的slot有点类似于Spark的executor.
 
 ###### [63）、JobGraph生成?]()
+###### [64）、Flink和SparkStreaming区别?]()
+    
+
 
 ---
 参考:

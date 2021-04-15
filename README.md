@@ -235,6 +235,7 @@
     - [61）、Flink Barrier对齐?](bigdata-project/src/main/doc/flinkstreaming.md)
     - [62）、Flink slot和cpu core区别?](bigdata-project/src/main/doc/flinkstreaming.md)
     - [63）、JobGraph生成?](bigdata-project/src/main/doc/flinkstreaming.md)
+    - [64）、Flink和SparkStreaming区别?](bigdata-project/src/main/doc/flinkstreaming.md)
 
 * [9.5、Flink Batch](bigdata-project/src/main/doc/flinkbatch.md)
     - [1）、Flink中ExecutionEnvironment初始化流程？]()
