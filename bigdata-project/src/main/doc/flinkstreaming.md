@@ -263,6 +263,15 @@
 
 ###### [35）、Flink运行需要依赖哪些组件?必须依赖Hadoop么?]()
 ###### [36）、Flink基础编程模型?]()
+    Flink核心是一个流式的数据流执行引擎，其针对数据流的分布式计算提供了数据分布、数据通信以及容错机制等功能。基于流执行引擎，Flink提供了诸多更高抽象层的API以便用户编写分布式任务：
+    DataSet API: 对静态数据进行批处理操作，将静态数据抽象成分布式的数据集，用户可以方便地使用Flink提供的各种操作符对分布式数据集进行处理，支持Java、Scala和Python。
+    DataStream API: 对数据流进行流处理操作，将流式的数据抽象成分布式的数据流，用户可以方便地对分布式数据流进行各种操作，支持Java和Scala。
+    Table API: 对结构化数据进行查询操作，将结构化数据抽象成关系表，并通过类SQL的DSL对关系表进行各种查询操作，支持Java和Scala。
+    
+    此外，Flink还针对特定的应用领域提供了领域库，例如：
+        Flink ML: Flink的机器学习库，提供了机器学习Pipelines API并实现了多种机器学习算法。
+        Gelly: Flink的图计算库，提供了图计算的相关API及多种图计算算法实现。
+
 ###### [37）、Flink集群有哪些角色?各有什么作用?]()
 ###### [38）、Flink中Task Slot概念?Slot和parallelism区别?]()
     worker: 每一个worker(TaskManager)是一个JVM进程，它可能会在独立的线程上执行一个或多个subtask。
