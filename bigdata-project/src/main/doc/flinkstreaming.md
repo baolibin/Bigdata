@@ -278,7 +278,27 @@
         parallelism 是指 taskmanager 实际使用的并发能力。
 
 ###### [39）、Flink中常用算子有哪些?]()
+    Flink中的算子是将一个或多个DataStream转换为新的DataStream，可以将多个转换组合成复杂的数据流拓扑。
+![Flink算子](./images/flink算子.png) 
+    
+    map[DataStream --> DataStream]：输入一个参数产生一个参数，map的功能是对输入的参数进行转换操作。
+    flatMap[DataStream --> DataStream]：输入一个参数，产生0、1或者多个输出，这个多用于拆分操作
+    keyBy[DataSteam --> DataStream]：逻辑地将一个流拆分成不相交的分区，每个分区包含具有相同key的元素，在内部以hash的形式实现的。以key来分组。
+    reduce[KeyedStream --> DataStream]：滚动和并操作，合并当前元素和上一次合并的元素结果。
+    fold[KeyedStream --> DataStream]：用一个初始的一个值，与其每个元素进行滚动合并操作。
+    window[KeyedStream --> DataStream]：windows是在一个分区的KeyedStreams中定义的，windows根据某些特性将每个key的数据进行分组（例如：在5s内到达的数据）。
+
 ###### [40）、Flink分区策略?]()
+    目前Flink支持8种分区策略：
+    1).GlobalPartitioner： 数据会被分发到下游算子的第一个实例中进行处理。
+    2).ShufflePartitioner ：数据会被随机分发到下游算子的每一个实例中进行。
+    3).RebalancePartitioner： 数据会被循环发送到下游的每一个实例中进行处理。
+    4).RescalePartitioner ：这种分区器会根据上下游算子的并行度，循环的方式输出到下游算子的每个实例。
+    5).BroadcastPartitioner ：广播分区会将上游数据输出到下游算子的每个实例中。适合于大数据集和小数据集做Jion的场景。
+    6).ForwardPartitioner：用于将记录输出到下游本地的算子实例。它要求上下游算子并行度一样。
+    7).KeyGroupStreamPartitioner ：Hash 分区器。会将数据按Key的Hash值输出到下游算子实例中。
+    8).CustomPartitionerWrapper：用户自定义分区器。需要用户自己实现 Partitioner 接口，来定义自己的分区逻辑。
+
 ###### [41）、Flink并行度如何设置?]()
 ###### [42）、Flink分布式缓存用过没?如何使用?]()
 ###### [43）、Flink广播变量,使用时候需要注意什么?]()
