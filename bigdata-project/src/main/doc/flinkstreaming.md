@@ -367,7 +367,21 @@
 
 ###### [63）、JobGraph生成?]()
 ###### [64）、Flink和SparkStreaming区别?]()
-    
+    1).架构模型上：
+    Spark Streaming 的task运行依赖driver和executor和worker，driver和excutor还依赖于集群管理器Standalone或者yarn等。
+    Spark Streaming 是微批处理，运行的时候需要指定批处理的时间，每次运行 job 时处理一个批次的数据；
+![SparkStreaming架构流程](images/SparkStreaming架构流程.png) 
+
+    Flink运行时主要是JobManager、TaskManage和TaskSlot。
+    Flink是基于事件驱动的，事件可以理解为消息。事件驱动的应用程序是一种状态应用程序，它会从一个或者多个流中注入事件，通过触发计算更新状态，或外部动作对注入的事件作出反应。
+![Flink架构流程](images/flink架构流程.png) 
+
+    2).任务调度上:
+    Spark Streaming的调度分为构建 DGA 图，划分 stage，生成 taskset，调度 task等步骤
+![SparkStreaming任务调度](images/SparkStreaming任务调度.jpeg)   
+
+    Flink首先会生成 StreamGraph，接着生成 JobGraph，然后将 jobGraph 提交给 Jobmanager 由它完成 jobGraph 到 ExecutionGraph 的转变，最后由 jobManager 调度执行。
+![Flink任务调度](images/flink任务调度.png)    
 
 
 ---
