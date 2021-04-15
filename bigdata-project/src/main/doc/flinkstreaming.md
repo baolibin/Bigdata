@@ -231,6 +231,9 @@
 
 ###### [29）、Flink在使用聚合函数GroupBy、KeyBy、Distinct等函数出现数据热点如何解决?]()
 ###### [30）、Flink如何处理反压?和spark streaming和storm区别有了解么?]()
+    反压（backpressure）是实时计算应用开发中，特别是流式计算中，十分常见的问题。反压意味着数据管道中某个节点成为瓶颈，处理速率跟不上上游发送数据的速率，而需要对上游进行限速。
+    由于实时计算应用通常使用消息队列来进行生产端和消费端的解耦，消费端数据源是 pull-based 的，所以反压通常是从某个节点传导至数据源并降低数据源（比如 Kafka consumer）的摄入速率。
+
 ###### [31）、Flink的Operator Chains算子链了解么?]()
     flink的整个数据处理流程是由一个个operator组成的，数据从源头开始传递给一个个operator进行链式处理，每一个处理逻辑就是一个operator，
     一个operator包含一个输入、一个处理逻辑、一个输出，operator是在TaskManager的slot中执行的，
