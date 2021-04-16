@@ -171,6 +171,9 @@
     map,flatmap,filter,keyby,reduce,fold,aggregations,window,windowAll,union
 ###### [11）、Flink程序调优？]()
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
+    Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
+    watermark是用于处理乱序事件的，处理乱序事件通常用watermark机制结合window来实现。
+
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
 ###### [14）、Flink如何实现exactly-once？]()
 ###### [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
@@ -377,7 +380,19 @@
     我们可以把广播变量理解为是一个公共的共享变量，我们可以把一个dataset 数据集广播出去，然后不同的task在节点上都能够获取到，这个数据在每个节点上只会存在一份。
 
 ###### [44）、Flink Table&SQL熟悉不?TableEnvironment这个类有什么作用?]()
+    TableEnvironment是Table API和SQL集成的核心概念。
+    它负责：
+    A)在内部catalog中注册表
+    B)注册外部catalog
+    C)执行SQL查询
+    D)注册用户定义（标量，表或聚合）函数
+    E)将DataStream或DataSet转换为表
+    F)持有对ExecutionEnvironment或StreamExecutionEnvironment的引用
+
 ###### [45）、Flink SQL实现原理是什么?如何实现SQL的解析?]()
+![FlinkSql解析](images/flink_sql解析.png) 
+
+
 ###### [46）、Flink如何支持流批一体的?]()
 ###### [47）、Flink如何支如何做到高效的数据转换?]()
 ###### [48）、Flink如何做内存管理?]()
