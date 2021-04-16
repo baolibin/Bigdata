@@ -90,6 +90,8 @@
 ###### [3）、Flink程序消费过慢如何解决？]()
 ###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
 ###### [5）、Flink中时间有几种？]()
+![Flink时间](./images/flink时间.png)  
+
     对于流式数据处理，最大的特点就是数据具有时间的属性，Flink根据时间的产生位置分为三种类型:
     1)事件生成时间（Event Time）:
         事件时间是每个独立事件在产生它的设备上发生的时间，这个时间在事件进入Flink之前就已经嵌入到事件中，时间顺序取决于事件产生的地方，和下游数据处理系统的时间无关。
@@ -151,6 +153,8 @@
     状态是通过RuntimeContext来访问的，因此只能在RichFunction中访问状态。这就要求UDF时要继承Rich函数，例如RichMapFunction、RichFlatMapFunction等。
 
 ###### [8）、Flink中Operator是啥？]()
+![FlinkOperator](images/flinkOperator.png)   
+
     Task是Flink中执行的基本单位，Operator是算子（Transformation）。
     
     并行数据流(Parallel Dataflows): Flink中把整个流处理过程叫做Stream Dataflow,
