@@ -103,7 +103,8 @@
 
 ###### [6）、Flink中窗口有几种？]()
     滑动窗口（Tumbling Window，无重叠），滚动窗口（Sliding Window，有重叠），和会话窗口（Session Window，活动间隙）。
-    
+![Flink窗口](./images/flink窗口.png)  
+
     1)、滚动时间窗口（Tumbling Time Window）
         翻滚窗口能将数据流切分成不重叠的窗口，每一个事件只能属于一个窗口。
         比如：统计每一分钟中用户购买的商品的总数，需要将用户的行为事件按每一分钟进行切分。
@@ -195,6 +196,12 @@
 ###### [20）、Flink程序运行慢如何优化处理？]()
 ###### [21）、Flink程序延迟高如何解决？]()
 ###### [22）、Flink如何做容错？]()
+    Flink基于分布式快照与可部分重发的数据源实现了容错。用户可自定义对整个Job进行快照的时间间隔，当任务失败时，Flink会将整个Job恢复到最近一次快照，并从数据源重发快照之后的数据。
+    
+    Flink 容错机制的关键部分是为分布式数据系统建立一致性快照和操作状态。这些快照充当一致性检查点，在出现失败时，就可以回滚。
+    Flink这种建立快照的机制在“分布式数据流中的轻量级异步快照” （http://arxiv.org/abs/1506.08603）中进行详细描述。
+    它受“Chandy-Lamport algorithm”启发，并为Flink的执行模型做了适配。
+
 ###### [23）、Flink有没有重启策略？说说有哪几种?]()
     1).固定延迟重启策略（Fixed Delay Restart Strategy）
         固定延迟重启策略尝试给定次数重新启动作业。如果超过最大尝试次数，则作业最终会失败。在两次连续重启尝试之间，重启策略等待一段固定的时间。
@@ -206,6 +213,24 @@
         使用群集定义的重新启动策略。这对于启用检查点的流式传输程序很有帮助。默认情况下，如果没有定义其他重启策略，则选择固定延迟重启策略。
 
 ###### [24）、Flink分布式快照原理是什么?]()
+    Flink 分布式快照的核心是 stream barriers。这些 barriers 被插入到数据流中，并作为数据流的一部分和记录一起向下游。Barriers 永远不会超过正常数据，数据流严格有序。
+    一个 barrier 将数据流中的记录分割为进入当前快照的一组记录和进入下一个快照的记录。每个 barrier 都带有快照ID，并且 barrier 之前的记录都进入了此快照。
+    Barriers 不会中断数据流，所以非常的轻量。多个不同快照的多个 barriers 可以同时在 stream 中出现，即多个快照可能同时创建。
+![FlinkCheckpoint](images/flinkCheckpoint.png)   
+  
+    Stream barriers 在 source stream 的并行数据流中插入。当 snapshot n 被插入（计作Sn），Sn点是 source stream 中 snapshot 覆盖数据的位置。
+    例如在 Apache Kafka 中，此位置表示某个分区中最后一条数据的偏移量（offset）。Sn点被发送给 checkpoint coordinator（Flink JobManger）。
+    然后 barrier 继续移动。当中间算子从其所有的输入流（input stream）中收到 snapshot n 的 barrier 时，会向其所有输出流（outgoing stream）插入 snapshot n 的 barrier。
+    一旦 Sink operator（流式DAG的末端）从其所有输入流中接受到 barrier n，向 checkpoint coordinator 确认 snapshot n 已完成，在所有 sinks 确认之后，该 snapshot 被认为已完成。
+    一旦 snapshot n 完成，作业将永远不会再向 source 请求Sn之前的记录，因为这些记录已经都走完了整个拓扑图。
+![FlinkBarrier](images/flinkBarrier.png)      
+    
+    接收超过一个输入流的 operator 需要基于 snapshot barrier 对齐（align）输入。
+    当算子从输入流接收到 snapshot 的 barrier n，就不能继续处理此数据流的后续数据，直到其接收到其余流的 barrier n为止。否则会将属于 snapshot n 和 snapshot n+1的数据混淆
+    接收到 barrier n 的流的数据会被放在一个 input buffer 中，暂时不会处理
+    当从最后一个流中接收到 barrier n 时，算子会 emit 所有暂存在 buffer 中的数据，然后自己向下游发送 Snapshot n
+    最后算子恢复所有输入流数据的处理，优先处理输入缓存中的数据
+
 ###### [25）、Flink的Kafka连接器有什么特别的地方?]()
     1).基于Receiver的方式: 
         这种方式使用Receiver来获取数据。Receiver是使用Kafka的高层次Consumer API来实现的。
@@ -390,11 +415,22 @@
     F)持有对ExecutionEnvironment或StreamExecutionEnvironment的引用
 
 ###### [45）、Flink SQL实现原理是什么?如何实现SQL的解析?]()
-![FlinkSql解析](images/flink_sql解析.png) 
-
+![FlinkSql解析](images/flink_sql解析.png)   
+    
+    StreamSQL API的执行原理如下：
+    1、用户使用对外提供Stream SQL的语法开发业务应用；
+    2、用calcite对StreamSQL进行语法检验，语法检验通过后，转换成calcite的逻辑树节点；最终形成calcite的逻辑计划；
+    3、采用Flink自定义的优化规则和calcite火山模型、启发式模型共同对逻辑树进行优化，生成最优的Flink物理计划；
+    4、对物理计划采用janino codegen生成代码，生成用低阶API DataStream 描述的流应用，提交到Flink平台执行
 
 ###### [46）、Flink如何支持流批一体的?]()
+    Flink设计者认为：有限流处理是无限流处理的一种特殊情况，它只不过在某个时间点停止而已。Flink通过一个底层引擎同时支持流处理和批处理。
+
 ###### [47）、Flink如何支如何做到高效的数据转换?]()
+    在一个运行的application中，它的tasks在持续交换数据。TaskManager负责做数据传输。
+    TaskManager的网络组件首先从缓冲buffer中收集records，然后再发送。也就是说，records并不是一个接一个的发送，而是先放入缓冲，然后再以batch的形式发送。
+    这个技术可以高效使用网络资源，并达到高吞吐。类似于网络或磁盘 I/O 协议中使用的缓冲技术。
+
 ###### [48）、Flink如何做内存管理?]()
 ###### [49）、Flink Job提交流程?]()
 ###### [50）、Flink的三层图结构是哪几个图?]()
