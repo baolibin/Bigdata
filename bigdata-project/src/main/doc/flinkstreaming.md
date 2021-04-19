@@ -200,7 +200,42 @@
                              同时RocksDB需要配置一个远端的filesystem。RocksDB克服了state受内存限制的缺点，同时又能够持久化到远端文件系统中，比较适合在生产中使用。
 
 ###### [14）、Flink如何实现exactly-once？]()
+    Flink自1.4.0开始实现exactly-once的数据保证.
+    Flink的checkpoint可以保证作业失败的情况下从最近一次快照进行恢复，也就是可以保证系统内部的exactly-once。
+    但是，flink有很多外接系统，比如将数据写到kafka，一旦作业失败重启，offset重置，会消费旧数据，从而将重复的结果写到kafka。
+    这个时候，仅靠系统本身是无法保证exactly-once的。系统之间的数据一致性一般要靠2PC协议来保证，flink的TwoPhaseCommitSinkFunction也是基于此实现的。
+    
+    Exactly-once VS At-least-once:
+    算子做快照时，如果等所有输入端的barrier都到了才开始做快照，那么就可以保证算子的exactly-once；
+    如果为了降低延时而跳过，从而继续处理数据，那么等barrier都到齐后做快照就是at-least-once了，因为这次的快照掺杂了下一次快照的数据，当作业失败恢复的时候，这些数据会重复作用系统，就好像这些数据被消费了两遍。
+    注：对齐只会发生在算子的上端是join操作以及上游存在partition或者shuffle的情况，对于直连操作类似map、flatMap、filter等还是会保证exactly-once的语义。
+    
+    端到端的Exactly once实现:
+    以一个简单的flink读写kafka作为例子来说明（kafka0.11版本开始支持exactly-once语义）。
+![flink端到端exactly-once1](images/flink端到端exactly-once1.png)
+![flink端到端exactly-once2](images/flink端到端exactly-once2.png)
 
+    上图由kafka source、window操作和kafka sink组成。
+    为了保证exactly-once语义，作业必须在一次事务中将缓存的数据全部写入kafka。一次commit会提交两个checkpoint之间所有的数据。
+    pre-commit阶段起始于一次快照的开始，即master节点将checkpoint的barrier注入source端，barrier随着数据向下流动直到sink端。barrier每到一个算子，都会出发算子做本地快照。如下图所示：
+
+![flink端到端exactly-once3](images/flink端到端exactly-once3.png)   
+    
+    当状态涉及到外部系统时，需要外部系统支持事务操作来配合flink实现2PC协议，从而保证数据的exatly-once。这个时候，sink算子出了将自己的state写到后段，还必须准备好事务提交。
+
+![flink端到端exactly-once4](images/flink端到端exactly-once4.png)   
+    
+    当所有的算子都做完了本地快照并且回复到master节点时，pre-commit阶段才算结束。这个时候，checkpoint已经成功，并且包含了外部系统的状态。如果作业失败，可以进行恢复。
+    接下来是通知所有的算子这次checkpoint成功了，即2PC的commit阶段。source节点和window节点没有外部状态，所以这时它们不需要做任何操作。
+    而对于sink节点，需要commit这次事务，将数据写到外部系统。
+
+![flink端到端exactly-once5](images/flink端到端exactly-once5.png)   
+    
+    总的来说，流程如下：
+    一旦所有的算子完成了它们的pre-commit，它们会要求一个commit。
+    如果存在一个算子pre-commit失败了，本次事务失败，我们回滚到上次的checkpoint。
+    一旦master做出了commit的决定，那么这个commit必须得到执行，就算宕机恢复也有继续执行。
+    
 
 ###### [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
 ###### [16）、Flink的checkpoint和spark streaming比较？]()
