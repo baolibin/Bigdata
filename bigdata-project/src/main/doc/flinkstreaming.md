@@ -188,6 +188,10 @@
     map,flatmap,filter,keyby,reduce,fold,aggregations,window,windowAll,union
 
 ###### [11）、Flink程序调优？]()
+    1.数据端:
+        
+    2.内存端:
+
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
     Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
     watermark是用于处理乱序事件的，处理乱序事件通常用watermark机制结合window来实现。
@@ -564,8 +568,20 @@
     1).窗口操作
     2).使用了KV操作的函数
     3).继承了CheckpointedFunction的函数
+    
+###### [66）、Flink如何快速定位问题?]()
+    “一压二查三指标，延迟吞吐是核心。时刻关注资源量 ,  排查首先看 GC。”
+    一压是指背压，遇到问题先看背压的情况，
+    二查就是指 checkpoint ，对齐数据的时间是否很长，state 是否很大，这些都是和系统吞吐密切相关的，
+    三指标就是指 Flink UI 那块的一些展示，我们的主要关注点其实就是延迟和吞吐，系统资源，还有就是 GC logs。
+
+    看反压：通常最后一个被压高的 subTask 的下游就是 job 的瓶颈之一。
+    看 Checkpoint 时长：Checkpoint 时长能在一定程度影响 job 的整体吞吐。
+    看核心指标：指标是对一个任务性能精准判断的依据，延迟指标和吞吐则是其中最为关键的指标。
+    资源的使用率：提高资源的利用率是最终的目的。
 
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
 * [2.Flink简明实战教程](https://liguohua-bigdata.gitbooks.io/simple-flink/content/book/memory/memory.html)
+* [3.Flink作业问题分析和调优实践](https://www.infoq.cn/article/j1ucfxizcridmhtfvwt6)
