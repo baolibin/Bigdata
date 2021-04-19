@@ -217,7 +217,8 @@
 
     上图由kafka source、window操作和kafka sink组成。
     为了保证exactly-once语义，作业必须在一次事务中将缓存的数据全部写入kafka。一次commit会提交两个checkpoint之间所有的数据。
-    pre-commit阶段起始于一次快照的开始，即master节点将checkpoint的barrier注入source端，barrier随着数据向下流动直到sink端。barrier每到一个算子，都会出发算子做本地快照。如下图所示：
+    pre-commit阶段起始于一次快照的开始，即master节点将checkpoint的barrier注入source端，barrier随着数据向下流动直到sink端。barrier每到一个算子，都会出发算子做本地快照。
+    如下图所示：
 
 ![flink端到端exactly-once3](images/flink端到端exactly-once3.png)   
     
@@ -236,6 +237,22 @@
     如果存在一个算子pre-commit失败了，本次事务失败，我们回滚到上次的checkpoint。
     一旦master做出了commit的决定，那么这个commit必须得到执行，就算宕机恢复也有继续执行。
     
+    实现flink的2PC
+    由于2PC协议比较复杂，所以flink对它做了抽象，即TwoPhaseCommitSinkFunction。可以通过以下四步实现：
+    
+        beginTransaction。开始一次事务，在目的文件系统创建一个临时文件。接下来我们就可以将数据写到这个文件。
+        preCommit。在这个阶段，将文件flush掉，同时重起一个文件写入，作为下一次事务的开始。
+        commit。这个阶段，将文件写到真正的目的目录。值得注意的是，这会增加数据可视的延时。
+        abort。如果回滚，那么删除临时文件。
+    如果pre-commit成功了但是commit没有到达算子旧宕机了，flink会将算子恢复到pre-commit时的状态，然后继续commit。
+    我们需要做的还有就是保证commit的幂等性，这可以通过检查临时文件是否还在来实现。
+    
+    总结
+    Flink依托checkpoint来实现端到端的一致性语义。
+    这种方法的优势是不需要持久化传输中的数据，没有必要将每个阶段的计算都写到磁盘。
+    Flink抽象了TwoPhaseCommitSinkFunction来帮助用户更好地实现exactly-once语义。
+    自Flink 1.4.0，Pravega和Kafka 0.11都支持了exactly-once语义。
+    Kafka 0.11在TwoPhaseCommitSinkFunction实现了事务支持，并且开销很小。
 
 ###### [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
 ###### [16）、Flink的checkpoint和spark streaming比较？]()
