@@ -88,7 +88,19 @@
     分界线之前到来的数据导致的状态修改,都被包含在当前分界线所属的检查点中,而基于分界线之后的数据导致的所有修改,都被包含在之后的检查点中.
 
 ###### [3）、Flink程序消费过慢如何解决？]()
+    常见消费过慢问题:
+    1.代码问题,比如发生数据倾斜
+    
+    2.sink端阻塞,sink过慢
+    
+    3.source遇到峰值,流量激增
+    
+    4.程序运行资源过少,分区过少
+
+
 ###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
+    详细见代码.    
+
 ###### [5）、Flink中时间有几种？]()
 ![Flink时间](./images/flink时间.png)  
 
@@ -174,13 +186,22 @@
 ###### [9）、Flink中StreamExecutionEnvironment初始化流程？]()
 ###### [10）、用过DataStream里面的哪些方法？]()
     map,flatmap,filter,keyby,reduce,fold,aggregations,window,windowAll,union
+
 ###### [11）、Flink程序调优？]()
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
     Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
     watermark是用于处理乱序事件的，处理乱序事件通常用watermark机制结合window来实现。
 
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
+    这些状态有三种存储方式: HeapStateBackend、MemoryStateBackend、FsStateBackend、RockDBStateBackend。
+        1).MemoryStateBackend: state数据保存在java堆内存中，执行checkpoint的时候，会把state的快照数据保存到jobmanager的内存中。
+        2).FsStateBackend: state数据保存在taskmanager的内存中，执行checkpoint的时候，会把state的快照数据保存到配置的文件系统中，可以使用hdfs等分布式文件系统。
+        3).RocksDBStateBackend: RocksDB跟上面的都略有不同，它会在本地文件系统中维护状态，state会直接写入本地rocksdb中。
+                             同时RocksDB需要配置一个远端的filesystem。RocksDB克服了state受内存限制的缺点，同时又能够持久化到远端文件系统中，比较适合在生产中使用。
+
 ###### [14）、Flink如何实现exactly-once？]()
+
+
 ###### [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
 ###### [16）、Flink的checkpoint和spark streaming比较？]()
 ###### [17）、Flink CEP编程中当状态没有达到时候,数据会保存在哪里？]()
