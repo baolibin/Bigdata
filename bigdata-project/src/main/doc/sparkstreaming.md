@@ -28,10 +28,23 @@
 
 ###### [3）、Spark Streaming如何做checkPoint检查点？]()
 ###### [4）、Spark Streaming如何设置batch大小？]()
+    设置sparkstreaming批处理的时间间隔:val ssc = new StreamingContext(conf, Seconds(5))
+    每个Batch Duration时间去提交一次job，如果job的处理时间超过Batch Duration，会使得job无法按时提交。
+    随着时间推移，越来越多的作业被拖延，最后导致整个Streaming作业被阻塞，无法做到实时处理数据。
+
 ###### [5）、Spark Streaming程序消费过慢如何解决？]()
 ###### [6）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？]()
 ###### [7）、Spark Streaming工作流程是怎样的？和Storm以及Flink有什么区别？]()
 ###### [8）、Spark Streaming输出小文件问题？]()
+    原因是sparkstreaming的微批处理模式和DStream(RDD)的分布式(partition)特性导致的。
+    sparkstreaming为每个partition启动一个独立的线程来处理数据，一旦文件输出到HDFS，那么这个文件流就关闭了，
+    再来一个batch的parttition任务，就再使用一个新的文件流。
+    假设，一个batch为10s，每个输出的DStream有32个partition，那么一个小时产生的文件数将会达到(3600/10)*32=11520个之多。
+    1、增加batch大小
+    2、输出之前重分区
+    3、定时批处理任务合并
+    4、foreach的append方法追加
+
 ###### [9）、Spark Streaming中foreachRDD如何使用？]()
 ###### [10）、Spark Streaming的启动时序图？]()
 ###### [11）、Spark Streaming程序调优？]()
