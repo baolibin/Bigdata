@@ -379,7 +379,7 @@
 * [9.13、Kafka](bigdata-project/src/main/doc/kafka.md)
     - [1）、Kafka如何保证消息的顺序？]()
     - [2）、Kafka的receiver和direct区别？]()
-    - [3）、Kafka和Flink保证仅消费一次？]()
+    - [3）、Kafka和Flink保证仅消费一次ExactlyOnce？]()
     - [4）、Kafka中ISR、AR表示什么？]()
     - [5）、Kafka中HW、LEO等表示什么意思？]()
     - [6）、Kafka中是怎么体现消息顺序性的？]()
@@ -407,6 +407,7 @@
     - [28）、Kafka中优先副本是什么？有什么特殊的作用？]()
     - [29）、Kafka中zookeeper作用是什么？]()
     - [30）、Kafka的ACK机制？]()
+    - [31）、Kafka如何实现ExactlyOnce？]()
 
 * [9.14、SQL](bigdata-project/src/main/doc/sql.md)
     - [1）、SQL执顺序？]()

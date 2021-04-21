@@ -1,7 +1,7 @@
 * [9.13、Kafka](bigdata-project/src/main/doc/kafka.md)
     - [1）、Kafka如何保证消息的顺序？]()
     - [2）、Kafka的receiver和direct区别？]()
-    - [3）、Kafka和Flink保证仅消费一次？]()
+    - [3）、Kafka和Flink保证仅消费一次ExactlyOnce？]()
     - [4）、Kafka中ISR、AR表示什么？]()
     - [5）、Kafka中HW、LEO等表示什么意思？]()
     - [6）、Kafka中是怎么体现消息顺序性的？]()
@@ -29,6 +29,7 @@
     - [28）、Kafka中优先副本是什么？有什么特殊的作用？]()
     - [29）、Kafka中zookeeper作用是什么？]()
     - [30）、Kafka的ACK机制？]()
+    - [31）、Kafka如何实现ExactlyOnce？]()
 
 ---
 ###### [1）、Kafka如何保证消息的顺序？]()
@@ -50,9 +51,31 @@
     在Spark1.3中引入的，能够确保更加健壮的机制。替代掉使用Receiver来接收数据后，这种方式会周期性地查询Kafka，来获得每个topic+partition的最新的offset，从而定义每个batch的offset的范围。
     当处理数据的job启动时，就会使用Kafka的简单consumer api来获取Kafka指定offset范围的数据
 
-###### [3）、Kafka和Flink保证仅消费一次？]()
+###### [3）、Kafka和Flink保证仅消费一次ExactlyOnce？]()
+    flink通过checkpoint保证了flink应用内部的exactly-once语义，通过TwoPhaseCommitSinkFunction可以保证端到端的exactly-once语义。
+    
+    要求source和sink的外部系统都必须是支持分布式事务的，能够支持回滚和提交。然而一个简单的提交和回滚，对于一个分布式的流式数据处理系统来说是远远不够的。
+    flink使用两阶段提交协议:
+        1、预提交。预提交是所有的算子全部完成checkpoint，并JM会向所有算子发通知说这次checkpoint完成。
+        2、正式提交。flink负责向kafka写入数据的算子也会正式提交之前写操作的数据。在任务运行中的任何阶段失败，都会从上一次的状态恢复，所有没有正式提交的数据也会回滚。
+
 ###### [4）、Kafka中ISR、AR表示什么？]()
+    AR = ISR + OSR。
+    分区中的所有副本统称为 AR (Assigned Replicas)。
+    所有与leader副本保持一定程度同步的副本（包括leader副本在内）组成 ISR (In Sync Replicas)。
+    ISR 集合是 AR 集合的一个子集。消息会先发送到leader副本，然后follower副本才能从leader中拉取消息进行同步。
+    同步期间，follow副本相对于leader副本而言会有一定程度的滞后。leader副本同步滞后过多的副本（不包括leader副本）将组成OSR （Out-of-Sync Replied）。
+    由此可见，AR = ISR + OSR。正常情况下，所有的follower副本都应该与leader 副本保持 一定程度的同步，即AR=ISR，OSR集合为空。
+
 ###### [5）、Kafka中HW、LEO等表示什么意思？]()
+    HW （High Watermark）俗称高水位，它标识了一个特定的消息偏移量（offset），消费者只能拉取到这个offset之前的消息。
+    如下图表示一个日志文件，这个日志文件中只有9条消息，第一条消息的offset（LogStartOffset）为0，最有一条消息的offset为8，offset为9的消息使用虚线表示的，代表下一条待写入的消息。
+    日志文件的 HW 为6，表示消费者只能拉取offset在 0 到 5 之间的消息，offset为6的消息对消费者而言是不可见的。
+![Kafka HW LEO](./images/kafka_hw_leo.png)
+
+    LEO （Log End Offset），标识当前日志文件中下一条待写入的消息的offset。上图中offset为9的位置即为当前日志文件的 LEO，LEO 的大小相当于当前日志分区中最后一条消息的offset值加1。
+    分区 ISR 集合中的每个副本都会维护自身的 LEO ，而 ISR 集合中最小的 LEO 即为分区的 HW，对消费者而言只能消费 HW 之前的消息。
+
 ###### [6）、Kafka中是怎么体现消息顺序性的？]()
 ###### [7）、Kafka中分区器、序列化器、拦截器是否了解？它们之间的顺序使什么？]()
 ###### [8）、Kafka生产者客户端整体结构式什么样子的？使用了几个线程处理？分别是什么？]()
@@ -78,3 +101,4 @@
 ###### [28）、Kafka中优先副本是什么？有什么特殊的作用？]()
 ###### [29）、Kafka中zookeeper作用是什么？]()
 ###### [30）、Kafka的ACK机制？]()
+###### [31）、Kafka如何实现ExactlyOnce？]()
