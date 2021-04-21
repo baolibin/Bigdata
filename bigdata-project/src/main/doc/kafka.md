@@ -32,6 +32,16 @@
 
 ---
 ###### [1）、Kafka如何保证消息的顺序？]()
+    在Kafka中，只保证Partition(分区)内有序，不保证Topic所有分区都是有序的。
+    所以 Kafka 要保证消息的消费顺序，可以有2种方法：
+    一、1个Topic（主题）只创建1个Partition(分区)，这样生产者的所有数据都发送到了一个Partition(分区)，保证了消息的消费顺序。
+    二、生产者在发送消息的时候指定要发送到哪个Partition(分区)。
+        我们需要将 producer 发送的数据封装成一个 ProducerRecord 对象。
+        （1）指明 partition 的情况下，直接将指明的值直接作为 partiton 值；
+        （2）没有指明partition值但有key的情况下，将key的hash值与topic的partition数进行取余得到partition值；
+        （3）既没有 partition 值又没有 key 值的情况下，第一次调用时随机生成一个整数（后面每次调用在这个整数上自增），
+            将这个值与topic可用的partition总数取余得到partition值，也就是常说的round-robin算法。
+
 ###### [2）、Kafka的receiver和direct区别？]()
     1).基于Receiver的方式: 
     这种方式使用Receiver来获取数据。Receiver是使用Kafka的高层次Consumer API来实现的。
