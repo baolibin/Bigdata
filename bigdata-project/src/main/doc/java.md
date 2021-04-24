@@ -29,6 +29,12 @@
 ###### [3）、Java中String可以被继承不？String、StringBuffer和StringBuilder有什么区别？]()
 ###### [4）、Java中ArrayList和LinkedList有什么区别？]()
 ###### [5）、Java中类的初始化顺序？]()
+    1、静态变量
+    2、静态变量初始化块
+    3、变量
+    4、初始化块
+    5、构造器
+
 ###### [6）、Java中HashMap内部实现原理？如何扩容？线程安全不？]()
 ###### [7）、描述动态代理的几种实现方式？]()
 ###### [8）、Java的反射中，Class.forName和ClassLoader区别？]()
