@@ -335,6 +335,20 @@
     如果MemorySegment中依然放不小所有的数据，flink会将数据写入磁盘，需要的时候再冲磁盘读出来。
 
 ###### [27）、Flink序列化都有哪些?怎么实现的?]()
+    Flink实现了自己的序列化框架，Flink处理的数据流通常是一种类型，所以可以只保存一份对象Schema信息，节省存储空间。又因为对象类型固定，所以可以通过偏移量存取。
+    Java支持任意Java或Scala类型，类型信息由TypeInformation类表示，TypeInformation支持以下几种类型：
+        BasicTypeInfo:任意Java 基本类型或String类型。
+        BasicArrayTypeInfo:任意Java基本类型数组或String数组。
+        WritableTypeInfo:任意Hadoop Writable接口的实现类。
+        TupleTypeInfo:任意的Flink Tuple类型(支持Tuple1 to Tuple25)。Flink tuples 是固定长度固定类型的Java Tuple实现。
+        CaseClassTypeInfo: 任意的 Scala CaseClass(包括 Scala tuples)。
+        PojoTypeInfo: 任意的 POJO (Java or Scala)，例如，Java对象的所有成员变量，要么是 public 修饰符定义，要么有 getter/setter 方法。
+        GenericTypeInfo: 任意无法匹配之前几种类型的类。
+        
+
+    
+
+
 ###### [28）、Flink的window出现了数据倾斜,如何解决?]()
     这里window产生的数据倾斜指的是不同的窗口内积攒的数据量不同，主要是由源头数据的产生速度导致的差异。
     1)窗口触发前做预聚合
