@@ -53,6 +53,13 @@
 ###### [21）、HBase有put方法，那如何批量进HBase中？用什么方法？]()
 ###### [22）、访问HBase有哪些方式？]()
 ###### [23）、HBase中最小存储单元是什么？]()
+    HBase 会对表按行进行切分，划分为多个区域块儿，每个块儿名为 HRegion
+    HBase 是集群结构，会把这些块儿分散存储到多个服务器中，每个服务器名为 HRegionServer
+    HRegion 是 HBase 中分布式存储的最小单元，但并不是存储的最小单元
+    HRegion 内部会按照列族进行切分，分为多个 Store，每个 Store 保存一个列族，所以 HRegion 由一个或者多个 Store 组成
+    每个 Strore 又由一个 MemStore 和 N个 StoreFile 组成
+    MemStore 是内存存储单元，当内存中数据达到阈值后，写入 StoreFile，StoreFile 以 HFile 格式保存
+
 ###### [24）、HBase中的MemStore是用来做什么的？]()
 ###### [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
 ###### [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
