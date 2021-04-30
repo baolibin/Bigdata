@@ -40,6 +40,8 @@
 ###### [8）、Java的反射中，Class.forName和ClassLoader区别？]()
 ###### [9）、Java中nio和bio区别？]()
     NIO的核心：Channel（通道），Buffer（缓存）， Selector（选择器）
+    （1）BIO是面向流（Stream）的，NIO是面向缓存区（Buffer）的。
+
 
 ###### [10）、写出三种单例模式实现方式？]()
 ###### [11）、垃圾回收机制？]()
