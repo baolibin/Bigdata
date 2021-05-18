@@ -81,6 +81,10 @@
      一个函数把外部的那些不属于自己的对象也包含(闭合)进来。
 
 ###### [14）、Array和ArrayBuffer区别？]()
+    Array是不可变的,不能直接删除元素,可重新赋值或生成新的Array.
+    ArrayBuffer是可变的,提供了删除元素操作
+    Array和ArrayBuffer互相转换,可以分别调用toArray()或toBuffer()方法即可.
+
 ###### [15）、Scala中协变和逆变区别？]()
 ###### [16）、Scala中有break么？]()
     Scala没有break操作，但是可以实现break原理，需要创建Breaks对象实现内部的break方法就可以像java一样跳出语句，
