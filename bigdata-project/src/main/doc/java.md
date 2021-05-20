@@ -134,6 +134,16 @@
 
 
 ###### [16）、Java中List、Set和Map之间的区别？]()
+    Java集合类主要由两个根接口Collection和Map派生出来的，
+    1）Collection派生出了三个子接口：List、Set、Queue（Java5新增的队列）:
+    List代表了有序可重复集合，可直接根据元素的索引来访问；
+    Set代表无序不可重复集合，只能根据元素本身来访问；
+    Queue是队列集合；
+    2）Map代表的是存储key-value对的集合，可根据元素的key来访问value。
+    HashMap：无序存放，key不允许重复；
+    TreeMap：有序存放，按照集合key值进行排序，key值不允许重复；
+    IdentityHashMap：key值可以重复。
+
 ###### [17）、Java中哪些集合类是线程安全的？]()
     1.集合类实现
     基于双向循环链表实现：LinkedList
@@ -155,15 +165,6 @@
     所有集合类都位于java.util包下，但支持多线程的集合类位于java.util.concurrent包下。
     1）数组长度不可变化而且无法保存具有映射关系的数据；集合类用于保存数量不确定的数据，以及保存具有映射关系的数据。
     2）数组元素既可以是基本类型的值，也可以是对象；集合只能保存对象。
-    Java集合类主要由两个根接口Collection和Map派生出来的，
-    1）Collection派生出了三个子接口：List、Set、Queue（Java5新增的队列）:
-    List代表了有序可重复集合，可直接根据元素的索引来访问；
-    Set代表无序不可重复集合，只能根据元素本身来访问；
-    Queue是队列集合；
-    2）Map代表的是存储key-value对的集合，可根据元素的key来访问value。
-    HashMap：无序存放，key不允许重复；
-    TreeMap：有序存放，按照集合key值进行排序，key值不允许重复；
-    IdentityHashMap：key值可以重复。
 
 ###### [18）、Java中synchronized和volatile区别？]()
 ###### [19）、Jvm中一次完整的GC流程？]()
