@@ -108,6 +108,18 @@
     5、构造器
 
 ###### [6）、Java中HashMap内部实现原理？如何扩容？线程安全不？]()
+    Java为数据结构中的映射定义了一个接口java.util.Map，此接口主要有四个常用的实现类，分别是HashMap、Hashtable、LinkedHashMap和TreeMap。
+    
+    java1.7中hashMap底层实现为数组+链表
+    java1.8中对上面进行优化，底层实现为数组+链表+红黑树
+    
+    HashMap的初始容量为16，Hashtable初始容量为11，两者的填充因子默认都是0.75。
+    HashMap扩容时是当前容量翻倍即:capacity*2，Hashtable扩容时是容量翻倍+1即:capacity*2+1。
+    
+    Hashtable是线程安全，而HashMap则非线程安全。
+    Hashtable的实现方法里面都添加了synchronized关键字来确保线程同步。
+    平时使用时若无特殊需求建议使用HashMap，在多线程环境下若使用HashMap需要使用Collections.synchronizedMap()方法来获取一个线程安全的集合。
+
 ###### [7）、描述动态代理的几种实现方式？]()
 ###### [8）、Java的反射中，Class.forName和ClassLoader区别？]()
 ###### [9）、Java中nio和bio区别？]()
