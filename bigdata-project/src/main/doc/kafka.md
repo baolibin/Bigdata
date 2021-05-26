@@ -111,9 +111,19 @@
 ![kafka分段索引](./images/kafka分段索引.png)
 
 ###### [18）、简述Kafka日志目录结构？]()
-
+    每个partition一个文件夹，包含四类文件 (.index  .log  .timeindex   leader-epoch-checkpoint)
+    .index .log .timeindex 三个文件成对出现 前缀为上一个segment的最后一个消息的偏移 
+    log文件中保存了所有的消息
+    index文件中保存了稀疏的相对偏移的索引
+    timeindex保存的则是时间索引
+    leader-epoch-checkpoint中保存了每一任leader开始写入消息时的offset 会定时更新,follower被选为leader时会根据这个确定哪些消息可用
 
 ###### [19）、如果指定了一个offset，Kafka Controller怎么找到对应的消息？]()
+    1.通过文件名前缀数字x找到该绝对offset 对应消息所在文件
+    2.offset-x为在文件中的相对偏移
+    3.通过index文件中记录的索引找到最近的消息的位置
+    4.从最近位置开始逐条寻找
+
 ###### [20）、Kafka Controller的作用？]()
 ###### [21）、Kafka中有哪些地方需要选举，这些地方的选举策略有哪些？]()
 ###### [22）、Kafka失效副本是指什么？有哪些应对策略？]()
