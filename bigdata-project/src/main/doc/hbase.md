@@ -62,6 +62,15 @@
     2、 Major 操作是对 Region 下的 HStore 下的所有 StoreFile 执行合并操作，最终的结果是整理合并出一个文件。
 
 ###### [7）、HBase优化？]()
+    Region：根据你的RowKey设计来进行预建分区，减少region的动态分裂。 
+    HFile：估计项目数据量大小，给HFile设定一个合适的值。
+    Compaction：关闭Compaction，在闲时进行手动Compaction
+    BulkLoad：批量数据写入时采用BulkLoad
+    BloomFilter：开启BloomFilter，BloomFilter是列族级别的过滤，在生成一个StoreFile同时会生成一个MetaBlock，用于查询时过滤数据
+    压缩：一般推荐使用Snappy和LZO压缩 
+    RowKey：合理设计RowKey
+    列族：多列族设计对减少的作用不是很明显，适用于读多写少的场景 
+
 ###### [8）、HBase如何建立预分区？]()
 ###### [9）、HBase中HRegionServer宕机如何处理？]()
 ###### [10）、HBase中scan和get的功能以及实现的异同？]()
