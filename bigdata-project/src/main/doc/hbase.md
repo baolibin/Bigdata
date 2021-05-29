@@ -72,7 +72,24 @@
     列族：多列族设计对减少的作用不是很明显，适用于读多写少的场景 
 
 ###### [8）、HBase如何建立预分区？]()
+    HBase默认建表时只有一个Region，这个Region的Rowkey是没有边界的，即没有StartKey和EndKey，在数据写入时，
+    所有数据都会写入这个默认的Region，随着数据量的不断增加，此Region已经不能承受不断增长的数据量，会进行split，分成两个Region。
+    在此过程中，会产生两个问题：1)数据往一个Region上写会有写热点问题，2）Region split会消耗宝贵的集群IO资源
+    
+    基于此，我们可以控制在创建表的时候，创建多个空Region，并确定每个Region的起始和结束Rowkey，
+    这样只要我们的Rowkey设计能够均匀的命中各个Region，就不会存在写热点问题。自然split的几率也会大大降低。
+    当随着数据量的不断增长，该split的还是要进行split。像这样预先创建HBase表分区的方式，称之为预分区。
+
 ###### [9）、HBase中HRegionServer宕机如何处理？]()
+    引起RegionServer宕机的原因各种各样，有因为Full GC导致、网络异常导致、官方Bug导致（close wait端口未关闭）以及DataNode异常导致等等。
+    
+    HBase检测宕机是通过Zookeeper实现的， 正常情况下RegionServer会周期性向Zookeeper发送心跳，一旦发生宕机，心跳就会停止，
+    超过一定时间（SessionTimeout）Zookeeper就会认为RegionServer宕机离线，并将该消息通知给Master。
+    
+    一旦RegionServer发生宕机，HBase Master通过zookeeper集群会马上检测到这种宕机，
+    并且在检测到宕机之后会将宕机RegionServer上的所有Region重新分配到集群中其他正常RegionServer上去，再根据HLog进行丢失数据恢复，
+    恢复完成之后就可以对外提供服务，整个过程都是自动完成的，并不需要人工介入. 
+
 ###### [10）、HBase中scan和get的功能以及实现的异同？]()
     Get的功能是精准查找，按指定RowKey 获取唯一一条记录。
     Scan的功能是范围查找，按指定的条件获取一批记录。
@@ -103,6 +120,10 @@
 ###### [18）、简述下布隆过滤器的原理？HBase中如何使用的？]()
 ###### [19）、简述下LSM树的原理？HBase中如何使用的？]()
 ###### [20）、HBase中二级索引原理？有使用过么？]()
+    默认情况下，Hbase只支持rowkey的查询，对于多条件的组合查询的应用场景不太友好。
+    如果将多条件组合查询的字段都拼接在RowKey中显然又不太可能，全表扫描再结合过滤器筛选出目标数据(太低效)，所以通过设计HBase的二级索引来解决这个问题。
+    这里所谓的二级索引其实就是创建新的表，并建立各列值（family：column）与行键（rowkey）之间的映射关系。这种方式需要额外的存储空间，属于一种以空间换时间的方式
+
 ###### [21）、HBase有put方法，那如何批量进HBase中？用什么方法？]()
 ###### [22）、访问HBase有哪些方式？]()
 ###### [23）、HBase中最小存储单元是什么？]()
