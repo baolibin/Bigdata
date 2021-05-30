@@ -135,6 +135,10 @@
     MemStore 是内存存储单元，当内存中数据达到阈值后，写入 StoreFile，StoreFile 以 HFile 格式保存
 
 ###### [24）、HBase中的MemStore是用来做什么的？]()
+    MemStore 是内存里的写入缓冲区，HBase 中数据在永久写入硬盘之前在这里累积。
+    当MemStore 填满后，其中的数据会刷写到硬盘，生成一个HFile。HFile 是HBase 使用的底层存储格式。
+    HFile 对应于列族，一个列族可以有多个 HFile，但一个 HFile 不能存储多个列族的数据。
+
 ###### [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
 ###### [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
 ###### [27）、HBase的RowFilter和BloomFilter原理？]()
