@@ -15,6 +15,10 @@
 ###### 3、Spark SQL中UDF使用？
 
 ###### 4、SparkSession、SparkContext和SQLContext区别？
+    SparkContext:驱动程序使用与集群进行连接和通信，它可以帮助执行Spark任务，并与资源管理器(如YARN 或Mesos)进行协调。
+    SQLContext:是通往SparkSQL的入口。有了SQLContext，就可以开始处理DataFrame、DataSet等
+    HiveContext:是通往hive入口。HiveContext具有SQLContext的所有功能。
+    SparkSession:是在Spark 2.0中引入的，替换了旧的SQLContext和HiveContext。
 
 ###### 5、Spark SQL用过哪些算子？遇到哪些问题？如何解决的？
 
