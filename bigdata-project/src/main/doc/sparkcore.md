@@ -389,6 +389,20 @@
     参考: 13、Spark中宽依赖和窄依赖如何理解？
 
 ###### 45、Spark如何划分stage？
+    Shuffle是产生宽依赖RDD的算子，例如reduceByKey、reparttition、sortByKey等算子。同一个Stage内的所有Transformation算子所操作的RDD都是具有相同的Partition数量的。
+    Stage划分基于数据依赖关系的，一般分为两类：宽依赖（Shuffle Dependency）与窄依赖（Narrow Dependency）。
+    宽依赖，父RDD的一个分区会被子RDD的多个分区使用。
+    窄依赖，父RDD的分区最多只会被子RDD的一个分区使用。
+    区分宽窄依赖，我们主要从父RDD的Partition流向来看：流向单个RDD就是窄依赖，流向多个RDD就是宽依赖。
+    
+    Spark Stage划分，就是从最后一个RDD往前推算，遇到窄依赖（NarrowDependency）就将其加入该Stage，当遇到宽依赖（ShuffleDependency）则断开。
+    每个Stage里task的数量由Stage最后一个RDD中的分区数决定。如果Stage要生成Result，则该Stage里的Task都是ResultTask，否则是ShuffleMapTask。
+    
+    ShuffleMapTask的计算结果需要shuffle到下一个Stage，其本质上相当于MapReduce中的mapper。Result Task则相当于MapReduce中的reducer。
+    因此整个计算过程会根据数据依赖关系自后向前建立，遇到宽依赖则形成新的Stage。
+
+    Stage的调度是由DAG Scheduler完成的。由RDD的有向无环图DAG切分出了Stage的有向无环图DAG。
+    Stage以最后执行的Stage为根进行广度优先遍历，遍历到最开始执行的Stage执行，如果提交的Stage仍有未完成的父Stage，则Stage需要等待其父Stage执行完才能执行。
 
 ###### 46、spark-submit时候如何引用外部的jar包？
 
