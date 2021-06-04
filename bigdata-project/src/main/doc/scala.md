@@ -16,6 +16,8 @@
     - [15）、Scala中协变和逆变区别？]()
     - [16）、Scala中有break么？]()
     - [17）、Scala中上界和下界区别？]()
+    - [18）、Scala中Any AnyRef AnyVal区别？]()
+
 ---
 ###### [1）、伴生对象Object和伴生类Class区别？]()
     当Object单例对象和Class类名一样情况，Object修饰的为类的伴生对象，Class修饰的是类的伴生类。
@@ -110,3 +112,21 @@
     
     (2) S <: T
     这是类型上界的定义，也就是S必须是类型T的子类（或本身，自己也可以认为是自己的子类)。
+
+##### [18）、Scala中Any AnyRef AnyVal区别？]()
+    Any : 是abstract类，它是Scala类继承结构中最底层的。所有运行环境中的Scala类都是直接或间接继承自Any这个类，它就是其它语言（.Net，Java等）中的Object。
+    从Scala2.10 开始，对于一般性的traits（特性，特质）可以直接继承Any。一般性traits是指，继承自Any，并且只有defs成员，不需要初始化。
+    
+    AnyRef : 是所有引用类型的基类。除了值类型，所有类型都继承自AnyRef 。
+
+    AnyVal : 是所有值类型的基类， 它描述的是值，而不是代表一个对象。 
+    包括 9 个 AnyVal 子类型：
+    scala.Double 
+    scala.Float 
+    scala.Long 
+    scala.Int 
+    scala.Char 
+    scala.Short 
+    scala.Byte 
+    上面是数字类型。
+    scala.Unit 和 scala.Boolean 是非数字类型。
