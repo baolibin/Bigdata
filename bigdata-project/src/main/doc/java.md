@@ -256,6 +256,15 @@
 
 ###### [18）、Java中synchronized和volatile区别？]()
 ###### [19）、Jvm中一次完整的GC流程？]()
+    Java堆内存划分:
+    Java堆 = 老年代 + 新生代
+    新生代 = Eden + s0 + s1
+    当 Eden 区的空间满了， Java虚拟机会触发一次 Minor GC，以收集新生代的垃圾，存活下来的对象，则会转移到 Survivor区。大对象直接进入老年代
+    如果对象在Eden出生，并经过第一次Minor GC后仍然存活，并且被Survivor容纳的话，年龄设为1，每熬过一次Minor GC，年龄+1，若年龄超过一定限制（15），则被晋升到老年态。
+    即长期存活的对象进入老年态。
+    老年代满了而无法容纳更多的对象，Minor GC 之后通常就会进行Full GC，Full GC 清理整个内存堆 – 包括年轻代和年老代。
+    Major GC 发生在老年代的GC，清理老年区，经常会伴随至少一次Minor GC，比Minor GC慢10倍以上。
+
 ###### [20）、Java中CurrentHashMap和HashMap的区别？]()
 ###### [21）、Java中int和Integer区别？]()
     1、Integer是int的包装类，int则是java的一种基本数据类型 
