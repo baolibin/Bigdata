@@ -27,6 +27,12 @@
     3. SparkSession的概念，它为用户提供了一个统一的切入点来使用Spark的各项功能，SparkConf、SparkContext和SQLContext都已经被封装在SparkSession当中。
 
 ###### [3）、Spark Streaming如何做checkPoint检查点？]()
+    Spark Streaming的检查点具有容错机制,支持两种数据类型的检查点：元数据检查点和数据检查点。
+    在Spark中checkpoint主要通过CheckpointRDD和RDDCheckpointData实现的。
+    
+    CheckpointRDD:用来从存储中恢复检查点的RDD。
+    RDDCheckpointData:用于保存与检查点相关的信息，每个RDDCheckpointData实例都与一个RDD实例相关。
+
 ###### [4）、Spark Streaming如何设置batch大小？]()
     设置sparkstreaming批处理的时间间隔:val ssc = new StreamingContext(conf, Seconds(5))
     每个Batch Duration时间去提交一次job，如果job的处理时间超过Batch Duration，会使得job无法按时提交。
