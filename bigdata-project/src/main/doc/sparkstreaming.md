@@ -57,6 +57,16 @@
 ###### [9）、Spark Streaming中foreachRDD如何使用？]()
 ###### [10）、Spark Streaming的启动时序图？]()
 ###### [11）、Spark Streaming程序调优？]()
+    01合理的批处理时间（batchDuration）
+    02合理的Kafka拉取量（maxRatePerPartition参数设置）
+    03缓存反复使用的Dstream（RDD）
+    04其他一些优化策略
+        设置合理的GC方式
+        设置合理的parallelism
+        设置合理的CPU资源数
+        高性能的算子
+        Kryo优化序列化性能
+
 ###### [12）、Spark Streaming窗口大小？每个窗口处理的数据量？]()
 ###### [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
 ###### [14）、Spark Streaming面对高峰数据如何处理？]()
