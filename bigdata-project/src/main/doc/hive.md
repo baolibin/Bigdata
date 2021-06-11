@@ -34,6 +34,10 @@
 ###### [4）、Hive内部表和外部表区别？]()
 ###### [5）、Hive中order by、sort by、distribute by和cluster by的区别？]()
 ###### [6）、Hive中row_number()、rank()和dense_rank()区别？]()
+    row_number() over() : 排名函数，不会重复，适合于生成主键或者不并列排名
+    rank() over() :  排名函数，有并列名次，名次不连续。如:1,1,3
+    dense_rank() over() : 排名函数，有并列名次，名次连续。如：1，1，2
+
 ###### [7）、Hive中常用的系统函数有哪些？]()
 ###### [8）、Hive使用过udf函数么？如何使用的？]()
      Hive中有三种UDF:
@@ -81,6 +85,18 @@
 ###### [9）、Hive如何实现分区？]()
 ###### [10）、Hive导入和导出数据的方式？]()
 ###### [11）、Hive窗口函数有哪些?]()
+    聚合函数:
+        sum：求和    
+        count：计算总数 
+        max：最大值
+        min：最小值
+        avg：平均值
+    窗口函数:
+        over（）：指定分析函数工作的窗口的大小。
+        current row：当前行
+        n preceding:往前n行数据
+        n following:往后n行数据
+
 ###### [12）、Hive中如何使用UDTF?]()
 ###### [13）、Hive表关联查询，如何解决数据倾斜问题？]()
 ###### [14）、Hive中数据的null在底层是如何存储的？]()
