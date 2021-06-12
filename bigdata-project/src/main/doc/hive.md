@@ -31,6 +31,11 @@
 ###### [1）、简述Hive主要结构？]()
 ###### [2）、Hive解析成MapReduce过程？]()
 ###### [3）、Hive与传统数据库的区别？]()
+    查询语言不同,传统数据库用的是SQL语句,hive是集成的HQL语句.
+    数据存储地方不同,不同于传统数据库存储在原始设备或本地文件系统(Raw Device or Local FS),Hive 存储在HDFS.
+    执行方式不同,传统数据库是Excutor单元执行,hive是MapReduce
+    同时hive执行延迟高,处理数据规模大,无索引(0.8版本后才加入位图索引,mysql有复杂的索引),都是hive与传统的区别. 
+
 ###### [4）、Hive内部表和外部表区别？]()
 ###### [5）、Hive中order by、sort by、distribute by和cluster by的区别？]()
 ###### [6）、Hive中row_number()、rank()和dense_rank()区别？]()
