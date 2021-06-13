@@ -1,4 +1,4 @@
-* [9.6、Hive](bigdata-project/src/main/doc/hive.md)
+* [9.6、Hive](hive.md)
     - [1）、简述Hive主要结构？]()
     - [2）、Hive解析成MapReduce过程？]()
     - [3）、Hive与传统数据库的区别？]()

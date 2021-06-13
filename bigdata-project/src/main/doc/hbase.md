@@ -1,4 +1,4 @@
-* [9.7、HBase](bigdata-project/src/main/doc/hbase.md)
+* [9.7、HBase](hbase.md)
     - [1）、HBase是什么？特点有哪些？]()
     - [2）、HBase和Hive的区别？]()
     - [3）、HBase的rowKey如何设计？]()

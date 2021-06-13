@@ -1,4 +1,4 @@
-* [9.3、Spark Streaming](bigdata-project/src/main/doc/sparkstreaming.md)
+* [9.3、Spark Streaming](sparkstreaming.md)
     - [1）、Spark Streaming如何保证数据仅且消费一次？]()
     - [2）、Spark Streaming中DataFrame和DataSet区别？]()
     - [3）、Spark Streaming如何做checkPoint检查点？]()

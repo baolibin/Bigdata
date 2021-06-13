@@ -1,4 +1,4 @@
-* [9.12、Scala](bigdata-project/src/main/doc/scala.md)
+* [9.12、Scala](scala.md)
     - [1）、伴生对象Object和伴生类Class区别？]()
     - [2）、var、val和def三个关键字之间的区别？]()
     - [3）、trait和abstract class区别？]()

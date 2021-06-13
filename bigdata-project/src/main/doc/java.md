@@ -1,4 +1,4 @@
-* [9.11、Java](bigdata-project/src/main/doc/java.md)
+* [9.11、Java](java.md)
     - [1）、说说Java中有哪些数据结构？]()
     - [2）、Java中有几种基本类型，各占多少字节？]()
     - [3）、Java中String可以被继承不？String、StringBuffer和StringBuilder有什么区别？]()
