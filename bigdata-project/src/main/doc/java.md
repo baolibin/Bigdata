@@ -1,46 +1,56 @@
 * [9.11、Java](java.md)
-    - [1）、说说Java中有哪些数据结构？]()
-    - [2）、Java中有几种基本类型，各占多少字节？]()
-    - [3）、Java中String可以被继承不？String、StringBuffer和StringBuilder有什么区别？]()
-    - [4）、Java中ArrayList和LinkedList有什么区别？]()
-    - [5）、Java中类的初始化顺序？]()
-    - [6）、Java中HashMap内部实现原理？如何扩容？线程安全不？]()
-    - [7）、描述动态代理的几种实现方式？]()
-    - [8）、Java的反射中，Class.forName和ClassLoader区别？]()
-    - [9）、Java中nio和bio区别？]()
-    - [10）、写出三种单例模式实现方式？]()
-    - [11）、垃圾回收机制？]()
-    - [12）、Java的内存模型？]()
-    - [13）、数组和链表数据结构描述？各自时间复杂度]()
-    - [14）、Java1.5中引入了泛型，泛型的存在用来解决什么问题？]()
-    - [15）、Java的HashSet内部如何实现的？]()
-    - [16）、Java中List、Set和Map之间的区别？]()
-    - [17）、Java中哪些集合类是线程安全的？]()
-    - [18）、Java中synchronized和volatile区别？]()
-    - [19）、Jvm中一次完整的GC流程？]()
-    - [20）、Java中CurrentHashMap和HashMap的区别？]()
-    - [21）、Java中int和Integer区别？]()
-    - [22）、Java中内存溢出和内存泄漏区别？]()
-    - [23）、Java中进程和线程的区别？]()
-    - [24）、深拷贝和浅拷贝区别？]()
-    - [25）、什么是值传递和引用传递？]()
-    - [26）、可以在static环境中访问非static变量吗？]()
-    - [27）、Java支持多继承么,为什么？]()
-    - [28）、构造器是否可被重写？]()
-    - [29）、char型变量中能不能存贮一个中文汉字，为什么？]()
-    - [30）、如何实现对象克隆？]()
-    - [31）、object中定义了哪些方法？]()
-    - [32）、hashCode的作用是什么？]()
-    - [34）、列举出JAVA中6个比较常用的包？]()
-    - [35）、JDK 7有哪些新特性？]()
-    - [36）、JDK 和 JRE 有什么区别？]()
-    - [37）、说说你熟悉的设计模式有哪些？]()
-    - [38）、在自己的代码中，如果创建一个java.lang.String类，这个类是否可以被类加载器加载？为什么？]()
-    - [39）、java8的新特性?]()
-    - [40）、switch是否能作用在byte 上，是否能作用在long 上，是否能作用在String上?]()
-    - [41）、是否可以从一个静态（static）方法内部发出对非静态（non-static）方法的调用?]()
-    
-https://zhuanlan.zhihu.com/p/159331453
+    - [1）、说说Java中有哪些数据结构？](#1java)
+    - [2）、Java中有几种基本类型，各占多少字节？](#2java)
+    - [3）、Java中String可以被继承不？String、StringBuffer和StringBuilder有什么区别？](#3javastringstringstringbufferstringbuilder)
+    - [4）、Java中ArrayList和LinkedList有什么区别？](#4javaarraylistlinkedlist)
+    - [5）、Java中类的初始化顺序？](#5java)
+    - [6）、Java中HashMap内部实现原理？如何扩容？线程安全不？](#6javahashmap)
+    - [7）、描述动态代理的几种实现方式？](#7)
+    - [8）、Java的反射中，Class.forName和ClassLoader区别？](#8javaclassfornameclassloader)
+    - [9）、Java中nio和bio区别？](#9javaniobio)
+    - [10）、写出三种单例模式实现方式？](#10)
+    - [11）、垃圾回收机制？](#11)
+    - [12）、Java的内存模型？](#12java)
+    - [13）、数组和链表数据结构描述？各自时间复杂度](#13)
+    - [14）、Java1.5中引入了泛型，泛型的存在用来解决什么问题？](#14java15)
+    - [15）、Java的HashSet内部如何实现的？](#15javahashset)
+    - [16）、Java中List、Set和Map之间的区别？](#16javalistsetmap)
+    - [17）、Java中哪些集合类是线程安全的？](#17java)
+    - [18）、Java中synchronized和volatile区别？](#18javasynchronizedvolatile)
+    - [19）、Jvm中一次完整的GC流程？](#19jvmgc)
+    - [20）、CurrentHashMap、HashMap、HashTable、TreeMap的区别？](#20javacurrenthashmaphashmaphashtabletreemap)
+    - [21）、Java中int和Integer区别？](#21javaintinteger)
+    - [22）、Java中内存溢出和内存泄漏区别？](#22-java)
+    - [23）、Java中进程和线程的区别？](#23java)
+    - [24）、深拷贝和浅拷贝区别？](#24)
+    - [25）、什么是值传递和引用传递？](#25)
+    - [26）、可以在static环境中访问非static变量吗？](#26staticstatic)
+    - [27）、Java支持多继承么,为什么？](#27java)
+    - [28）、构造器是否可被重写？](#28)
+    - [29）、char型变量中能不能存贮一个中文汉字，为什么？](#29char)
+    - [30）、如何实现对象克隆？](#30)
+    - [31）、object中定义了哪些方法？](#31object)
+    - [32）、hashCode的作用是什么？](#32hashcode)
+    - [34）、列举出JAVA中6个比较常用的包？](#34java6)
+    - [35）、JDK 7有哪些新特性？](#35jdk-7)
+    - [36）、JDK 和 JRE 有什么区别？](#36jdk--jre-)
+    - [37）、说说你熟悉的设计模式有哪些？](#37)
+    - [38）、在自己的代码中，如果创建一个java.lang.String类，这个类是否可以被类加载器加载？为什么？](#38javalangstring)
+    - [39）、java8的新特性?](#39java8)
+    - [40）、switch是否能作用在byte 上，是否能作用在long 上，是否能作用在String上?](#40switchbyte-long-string)
+    - [41）、是否可以从一个静态（static）方法内部发出对非静态（non-static）方法的调用?](#41staticnon-static)
+    - [42）、equals与==的区别?](#42equals)
+    - [43）、final, finally, finalize 的区别?](#43final-finally-finalize-)
+    - [44）、重载和重写的区别?](#44)
+    - [45）、BIO、NIO、AIO 有什么区别?](#45bionioaio-)
+    - [46）、String，StringBuffer，StringBuilder的区别?](#46stringstringbufferstringbuilder)
+    - [47）、Comparator与Comparable有什么区别?](#47comparablecomparator)
+    - [48）、说说反射的用途及实现原理，Java获取反射的三种方法?](#48java)
+    - [49）、Java中IO流分为几种?](#49javaio)
+    - [50）、Java创建对象有几种方式?](#50java)
+    - [51）、守护线程是什么？用什么方法实现守护线程?](#51)
+    - [52）、String s与new String与有什么区别?](#52string-snew-string)
+    - [53）、反射中，Class.forName和ClassLoader的区别?](#53classfornameclassloader)
 
 ---
 ###### [1）、说说Java中有哪些数据结构？]()
@@ -312,7 +322,13 @@ https://zhuanlan.zhihu.com/p/159331453
     Java泛型（generics）是 JDK 5中引入的一个新特性，其本质是参数化类型，解决不确定具体对象类型的问题。
 
 ###### [15）、Java的HashSet内部如何实现的？]()
+    是基于HashMap实现的，默认构造函数是构建一个初始容量为16，负载因子为0.75 的HashMap。
+    封装了一个HashMap对象来存储所有的集合元素，所有放入HashSet中的集合元素实际上由HashMap的key来保存，而HashMap的value则存储了一个PRESENT它是一个静态的Object对象。
 
+    例如：如果内部容量为16，装载因子为0.75，那么当表中有12个元素的时候，桶的数量就会自动增长。
+    装载因子和初始化容量是影响HashSet操作的两个主要因素。装载因子为0.75的时候可以提供关于时间和空间复杂度方面更有效的性能。
+    如果我们加大这个装载因子，那么内存的上限就会减小（因为它减少了内部重建的操作），但是将影响哈希表中的add与查询的操作。
+    为了减少再哈希操作，我们应该选择一个合适的初始化大小。
 
 ###### [16）、Java中List、Set和Map之间的区别？]()
     集合可以看作是一种容器，用来存储对象信息。
@@ -353,6 +369,12 @@ https://zhuanlan.zhihu.com/p/159331453
     2）数组元素既可以是基本类型的值，也可以是对象；集合只能保存对象。
 
 ###### [18）、Java中synchronized和volatile区别？]()
+    1、Java语言为了解决并发编程中存在的原子性、可见性和有序性问题，提供了一系列和并发处理相关的关键字，比如synchronized、volatile、final、concurren包等。
+    2、synchronized通过加锁的方式，使得其在需要原子性、可见性和有序性这三种特性的时候都可以作为其中一种解决方案，看起来是“万能”的。
+    3、volatile通过在volatile变量的操作前后插入内存屏障的方式，保证了变量在并发场景下的可见性和有序性。
+    4、volatile关键字是无法保证原子性的，而synchronized通过monitorenter和monitorexit两个指令，可以保证被synchronized修饰的代码在同一时间只能被一个线程访问
+    即可保证不会出现CPU时间片在多个线程间切换，即可保证原子性。
+
 ###### [19）、Jvm中一次完整的GC流程？]()
     Java堆内存划分:
     Java堆 = 老年代 + 新生代
@@ -363,14 +385,53 @@ https://zhuanlan.zhihu.com/p/159331453
     老年代满了而无法容纳更多的对象，Minor GC 之后通常就会进行Full GC，Full GC 清理整个内存堆 – 包括年轻代和年老代。
     Major GC 发生在老年代的GC，清理老年区，经常会伴随至少一次Minor GC，比Minor GC慢10倍以上。
 
-###### [20）、Java中CurrentHashMap和HashMap的区别？]()
+###### [20）、Java中CurrentHashMap、HashMap、HashTable、TreeMap的区别？]()
+    四者均实现了Map接口，存储的内容是基于key-value的键值对映射，一个映射不能有重复的键，一个键最多只能映射一个值。
+    
+    从元素特性讲:
+    1)、HashTable的key、value都不能为null；
+    2）、HashMap中的key、value可以为null;
+    3）、TreeMap中当未实现 Comparator 接口时，key 不可以为null；当实现 Comparator 接口时，若未对null情况进行判断，则key不可以为null，反之亦然；
+    
+    顺序特性:
+    1）、HashTable、HashMap具有无序特性;
+    2）、TreeMap是利用红黑树来实现的（树中的每个节点的值，都会大于或等于它的左子树种的所有节点的值，并且小于或等于它的右子树中的所有节点的值）,
+    实现了SortMap接口，能够对保存的记录根据键进行排序。所以一般需要排序的情况下是选择TreeMap来进行，默认为升序排序方式（深度优先搜索），可自定义实现Comparator接口实现排序方式。
+    
+    初始化与增长方式：
+    1）、初始化时：
+    HashTable在不指定容量的情况下的默认容量为11，且不要求底层数组的容量一定要为2的整数次幂；
+    HashMap默认容量为16，且要求容量一定为2的整数次幂。
+    2）、扩容时：
+    Hashtable将容量变为原来的2倍加1；
+    HashMap扩容将容量变为原来的2倍。    
+    
+    线程安全：
+    1）、HashTable其方法函数都是同步的（采用synchronized修饰），不会出现两个线程同时对数据进行操作的情况，因此保证了线程安全性；
+    2）、HashMap不支持线程的同步，即任一时刻可以有多个线程同时写HashMap;可能会导致数据的不一致。
+    3）、HashMap如果需要同步
+    （1）、可以用 Collections的synchronizedMap方法；
+    （2）、使用ConcurrentHashMap类，相较于HashTable锁住的是对象整体， ConcurrentHashMap基于lock实现锁分段技术。
+    首先将Map存放的数据分成一段一段的存储方式，然后给每一段数据分配一把锁，当一个线程占用锁访问其中一个段的数据时，其他段的数据也能被其他线程访问。
+    ConcurrentHashMap不仅保证了多线程运行环境下的数据访问安全性，而且性能上有长足的提升。
+    
+    CurrentHashMap和HashMap：
+    HashMap是线程不安全的，后来在jdk1.5的时候就出来了CurrentHashMap来弥补HashMap的线程不安全的特性；
+    CurrentHashMap，是将HashMap分成了很多个片（一般默认是16片），引入了分段锁的概念，然后对每一片加锁，
+    具体可以理解成一把大的Map分解成N个小的HashTable，根据key.hashCode()来决定放到哪一个片上；
+    
+    效率的比较：
+    由于安全机制的原因，HashMap的效率比HashTable，CurrentHashMap的效率高；
+    但是由于CurrentHashMap加锁的高效性,HashTable是整个加锁，他的效率比HashTable高； 
+    总的来说 HashMap>CurrentHashMap>HashTable;
+
 ###### [21）、Java中int和Integer区别？]()
     1、Integer是int的包装类，int则是java的一种基本数据类型 
     2、Integer变量必须实例化后才能使用，而int变量不需要 
     3、Integer实际是对象的引用，当new一个Integer时，实际上是生成一个指针指向此对象；而int则是直接存储数据值 
     4、Integer的默认值是null，int的默认值是0
 
-###### [22）、Java中内存溢出和内存泄漏区别？]()
+###### [22） 、Java中内存溢出和内存泄漏区别？]()
     内存泄漏(Memory Leak)：指程序在申请内存后，无法释放已申请的内存空间，内存泄露堆积会导致内存被占光。
     内存溢出(out of memory)：指程序在申请内存时，没有足够的内存空间供其使用，出现 out of memory。
 
@@ -481,3 +542,89 @@ https://zhuanlan.zhihu.com/p/159331453
     那个非static方法是关联到哪个对象上的呢？这个逻辑是不成立的
 
     一个static方法内部不可以发出对非static方法的调用。
+
+###### [42）、equals与==的区别?]()
+    最大的区别是，==是运算符，equal是方法
+    1.java基本类型（short，int，long，byte，char，float，double，boolean）
+    比较基本类型，只能用==，不能用equal，这里的==比较的是两个变量的值
+    2.比较包装类型
+    ==比较的是内存地址，因为a和b是new出来的，是两个不同的对象，所以地址肯定是不同的，而equal比较的是值
+    3.比较String类型
+    ==比较的是内存地址，equal比较的是值
+    4.比较对象
+    ==和equal比较的都是内存地址，因为equal没有被重写，没有被重写的equal都是object的equal方法
+
+###### [43）、final, finally, finalize 的区别?]()
+    final 用于修饰属性,方法和类, 分别表示属性不能被重新赋值, 方法不可被覆盖, 类不可被继承.
+    finally 是异常处理语句结构的一部分，一般以ty-catch-finally出现，finally代码块表示总是被执行.
+    finalize 是Object类的一个方法，该方法一般由垃圾回收器来调用，当我们调用System.gc() 方法的时候，由垃圾回收器调用finalize()方法，回收垃圾，JVM并不保证此方法总被调用.
+
+###### [44）、重载和重写的区别?]()
+    重写必须继承，重载不用。
+    重载表示同一个类中可以有多个名称相同的方法，但这些方法的参数列表各不相同（即参数个数或类型不同）
+    重写表示子类中的方法与父类中的某个方法的名称和参数完全相同啦，通过子类实例对象调用这个方法时，将调用子类中的定义方法，这相当于把父类中定义的那个完全相同的方法给覆盖了。
+
+###### [45）、BIO、NIO、AIO 有什么区别?]()
+    BIO：线程发起 IO 请求，不管内核是否准备好 IO 操作，从发起请求起，线程一直阻塞，直到操作完成。
+    NIO：线程发起 IO 请求，立即返回；内核在做好 IO 操作的准备之后，通过调用注册的回调函数通知线程做 IO 操作，线程开始阻塞，直到操作完成。
+    AIO：线程发起 IO 请求，立即返回；内存做好 IO 操作的准备之后，做 IO 操作，直到操作完成或者失败，通过调用注册的回调函数通知线程做 IO 操作完成或者失败。
+    
+    BIO 是一个连接一个线程。,NIO 是一个请求一个线程。,AIO 是一个有效请求一个线程。
+    BIO：同步并阻塞，服务器实现模式为一个连接一个线程，即客户端有连接请求时服务器端就需要启动一个线程进行处理，如果这个连接不做任何事情会造成不必要的线程开销，当然可以通过线程池机制改善。
+    NIO：同步非阻塞，服务器实现模式为一个请求一个线程，即客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询到连接有I/O请求时才启动一个线程进行处理。
+    AIO：异步非阻塞，服务器实现模式为一个有效请求一个线程，客户端的 IO 请求都是由 OS 先完成了再通知服务器应用去启动线程进行处理。
+
+###### [46）、String，StringBuffer，StringBuilder的区别?]()
+    String：
+    String类是一个不可变的类，一旦创建就不可以修改。
+    String是final类，不能被继承
+    String实现了equals()方法和hashCode()方法
+    
+    StringBuffer：
+    继承自AbstractStringBuilder，是可变类。
+    StringBuffer是线程安全的
+    可以通过append方法动态构造数据。
+
+    StringBuilder：
+    继承自AbstractStringBuilder，是可变类。
+    StringBuilder是非线性安全的。
+    执行效率比StringBuffer高。
+
+###### [47）、Comparable与Comparator有什么区别?]()
+    Comparable & Comparator 都是用来实现集合中元素的比较、排序的，只是 Comparable 是在集合内部定义的方法实现的排序，Comparator 是在集合外部实现的排序，
+    所以，如想实现排序，就需要在集合内实现 Comparable 接口的方法或在集合外定义 Comparator 接口的方法。
+
+###### [48）、说说反射的用途及实现原理，Java获取反射的三种方法?]()
+    Java获取反射的三种方法：
+    第一种，使用 Class.forName 静态方法。
+    第二种，使用类的.class 方法
+    第三种，使用实例对象的 getClass() 方法。
+
+###### [49）、Java中IO流分为几种?]()
+    Java中的流分为两种：一种是字节流，另一种是字符流。
+    IO流分别由四个抽象类来表示（两输入两输出）:InputStream，OutputStream，Reader，Writer。
+
+###### [50）、Java创建对象有几种方式?]()
+    Java创建对象有5种方式
+    1、用new语句创建对象。
+    2、使用反射，使用Class.newInstance()创建对象/调用类对象的构造方法——Constructor
+    3、调用对象的clone()方法。
+    4、运用反序列化手段，调用java.io.ObjectInputStream对象的readObject()方法.
+    5、使用Unsafe
+
+###### [51）、守护线程是什么？用什么方法实现守护线程?]()
+    守护线程是运行在后台的一种特殊进程。
+    它独立于控制终端并且周期性地执行某种任务或等待处理某些发生的事件。
+    在 Java 中垃圾回收线程就是特殊的守护线程。
+
+###### [52）、String s与new String与有什么区别?]()
+    1、String str ="sss";
+    先在常量池中查找有没有"sss" 这个对象,如果有，就让str指向那个"sss".如果没有，在常量池中新建一个“sss”对象，并让str指向在常量池中新建的对象"sss"。
+    
+    2、String newStr =new String ("sss"); 
+    是在堆中建立的对象"sss" ,在栈中创建堆中"sss" 对象的内存地址。
+
+###### [53）、反射中，Class.forName和ClassLoader的区别?]()
+    Class.forName和ClassLoader都可以对类进行加载。
+    ClassLoader负责加载 Java 类的字节代码到 Java 虚拟机中，Class.forName其实是调用了ClassLoader。
+    Class.forName和ClassLoader的区别，就是在类加载的时候，class.forName有参数控制是否对类进行初始化。
