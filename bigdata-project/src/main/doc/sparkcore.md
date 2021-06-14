@@ -38,7 +38,7 @@
     - [37）、Spark如何处理不被序列化的数据？](#37、Spark如何处理不被序列化的数据？)
     - [38）、Spark中collect功能是啥？其底层是如何实现的?](#38、Spark中collect功能是啥？其底层是如何实现的?)
     - [39）、Spark作业在没有获得足够资源就开始启动了,可能会导致什么问题？](#39、Spark作业在没有获得足够资源就开始启动了,可能会导致什么问题？)
-    - [40）、Spark中map和flatmap有啥区别？](#40、Spark中map和flatmap有啥区别？)
+    - [40）、Spark中map和flatMap有啥区别？](#40、Spark中map和flatmap有啥区别？)
     - [41）、介绍一下join操作优化经验？](#41、介绍一下join操作优化经验？)
     - [42）、Spark有哪些组件？](#42、Spark有哪些组件？)
     - [43）、Spark的工作机制？](#43、Spark的工作机制？)
@@ -61,6 +61,17 @@
     3、运行SparkSubmit的main方法，通过反射的方式创建我们编写主类的实例对象，然后调用主类的main方法开始执行我们编写的代码。
     4、当代码运行到SparkContext时，就开始初始化SparkContext。
     5、在初始化SparkContext时候会创建DAGScheduler和TaskScheduler。
+    
+    1、spark-submit 提交代码，执行 new SparkContext()，在 SparkContext 里构造 DAGScheduler 和 TaskScheduler。
+    2、TaskScheduler 会通过后台的一个进程，连接 Master，向 Master 注册 Application。
+    3、Master 接收到 Application 请求后，会使用相应的资源调度算法，在 Worker 上为这个 Application 启动多个 Executer。
+    4、Executor 启动后，会自己反向注册到 TaskScheduler 中。 所有 Executor 都注册到 Driver 上之后，SparkContext 结束初始化，接下来往下执行我们自己的代码。
+    5、每执行到一个 Action，就会创建一个 Job。Job 会提交给 DAGScheduler。
+    6、DAGScheduler 会将 Job划分为多个 stage，然后每个 stage 创建一个 TaskSet。
+    7、TaskScheduler 会把每一个 TaskSet 里的 Task，提交到 Executor 上执行。
+    8、Executor 上有线程池，每接收到一个 Task，就用 TaskRunner 封装，然后从线程池里取出一个线程执行这个 task。
+    (TaskRunner 将我们编写的代码，拷贝，反序列化，执行 Task，每个 Task 执行 RDD 里的一个 partition)
+
 ###### 2、Spark的内存模型？
     Spark集群在提交应用程序时候会创建Driver和Execotor两种JVM进程。
     Driver内存：Driver作为主控进程，负责创建Spark作业的上下文，将提交的作业Job转化为计算任务Task，分发到Executor进程中进行执行。
@@ -243,6 +254,7 @@
     但是task只能对Accumulator进行累加操作，不能读取它的值。只有Driver程序可以读取Accumulator的值。
 
 ###### 20、菲波那切数列可以用Spark做出来么？
+    可以
 
 ###### 21、看过哪些Spark源码？
     1).作业提交流程,deploy模块
@@ -289,6 +301,7 @@
                目前压缩方式支持三种方式， lz4， lzf， snappy。
 
 ###### 25、Spark使用到的安全协议有哪些？
+    SecurityManager主要对账号、权限及身份认证进行设置和管理。
 
 ###### 26、Spark部署模式有哪些？
     Spark 支持多种分布式部署模式，主要支持三种部署模式，分别是：Standalone、Spark on YARN和 Spark on Mesos模式。
@@ -312,6 +325,7 @@
 
 ###### 29、Spark中数据本地性是哪个阶段确定的？
     dag划分stage的时候，确定的具体的task运行在哪台机器上
+
 ###### 30、Spark中RDD的弹性提现在哪里？
     1）自动的进行内存和磁盘的存储切换；
     2）基于Lingage的高效容错；
@@ -320,15 +334,19 @@
     5）checkpoint和persist，数据计算之后持久化缓存
     6）数据调度弹性，DAG TASK调度和资源无关
     7）数据分片的高度弹性
+
 ###### 31、Spark中容错机制？
     1）.数据检查点,会发生拷贝，浪费资源
     2）.记录数据的更新，每次更新都会记录下来，比较复杂且比较消耗性能
+
 ###### 32、Spark中RDD的缺陷？
     1）不支持细粒度的写和更新操作（如网络爬虫），spark写数据是粗粒度的
     所谓粗粒度，就是批量写入数据，为了提高效率。但是读数据是细粒度的也就是
     说可以一条条的读
     2）不支持增量迭代计算，Flink支持
+
 ###### 33、Spark中有哪些聚合类的算子？应该避免什么类型的算子?
+    避免使用 reduceByKey、join、distinct、repartition 等会进行 shuffle 的算子
 
 ###### 34、Spark中并行度怎么设置比较合理一些？
     并行度和数据规模无关,和内存与CPU有关.
@@ -387,6 +405,28 @@
     Executor：也即执行器节点，它是在一个在工作节点（Worker Node）上为Application启动的进程，它能够运行 Task 并将数据保存在内存或磁盘存储中，也能够将结果数据返回给Driver。
     
 ###### 43、Spark的工作机制？
+    一、应用执行机制
+    Driver进程运行在客户端（Client模式）：
+    即用户在客户端直接运行程序。 
+    程序的提交过程大致会经过以下阶段：
+    1、用户运行程序。
+    2、启动Driver进行（包括DriverRunner和SchedulerBackend），并向集群的Master注册。
+    3、Driver在客户端初始化DAGScheduler等组件。
+    4、Woker节点向Master节点注册并启动Executor（包括ExecutorRunner和ExecutorBackend）。
+    5、ExecutorBackend启动后，向Driver内部的SchedulerBackend注册，使得Driver可以找到计算节点。
+    6、Driver中的DAGScheduler解析RDD生成Stage等操作。
+    7、Driver将Task分配到各个Executor中并行执行。
+    8、Driver进程运行在集群中（某个Worker节点，Cluster模式）：
+    
+    即用户将Spark程序提交给Master分配执行。 
+    大致会经过一下流程：
+    1、用户启动客户端，提交Spark程序给Master。
+    2、Master针对每个应用分发给指定的Worker启动Driver进行。
+    3、Worker收到命令之后启动Driver进程（即DriverRunner和其中的SchedulerBackend），并向Master注册。
+    4、Master指定其他Worker启动Executor（即ExecutorRunner和其内部的ExecutorBackend）。
+    5、ExecutorBackend向Driver中的SchedulerBackend注册。
+    6、Driver中的DAGScheduler解析RDD生产Stage等。
+    7、Executor内部启动线程池并行化执行Task。
 
 ###### 44、Spark中的宽窄依赖？
     参考: 13、Spark中宽依赖和窄依赖如何理解？
@@ -408,12 +448,31 @@
     Stage以最后执行的Stage为根进行广度优先遍历，遍历到最开始执行的Stage执行，如果提交的Stage仍有未完成的父Stage，则Stage需要等待其父Stage执行完才能执行。
 
 ###### 46、spark-submit时候如何引用外部的jar包？
+    方法一：spark-submit –jars
+    根据spark官网，在提交任务的时候指定–jars，用逗号分开。
+    命令：spark-submit --master yarn-client --jars ***.jar,***.jar
+    
+    方法二：extraClassPath
+    提交时在spark-default中设定参数，将所有需要的jar包考到一个文件里，然后在参数中指定该目录就可以
+    spark.executor.extraClassPath=/home/hadoop/wzq_workspace/lib/* 
+    spark.driver.extraClassPath=/home/hadoop/wzq_workspace/lib/*
 
 ###### 47、Spark中RDD有哪些特性？
+    RDD（Resilient Distributed Dataset）叫做分布式数据集，是Spark中最基本的数据抽象，它代表一个不可变、可分区、里面的元素可并行计算的集合。
+    1，分区列表( a list of partitions)
+    Spark RDD是被分区的，每一个分区都会被一个计算任务(Task)处理，分区数决定了并行计千算的数量，RDD的并行度默认从父RDD传给子RDD。
+    2，每一个分区都有一个计算函数( a function for computing each split）
+    3，依赖于其他RDD的列表( a list of dependencies on other RDDS)
+    4，key- value数据类型的RDD分区器( a Partitioner for key- alue RDDS)、控制分区策略和分区数
+    5，每个分区都有一个优先位置列表( a list of preferred locations to compute each split on）
 
 ###### 48、Spark的一个工作流程？
 
 ###### 49、SparkOnYarn与standalone区别？
+     1、Yarn 支持动态资源配置。
+     2、Standalone 模式只支持简单的固定资源分配策略，每个任务固定数量的 core，各 Job 按顺序依次分配在资源，资源不够的时候就排队。
+     这种模式比较适合单用户的情况，多用户的情境下，会有可能有些用户的任务得不到资源。
+     Yarn 作为通用的种子资源调度平台，除了 Spark 提供调度服务之外，还可以为其他系统提供调度，如 Hadoop MapReduce, Hive 等。
 
 ###### 50、Spark优化之内存管理？
 
