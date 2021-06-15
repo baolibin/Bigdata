@@ -13,6 +13,7 @@
     - [12）、Spark Streaming窗口大小？每个窗口处理的数据量？]()
     - [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
     - [14）、Spark Streaming面对高峰数据如何处理？]()
+    - [15）、Spark Streaming反压机制？]()
 
 ---
 ###### [1）、Spark Streaming如何保证数据仅且消费一次？]()
@@ -104,7 +105,56 @@
     val windowedWordCounts = pairs.reduceByKeyAndWindow((a:Int,b:Int) => (a + b), Seconds(30), Seconds(10))
 
 ###### [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
+    Spark Streaming 中状态管理函数包括updateStateBykey和mpaWithState，都是用来统计全局key的状态的变化的。
+    以DStream中的数据进行按key做reduce操作，然后对各个批次的数据进行累加，在有新的数据信息进入或更新时。
     
+    1.UpdateStateByKey（基于磁盘读写）
+    UpdateStateBykey会统计全局的key的状态，不管有没有数据输入，它会在每一个批次间隔返回之前的key的状态。
+    updateStateBykey会对已存在的key进行state的状态更新，同时还会对每个新出现的key执行相同的更新函数操作。
+    如果通过更新函数对state更新后返回来为none，此时刻key对应的state状态会删除（state可以是任意类型的数据结构）。
+    
+    适用场景：
+    UpdataStateBykey可以用来统计历史数据，每次输出所有的key值。列如统计不同时间段用户平均消费金额，消费次数，消费总额，网站的不同时间段的返回量等指标。
+    适用实例:
+    首先会以DStream中的数据进行按key做reduce操作，然后再对各个批次的数据进行累加。
+    updataStateByKey要求必须设置checkpoint点（设置中间结果文件夹）
+    updataStateByKey方法中updataFunc就要传入的参数，Seq[V]表示当前key对应的所有值，Option[S]是当前key的历史状态，返回的是新的封装的数据。
+    
+    2.mapWithState（基于磁盘存储+缓存）
+    mapWithState也是用于对于全局统计key的状态，但是它如果没有数据输入，便不会返回之前的key的状态，类型于增量的感觉。
+    
+    适用场景:
+    mapWithState可以用于一些实时性较高，延迟较少的一些场景，例如你在某宝上下单买了个东西，付款之后返回你账户里余额信息。
+    适用实例:
+    mapWithState如果有初始化的值的需要，可以使用initialState(RDD)来初始化key的值
+    mapWithState指定timeout函数，如果一个key超过timeout设定的时间没有更新值，那么这个key将会失效。这个控制需要在fun中实现，必须使用state.isTimingOut()来判断失效的key值。如果在失效时间之后，这个key又有新的值了，则会重新计算。如果没有使用isTimingOut，则会报错。
+    mapWithState对于checkpoint是不必须的
+    
+    区别:
+    updataeStateByKey可以在指定的批次间隔内返回之前的全部历史数据，包括新增的，改变的和没有改变的。由于updateStateByKey在使用的时候一定要做checkpoint，当数据量过大的时候，checkpoint会占据庞大的数据量，会影响性能，效率不高。
+    mapWithState只返回变化后的key的值，可以只关心那些已经发生的变化的key，对于没有数据输入，则不会返回那些没有变化的key 的数据。这样的话，即使数据量很大，checkpint也不会updateBykey那样，占用太多的存储，效率比较高
 
 ###### [14）、Spark Streaming面对高峰数据如何处理？]()
+    合理的批处理时间（batchDuration）
+    合理的Kafka拉取量（maxRatePerPartition参数设置）
+    合理的读取数据和处理数据分区数
+    缓存反复使用的Dstream（RDD）
+    其他一些优化策略
+        设置合理的GC方式
+        设置合理的parallelism
+        设置合理的CPU资源数
+        高性能的算子
+        Kryo优化序列化性能
+
+###### [15）、Spark Streaming反压机制？]()
+    反压(Back Pressure)机制主要用来解决流处理系统中，处理速度比摄入速度慢的情况。是控制流处理中批次流量过载的有效手段。
     
+    反压机制原理
+    Spark Streaming中的反压机制是Spark 1.5.0推出的新特性，可以根据处理效率动态调整摄入速率。
+    当批处理时间(Batch Processing Time)大于批次间隔(Batch Interval，即 BatchDuration)时,说明处理数据的速度小于数据摄入的速度，持续时间过长或源头数据暴增，容易造成数据在内存中堆积，最终导致Executor OOM或任务奔溃。
+    
+    若是基于Receiver的数据源，可以通过设置spark.streaming.receiver.maxRate来控制最大输入速率；
+    若是基于Direct的数据源(如Kafka Direct Stream)，则可以通过设置spark.streaming.kafka.maxRatePerPartition来控制最大输入速率。
+    开启反压机制，即设置spark.streaming.backpressure.enabled为true，Spark Streaming会自动根据处理能力来调整输入速率，从而在流量高峰时仍能保证最大的吞吐和性能。
+    
+    Spark Streaming的反压机制主要是通过RateController组件来实现。
