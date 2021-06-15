@@ -52,6 +52,7 @@
     - [51）、Spark优化之广播变量？](#51、Spark优化之广播变量？)
     - [52）、Spark优化之数据本地性？](#52、Spark优化之数据本地性？)
     - [53）、Spark中task有几种类型？](#53、Spark中task有几种类型？)
+    - [54）、Spark中基本概念？]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -509,13 +510,40 @@
     2.设置jvm堆外内存
 
 ###### 51、Spark优化之广播变量？
+     broadcast 就是将数据从一个节点发送到其他各个节点上去。
+     比如 driver 上有一张表，其他节点上运行的 task 需要 lookup 这张表，那么 driver 可以先把这张表 copy 到这些节点，这样 task 就可以在本地查表了。
 
 ###### 52、Spark优化之数据本地性？
+    数据本地化目的，只移动计算，不移动数据，避免网络资源浪费。
+    1).首先了解Application任务执行流程：
+    在Spark Application提交后，Driver会根据action算子划分成一个个的job，然后对每一 个job划分成一个个的stage，stage内部实际上是由一系列并行计算的task组成的
+    然后 以TaskSet的形式提交给你TaskScheduler，TaskScheduler在进行分配之前都会计算出每一个task最优计算位置。
+    Spark的task的分配算法优先将task发布到数据所在的节点上，从而达到数据最优计算位置。
+    2).数据本地化五种级别
+    TaskSetManager 的 Locality Levels 分为以下五个级别：
+    • 1).PROCESS_LOCAL 进程本地化 ,task要计算的数据在同一个Executor中
+    • 2).NODE_LOCA 节点本地化 ,速度比 PROCESS_LOCAL 稍慢，因为数据需要在不同进程之间传递或从文件中读取
+                情况一：task要计算的数据是在同一个Worker的不同Executor进程中
+                情况二：task要计算的数据是在同一个Worker的 磁盘上，或在 HDFS 上，恰好有 block 在同一个节点上。
+                Spark计算数据来源于HDFS，那么最好的数据本地化级别就是NODE_LOCAL
+    • 3).NO_PREF 没有本地化 ,  没有最佳 位置这一说，数据从哪里访问都一样快，不需要位置优先。比如说SparkSQL读取MySql中的数据
+    • 4).RACK_LOCAL 机架本地化（集群内）, 数据在同一机架的不同节点上。需要通过网络传输数据及文件 IO，比 NODE_LOCAL 慢
+                情况一：task计算的数据在Worker2的Executor中
+                情况二：task计算的数据在Worker2的磁盘上
+    • 5).ANY 跨机架本地化 ,数据在非同一机架的网络上，速度最慢
+    
+     Spark中的数据本地化由DAGScheduler和TaskScheduler共同负责。
+     DAGScheduler切割Job，划分Stage, 通过调用submitStage来提交一个Stage对应的tasks，submitStage会调用submitMissingTasks
+     submitMissingTasks 确定每个需要计算的 task 的preferredLocations，通过调用getPreferrdeLocations()得到partition 的优先位置
+     就是这个 partition 对应的 task 的优先位置，对于要提交到TaskScheduler的TaskSet中的每一个task，该task优先位置与其对应的partition对应的优先位置一致。
+     TaskScheduler接收到了TaskSet后，TaskSchedulerImpl 会为每个 TaskSet 创建一个 TaskSetManager 对象，该对象包含taskSet 所有 tasks，
+     并管理这些 tasks 的执行，其中就包括计算 TaskSetManager 中的 tasks 都有哪些locality levels，以便在调度和延迟调度 tasks 时发挥作用。
 
 ###### 53、Spark中task有几种类型？
     有2种:
     resultTask类型，最后一个task
     shuffleMapTask类型，除了最后一个task都是
+
 ###### 54、Spark中repartition和coalesce区别?
     1)spark分区partition的理解：
     spark中是以vcore级别调度task的。
@@ -541,6 +569,21 @@
     2）如果N>M并且N和M相差不多，(假如N是1000，M是100)那么就可以将N个分区中的若干个分区合并成一个新的分区，最终合并为M个分区，这时可以将shuff设置为false（coalesce实现）
     3）如果N>M并且两者相差悬殊，这时你要看executor数与要生成的partition关系，如果executor数小于等于要生成partition数，coalesce效率高，
     反之如果用coalesce会导致(executor数-要生成partiton数)个excutor空跑从而降低效率。
+
+###### [54）、Spark中基本概念？]()
+    Application：用户编写的Spark应用程序。
+    Driver：Spark中的Driver即运行上述Application的main函数并创建SparkContext，创建SparkContext的目的是为了准备Spark应用程序的运行环境，
+           在Spark中有SparkContext负责与ClusterManager通信，进行资源申请、任务的分配和监控等，当Executor部分运行完毕后，Driver同时负责将SparkContext关闭。
+    Executor：是运行在工作节点（WorkerNode）的一个进程，负责运行Task。
+    RDD：弹性分布式数据集，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型。
+    DAG：有向无环图，反映RDD之间的依赖关系。
+    Task：运行在Executor上的工作单元。
+    Job：一个Job包含多个RDD及作用于相应RDD上的各种操作。
+    Stage：是Job的基本调度单位，一个Job会分为多组Task，每组Task被称为Stage，或者也被称为TaskSet，代表一组关联的，相互之间没有Shuffle依赖关系的任务组成的任务集。
+    Cluter Manager：指的是在集群上获取资源的外部服务。目前有三种类型
+      1) Standalon : spark原生的资源管理，由Master负责资源的分配
+      2) Apache Mesos:与hadoop MR兼容性良好的一种资源调度框架
+      3) Hadoop Yarn: 主要是指Yarn中的ResourceManager
 
 ---
 参考:
