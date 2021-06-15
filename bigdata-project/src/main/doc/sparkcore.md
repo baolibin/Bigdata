@@ -77,25 +77,37 @@
     Driver内存：Driver作为主控进程，负责创建Spark作业的上下文，将提交的作业Job转化为计算任务Task，分发到Executor进程中进行执行。
     Execotor内存：在工作节点上执行具体的计算任务，并将结果返回给Driver，同时提供RDD的持久化机制。
     
-    堆内内存划分
+    堆内内存划分:
+    指的是JVM堆内存大小，在Spark应用程序启动时通过spark.executor.memory参数配置。Executor内运行的并发任务共享JVM堆内内存。堆内内存大致可以分为如图2所示以下4个部分
     2.1.1、执行Execution内存
-    主要用于存放Shuffle、Join、Sort、Aggregation等计算过程中的临时数据。
+    用于存储Spark task执行过程中需要的对象，如Shuffle、Join、Sort、Aggregation等计算过程中的临时数据。
     2.1.2、存储Storage内存
-    主要用于存储spark的cache数据，例如RDD的缓存、unroll数据；
+    主要用于存储Spark的cache数据，例如RDD的cache，Broadcast变量，Unroll数据等。需要注意的是，unrolled的数据如果内存不够，会存储在driver端。
     2.1.3、用户内存User Memory
-    主要用于存储内部元数据、用户自定义的数据结构等，根据用户实际定义进行使用。
+    分配Spark Memory剩余的内存，用户可以根据需要使用。可以存储RDD transformations需要的数据结构。
     2.1.4、预留内存Reserved Memory
-    默认300M的系统预留内存，主要用于程序运行，参见SPARK-12081。
+    这部分内存是预留给系统使用，是固定不变的。在1.6.0默认为300MB(RESERVED_SYSTEM_MEMORY_BYTES = 300 * 1024 * 1024)，不过在2.4.4版本中已经看不到这个参数了。
     
     堆外内存划分
-    为了进一步优化内存的使用以及提高Shuffle时排序的效率，Spark引入了堆外（Off-heap）内存，
-    使之可以直接在工作节点的系统内存中开辟空间，存储经过序列化的二进制数据。
-    
+    这里Off-heap Memory从概念上可以分为两个：
+    1).Executor JVM内的off-heap memory(*)，主要用于JVM自身，字符串, NIO Buffer等开销，可以通过spark.executor.memoryOverhead参数进行配置，
+    大小一般设为executorMemory * 0.10, with minimum of 384。
+    2).为了进一步优化内存的使用以及提高Shuffle时的排序的效率，Spark引入了堆外（Off-heap）内存，直接在工作节点的系统内存中开辟的空间，存储经过序列化的二进制数据。
+    Spark可以直接操作系统堆外内存，减少了不必要的内存开销，以及频繁的 GC 扫描和回收，提升了处理性能。堆外内存可以被精确地申请和释放，而且序列化的数据占用的空间可以被精确计算，
+    所以相比堆内内存来说降低了管理的难度，也降低了误差。
+
     Spark为存储内存和执行内存的管理提供了统一的接口——MemoryManager，同一个 Executor内的任务都调用这个接口的方法来申请或释放内存。
     MemoryManager的具体实现上，Spark 1.6之后默认为统一管理（Unified Memory Manager）方式，
     1.6之前采用的静态管理（Static Memory Manager）方式仍被保留，可通过配置 spark.memory.useLegacyMode 参数启用。
     两种方式的区别在于对空间分配的方式。
     
+    Spark 1.6 之后引入的统一内存管理机制，与静态内存管理的区别在于存储内存和执行内存共享同一块空间，可以动态占用对方的空闲区域
+    其中最重要的优化在于动态占用机制，其规则如下：
+    1.设定基本的Storage内存和Execution内区域（spark.storage.storageFraction 参数），该设定确定了双方各自拥有的空间的范围
+    2.双方的空间都不足时，则存储到硬盘；若己方空间不足而对方空余时，可借用对方的空间;（存储空间不足是指不足以放下一个完整的 Block）
+    3.Execution内存的空间被对方占用后，可让对方将占用的部分转存到硬盘
+    4.Storage内存的空间被对方占用后，无法让对方"归还"，多余的Storage内存被转存到硬盘
+
 ###### 3、SparkContext创建流程？源码级别？
     SparkContext初始化,包括事件总线(LiveListenerBus),UI界面,心跳,JobProgressListener,资源动态分配(ExecutorAllocationManager)等等
     初始化的核心包括:
@@ -467,6 +479,24 @@
     5，每个分区都有一个优先位置列表( a list of preferred locations to compute each split on）
 
 ###### 48、Spark的一个工作流程？
+    （1）任何spark的应用程序都包含Driver代码和Executor代码。Spark应用程序首先在Driver初始化SparkContext。
+    因为SparkCotext是Spark应用程序通往集群的唯一路径，在SparkContext里面包含了DAGScheduler和TaskScheduler两个调度器类。在创建SparkContext对象的同时也自动创建了这两个类。
+    （2）SparkContext初始化完成后，首先根据Spark的相关配置，向Cluster Master申请所需要的资源，然后在各个Worker结点初始化相应的Executor。
+    Executor初始化完成后，Driver将通过对Spark应用程序中的RDD代码进行解析，生成相应的RDD graph（RDD图），该图描述了RDD的相关信息及彼此之间的依赖关系。
+    （3）RDD图构建完毕后，Driver将提交给DAGScheduler进行解析。DAGScheduler在解析RDD图的过程中，当遇到Action算子后将进行逆向解析，根据RDD之间的依赖关系以及是否存在shuffle等，
+    将RDD图解析成一系列具有先后依赖关系的Stage。Stage以shuffle进行划分，即如果两个RDD之间存在宽依赖的关系，DAGScheduler将会在这RDD之间拆分为两个Stage进行执行，
+    且只有在前一个Stage（父Stage）执行完毕后，才执行后一个Stage。
+    （4）DAGScheduler将划分的一系列的Stage（TaskSet），按照Stage的先后顺序依次提交给底层的调度器TaskScheduler去执行。
+    （5）TaskScheduler接收到DAGScheduler的Stage任务后，将会在集群环境中构建一个 TaskSetManager 实例来管理Stage（TaskSet） 的生命周期。
+    （6）TaskSetManager将会把相关的计算代码、数据资源文件等发送到相应的Executor上，并在相应的Executor上启动线程池执行。TaskSetManager在执行过程中，使用了一些优化的算法，
+    用于提高执行的效率，譬如根据数据本地性决定每个Task***位置、推测执行碰到Straggle任务需要放到别的结点上重试、出现shuffle输出数据丢失时要报告fetch failed错误等机制。
+    （7）在Task执行的过程中，可能有部分应用程序涉及到I/O的输入输出，在每个Executor由相应的BlockManager进行管理，相关BlockManager的信息将会与Driver中的Block tracker进行交互和同步。
+    （8）在TaskThreads执行的过程中，如果存在运行错误、或其他影响的问题导致失败，TaskSetManager将会默认尝试3次，尝试均失败后将上报TaskScheduler，TaskScheduler如果解决不了，
+    再上报DAGScheduler，DAGScheduler将根据各个Worker结点的运行情况重新提交到别的Executor中执行。
+    （9）TaskThreads执行完毕后，将把执行的结果反馈给TaskSetManager，TaskSetManager反馈给TaskScheduler，TaskScheduler再上报DAGScheduler，
+    DAGScheduler将根据是否还存在待执行的Stage，将继续循环迭代提交给TaskScheduler去执行。
+    （10）待所有的Stage都执行完毕后，将会最终达到应用程序的目标，或者输出到文件、或者在屏幕显示等，Driver的本次运行过程结束，等待用户的其他指令或者关闭。
+    （11）在用户显式关闭 SparkContext后，整个运行过程结束，相关的资源被释放或回收。
 
 ###### 49、SparkOnYarn与standalone区别？
      1、Yarn 支持动态资源配置。
@@ -475,6 +505,8 @@
      Yarn 作为通用的种子资源调度平台，除了 Spark 提供调度服务之外，还可以为其他系统提供调度，如 Hadoop MapReduce, Hive 等。
 
 ###### 50、Spark优化之内存管理？
+    1.设置cache
+    2.设置jvm堆外内存
 
 ###### 51、Spark优化之广播变量？
 
@@ -514,4 +546,3 @@
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
 * [2.Spark性能优化指南——高级篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-pro.html)
-
