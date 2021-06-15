@@ -40,10 +40,30 @@
 
 ###### [5）、Spark Streaming程序消费过慢如何解决？]()
     1、优化代码逻辑、合理设置batch时间
-    2、
+    2、合理增加数据处理和接收时的并行度
+    3,内存优化,是否内存常驻大对象
+    4,有必要可以使用广播变量
 
 ###### [6）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？]()
+
+
 ###### [7）、Spark Streaming工作流程是怎样的？和Storm以及Flink有什么区别？]()
+    Spark Streaming是核心Spark API的扩展，可实现实时数据流的可伸缩，高吞吐量，容错流处理。数据可以从像Kafka，Flume，Kinesis，或TCP sockets许多来源摄入，
+    并且可以使用与像高级别功能表达复杂的算法来处理map，reduce，join和window。最后，可以将处理后的数据推送到文件系统，数据库和实时仪表板。
+    实际上，可以在数据流上应用Spark的机器学习和图形处理算法。
+    Spark Streaming提供了称为离散流或DStream的高级抽象，它表示连续的数据流。
+    可以根据来自Kafka，Flume和Kinesis等来源的输入数据流来创建DStream，也可以通过对其他DStream应用高级操作来创建DStream。在内部，DStream表示为RDD序列。
+    
+    模型：Storm 和 Flink 是真正的一条一条处理数据；Spark Streaming 其实都是小批处理，一次处理一批数据（小批量）。
+    API：Storm 使用基础 API 进行开发，比如实现一个简单的 sum 求和操作；而 Spark Streaming 和 Flink 中都提供封装后的高阶函数，可以直接拿来使用
+    保证次数：在数据处理方面，Storm 可以实现至少处理一次，但不能保证仅处理一次，这样就会导致数据重复处理问题，Spark Streaming和Flink可以保证对数据实现仅一次的处理
+    容错机制：Storm通过ACK机制实现数据的容错机制，而Spark Streaming和 Flink 可以通过 CheckPoint 机制实现容错机制。
+    状态管理：Storm 中没有实现状态管理，Spark Streaming 实现了基于 DStream 的状态管理，而 Flink 实现了基于操作的状态管理。
+    延时：表示数据处理的延时情况， 因此 Storm 和 Flink 接收到一条数据就处理一条数据，其数据处理的延时性是很低的；Spark Streaming 都是小型批处理，它们数据处理的延时性相对会偏高。
+    吞吐量：Storm 的吞吐量其实也不低，只是相对于其他几个框架而言较低；而 Spark Streaming 和 Flink 的吞吐量是比较高的。
+    
+    综上，主要是因为Flink的高吞吐、低延迟、高性能等特性优于其它同类产品，使得越来越多的公司更青睐它。
+
 ###### [8）、Spark Streaming输出小文件问题？]()
     原因是sparkstreaming的微批处理模式和DStream(RDD)的分布式(partition)特性导致的。
     sparkstreaming为每个partition启动一个独立的线程来处理数据，一旦文件输出到HDFS，那么这个文件流就关闭了，
@@ -55,6 +75,8 @@
     4、foreach的append方法追加
 
 ###### [9）、Spark Streaming中foreachRDD如何使用？]()
+
+
 ###### [10）、Spark Streaming的启动时序图？]()
 ###### [11）、Spark Streaming程序调优？]()
     01合理的批处理时间（batchDuration）
