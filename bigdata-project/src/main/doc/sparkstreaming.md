@@ -75,9 +75,12 @@
     4、foreach的append方法追加
 
 ###### [9）、Spark Streaming中foreachRDD如何使用？]()
-
+    dstream.foreachRDD是一个功能强大的原语primitive，它允许将数据发送到外部系统。
+    输出操作实际上是允许外部系统消费转换后的数据，它们触发的实际操作是DStream转换。
 
 ###### [10）、Spark Streaming的启动时序图？]()
+![Spark Streaming的启动时序图](./images/SparkStreaming启动时序图.png)  
+
 ###### [11）、Spark Streaming程序调优？]()
     01合理的批处理时间（batchDuration）
     02合理的Kafka拉取量（maxRatePerPartition参数设置）
@@ -90,5 +93,18 @@
         Kryo优化序列化性能
 
 ###### [12）、Spark Streaming窗口大小？每个窗口处理的数据量？]()
+    在Spark Streaming中，数据处理是按批进行的，而数据采集是逐条进行的，因此在Spark Streaming中会先设置好批处理间隔（batch duration），当超过批处理间隔的时候就会把采集到的数据汇总起来成为一批数据交给系统去处理。
+    对于窗口操作而言，在其窗口内部会有N个批处理数据，批处理数据的大小由窗口间隔（window duration）决定，而窗口间隔指的就是窗口的持续时间，在窗口操作中，只有窗口的长度满足了才会触发批数据的处理。
+    除了窗口的长度，窗口操作还有另一个重要的参数就是滑动间隔（slide duration），它指的是经过多长时间窗口滑动一次形成新的窗口，滑动窗口默认情况下和批次间隔的相同，
+    而窗口间隔一般设置的要比它们两个大。在这里必须注意的一点是滑动间隔和窗口间隔的大小一定得设置为批处理间隔的整数倍
+![Spark Streaming窗口](./images/SparkStreaming窗口.png) 
+ 
+    如上图所示，批处理间隔是1个时间单位，窗口间隔是3个时间单位，滑动间隔是2个时间单位。
+    对于窗口操作，批处理间隔、窗口间隔和滑动间隔是非常重要的三个时间概念，是理解窗口操作的关键所在。
+    val windowedWordCounts = pairs.reduceByKeyAndWindow((a:Int,b:Int) => (a + b), Seconds(30), Seconds(10))
+
 ###### [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
+    
+
 ###### [14）、Spark Streaming面对高峰数据如何处理？]()
+    
