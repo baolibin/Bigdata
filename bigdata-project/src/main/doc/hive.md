@@ -40,6 +40,21 @@
     4.Hive的数据存储在HDFS中，大部分的查询、计算由MapReduce完成（包含*的查询，比如select * from tbl不会生成MapRedcue任务）。
 
 ###### [2）、Hive解析成MapReduce过程？]()
+    解释器、编译器、优化器完成HQL查询语句从词法分析、语法分析、编译、优化以及查询计划的生成。
+    生成的查询计划存储在HDFS中，并在随后又MapReduce调用生成。
+    
+    hive sql 转换为 MapReduce过程:
+    antlr 定义sql语法规则,完成sql词法,语法解析,将sql转换为抽象语法树AST tree
+    遍历 AST tree,抽象出查询的基本单元 查询块queryBlock
+    遍历 queryBlock,翻译成执行操作树 operatorTree
+    逻辑层优化器进行OperatorTree优化,合并不需要的reduceSinkOperator(合并操作),减少shuffle(遍历清洗)数据量
+    遍历operatorTree ,翻译成MapReduce任务
+    物理层优化器进行MapReduce任务的转化,生成最终执行计划
+    
+    一个复杂的hive sql 可能会转化成 多个 MapReduce任务执行:
+    HiveSql->AST tree(抽象语法树)->query block(查询块)->operation tree(执行操作树)->逻辑层优化执行操作树 减少重复的合并 减少不必要的shuffle(混洗)->
+    new operation tree(新的执行逻辑树)->MapReduce task->进行物理层的优化->new MapReduce task
+
 ###### [3）、Hive与传统数据库的区别？]()
     查询语言不同,传统数据库用的是SQL语句,hive是集成的HQL语句.
     数据存储地方不同,不同于传统数据库存储在原始设备或本地文件系统(Raw Device or Local FS),Hive 存储在HDFS.
@@ -47,7 +62,18 @@
     同时hive执行延迟高,处理数据规模大,无索引(0.8版本后才加入位图索引,mysql有复杂的索引),都是hive与传统的区别. 
 
 ###### [4）、Hive内部表和外部表区别？]()
+    1.未被external修饰的是内部表【managed table】，被external修饰的为外部表【external table】。
+    2.内部表数据由Hive自身管理，外部表数据由HDFS管理。
+    3.内部表数据存储在hive.metastore.warehouse.dir【默认:/user/hive/warehouse】，外部表数据存储位置由用户自己决定。
+    4.删除内部表会直接删除元数据【metadata】及存储数据，删除外部表仅仅删除元数据，HDFS上的文件不会被删除。
+    5.对内部表的修改会直接同步到元数据，而对外部表的表结构和分区进行修改，则需要修改【MSCK REPAIR TABLE table_name】。
+
 ###### [5）、Hive中order by、sort by、distribute by和cluster by的区别？]()
+    order by 会对查询结果集执行一个全局排序，这也就是说所有的数据都通过一个reduce进行处理的过程，对于大数据集，这个过程将消耗很大的时间来执行。
+    sort by 也就是执行一个局部排序过程。这可以保证每个reduce的输出数据都是有序的(但并非全局有效)。
+    distribute by 控制 map的输出在reduer中是如何划分的,使用distribute by可以保证相同key的记录被划分到一个reducer中。
+    cluster by 除了distribute by 的功能外，还会对该字段进行排序，所以cluster by = distribute by +sort by 。
+
 ###### [6）、Hive中row_number()、rank()和dense_rank()区别？]()
     row_number() over() : 排名函数，不会重复，适合于生成主键或者不并列排名
     rank() over() :  排名函数，有并列名次，名次不连续。如:1,1,3
