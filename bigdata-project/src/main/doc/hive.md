@@ -21,12 +21,11 @@
     - [20）、所有的Hive任务底层都会执行MapReduce么？]()
     - [21）、Hive函数中UDF、UDAF和UDTF区别？]()
     - [22）、Hive桶表的理解？]()
-    - [23）、Hive实现UDF函数的流程？]()
-    - [24）、Hive SQL语句是怎么执行的？]()
-    - [25）、Hive用过哪些优化？]()
-    - [26）、Hive如何设置并行数？]()
-    - [27）、Hive如何合并小文件？]()
-    - [28）、Hive动态分区？]()
+    - [23）、Hive SQL语句是怎么执行的？]()
+    - [24）、Hive用过哪些优化？]()
+    - [25）、Hive如何设置并行数？]()
+    - [26）、Hive如何合并小文件？]()
+    - [27）、Hive动态分区？]()
 ---
 ###### [1）、简述Hive主要结构？]()
 ![Hive主要结构](images/Hive主要结构.png)  
@@ -106,20 +105,6 @@
     if判断 -- if(con,'','');
 
 ###### [8）、Hive使用过udf函数么？如何使用的？]()
-     Hive中有三种UDF:
-      1、用户定义函数(user-defined function)UDF
-      2、用户定义聚集函数（user-defined aggregate function，UDAF）
-      3、用户定义表生成函数（user-defined table-generating function，UDTF）。
-      
-      UDF操作作用于单个数据行，并且产生一个数据行作为输出。大多数函数都属于这一类（比如数学函数和字符串函数）。
-      UDAF 接受多个输入数据行，并产生一个输出数据行。像COUNT和MAX这样的函数就是聚集函数。
-      UDTF 操作作用于单个数据行，并且产生多个数据行，一个表作为输出。lateral view explore()。
-      
-      简单来说：
-        UDF:返回对应值，一对一
-        UDAF：返回聚类值，多对一
-        UDTF：返回拆分值，一对多
-        
       UDF：
       1、UDF函数可以直接应用于select语句，对查询结构做格式化处理后，再输出内容。
       2、编写UDF函数的时候需要注意一下几点：
@@ -149,9 +134,24 @@
             hive> DROP TEMPORARY FUNCTION getLen;
 
 ###### [9）、Hive如何实现分区？]()
-    
+    Hive分区是指按照数据表的某一个字段或多个字段进行统一归类，并存储在在hdfs上的不同文件夹中。
+    当查询过程中指定了分区条件时，只将该分区对应的目录作为Input，从而减少MapReduce的输入数据，提高查询效率。
+    1、加载数据，使用指定字段作为分区字段，分区
+    2、从已存在的分区目录创建分区
 
 ###### [10）、Hive导入和导出数据的方式？]()
+    导入：
+    1）、本地文件导入到Hive表；
+    2）、Hive表导入到Hive表;
+    3）、HDFS文件导入到Hive表;
+    4）、创建表的过程中从其他表导入;
+    5）、通过sqoop将mysql库导入到Hive表
+    
+    导出：
+    1）、Hive表导出到本地文件系统；
+    2）、Hive表导出到HDFS；
+    3）、通过sqoop将Hive表导出到mysql库；
+
 ###### [11）、Hive窗口函数有哪些?]()
     聚合函数:
         sum：求和    
@@ -166,19 +166,107 @@
         n following:往后n行数据
 
 ###### [12）、Hive中如何使用UDTF?]()
+    1、用户定义表生成函数（user-defined table-generating function，UDTF）。
+    UDTF 操作作用于单个数据行，并且产生多个数据行，一个表作为输出。lateral view explore()。
+    UDTF：返回拆分值，一对多
+    
+    2、编写自己需要的UDTF
+    继承org.apache.hadoop.hive.ql.udf.generic.GenericUDTF。
+    实现initialize, process, close三个方法
+    UDTF首先会调用initialize方法，此方法返回UDTF的返回行的信息（返回个数，类型）。初始化完成后，会调用process方法，
+    对传入的参数进行处理，可以通过forword()方法把结果返回。最后close()方法调用，对需要清理的方法进行清理。
+    
+    3、 使用方法
+    UDTF有两种使用方法，一种直接放到select后面，一种和lateral view一起使用。
+    1）、直接select中使用：select explode_map(properties) as (col1,col2) from src;
+    # 不可以添加其他字段使用：select a, explode_map(properties) as (col1,col2) from src
+    # 可以嵌套调用：select explode_map(explode_map(properties)) from src
+    # 不可以和group by/cluster by/distribute by/sort by一起使用：
+    #    select explode_map(properties) as (col1,col2) from src group by col1, col2
+
+    2）、和lateral view一起使用：
+    select src.id, mytable.col1, mytable.col2 from src lateral view explode_map(properties) mytable as col1, col2;
+
 ###### [13）、Hive表关联查询，如何解决数据倾斜问题？]()
+    1） 过滤掉脏数据：如果大key是无意义的脏数据，直接过滤掉。
+    2）数据预处理：数据做一下预处理，尽量保证join的时候，同一个key对应的记录不要有太多。
+    3） 增加reduce个数：如果数据中出现了多个大key，增加reduce个数，可以让这些大key落到同一个reduce的概率小很多。
+    4） 转换为mapjoin：如果两个表join的时候，一个表为小表，可以用mapjoin做。
+    5） 大key单独处理：将大key和其他key分开处理
+    6）hive.optimize.skewjoin：会将一个join sql 分为两个job。另外可以同时设置下hive.skewjoin.key，默认为10000。
+    7）调整内存设置：适用于那些由于内存超限内务被kill掉的场景。
+    如：set mapreduce.reduce.memory.mb=5120 ;
+       set mapreduce.reduce.java.opts=-Xmx5000M -XX:MaxPermSize=128m ;
+
 ###### [14）、Hive中数据的null在底层是如何存储的？]()
+    null在hive底层默认是用'\N'来存储的。
+    能够经过alter table test SET SERDEPROPERTIES('serialization.null.format' = 'a');来修改
+    null与任何值运算的结果都是null, 可使用is null、is not null函数指定在其值为null状况下的取值。
+
 ###### [15）、Hive有哪些方式保存元数据？各有哪些特点？]()
+    1）、内嵌模式（derby）：将元数据保存在本地内嵌的derby数据库中，内嵌的derby数据库每次只能访问一个数据文件，也就意味着它不支持多会话连接。
+    2）、 本地模式：将元数据保存在本地独立的数据库中（一般是mysql），这可以支持多会话连接。
+    3）、 远程模式：把元数据保存在远程独立的mysql数据库中，避免每个客户端都去安装mysql数据库，持久化好，查看方便。
+
 ###### [16）、Hive中split、coalesce和collect_list函数的用法？]()
+    split将字符串转化为数组，即：split('a,b,c,d' , ',') ==> ["a","b","c","d"]。 
+    coalesce(T v1, T v2, …) 返回参数中的第一个非空值；如果所有值都为 NULL，那么返回NULL。 
+    collect_list列出该字段所有的值，不去重 => select collect_list(id) from table。 
+
 ###### [17）、Hive在join时候大表和小表放置顺序？]()
+    在hive中，（启用Map join时） 大表left join小表，加载从右向左，所以小表会加载进内存，存储成map键值对，
+    通过大表驱动小表，来进行join，即大表中的join字段作为key 来获取value进行join。
+
 ###### [18）、Hive使用两张表关联，使用MapReduce怎么实现？]()
+    如果其中有一张表为小表，直接使用map端join的方式（map端加载小表）进行聚合。
+    如果两张都是大表，那么采用联合key，联合key的第一个组成部分是join on中的公共字段，第二部分是一个flag，0代表表A，1代表表B
+    由此让Reduce区分客户信息和订单信息；在Mapper中同时处理两张表的信息，将join on公共字段相同的数据划分到同一个分区中，
+    进而传递到一个Reduce中，然后在Reduce中实现聚合。
+
 ###### [19）、Hive中使用什么可以代替in查询？]()
+    Hive中的left semi join替换sql中的in操作
+
 ###### [20）、所有的Hive任务底层都会执行MapReduce么？]()
+    不是，从Hive0.10.0版本开始，对于简单的不需要聚合的类似SELECT from
+    LIMIT n语句，不需要起MapReduce job，直接通过Fetch task获取数据。
+
 ###### [21）、Hive函数中UDF、UDAF和UDTF区别？]()
+    Hive中有三种UDF:
+    1、用户定义函数(user-defined function)UDF
+    2、用户定义聚集函数（user-defined aggregate function，UDAF）
+    3、用户定义表生成函数（user-defined table-generating function，UDTF）。
+      
+    UDF操作作用于单个数据行，并且产生一个数据行作为输出。大多数函数都属于这一类（比如数学函数和字符串函数）。
+    UDAF 接受多个输入数据行，并产生一个输出数据行。像COUNT和MAX这样的函数就是聚集函数。
+    UDTF 操作作用于单个数据行，并且产生多个数据行，一个表作为输出。lateral view explore()。
+      
+    简单来说：
+        UDF:返回对应值，一对一
+        UDAF：返回聚类值，多对一
+        UDTF：返回拆分值，一对多
+
 ###### [22）、Hive桶表的理解？]()
-###### [23）、Hive实现UDF函数的流程？]()
-###### [24）、Hive SQL语句是怎么执行的？]()
-###### [25）、Hive用过哪些优化？]()
-###### [26）、Hive如何设置并行数？]()
-###### [27）、Hive如何合并小文件？]()
-###### [28）、Hive动态分区？]()
+    桶表是对数据进行哈希取值，然后放到不同文件中存储。
+    数据加载到桶表时，会对字段取hash值，然后与桶的数量取模。把数据放到对应的文件中。
+    物理上，每个桶就是表(或分区）目录里的一个文件，一个作业产生的桶(输出文件)和reduce任务个数相同。
+    桶表专门用于抽样查询，是很专业性的，不是日常用来存储数据的表，需要抽样查询时，才创建和使用桶表。
+
+###### [23）、Hive SQL语句是怎么执行的？]()
+    HiveSQL ->AST(抽象语法树) -> QB(查询块) ->OperatorTree（操作树）->优化后的操作树->mapreduce任务树->优化后的mapreduce任务树
+    过程描述如下：
+        SQL Parser：Antlr定义SQL的语法规则，完成SQL词法，语法解析，将SQL转化为抽象语法树AST Tree；
+        Semantic Analyzer：遍历AST Tree，抽象出查询的基本组成单元QueryBlock；
+        Logical plan：遍历QueryBlock，翻译为执行操作树OperatorTree；
+        Logical plan optimizer: 逻辑层优化器进行OperatorTree变换，合并不必要的ReduceSinkOperator，减少shuffle数据量；
+        Physical plan：遍历OperatorTree，翻译为MapReduce任务；
+        Logical plan optimizer：物理层优化器进行MapReduce任务的变换，生成最终的执行计划。
+
+###### [24）、Hive用过哪些优化？]()
+###### [25）、Hive如何设置并行数？]()
+###### [26）、Hive如何合并小文件？]()
+    在map执行前合并小文件，减少map数：CombineHiveInputFormat具有对小文件进行合并的功能（系统默认的格式）。
+    HiveInputFormat没有对小文件合并功能。
+    set hive.input.format= org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
+
+###### [27）、Hive动态分区？]()
+https://www.cnblogs.com/shan13936/p/13841582.html
