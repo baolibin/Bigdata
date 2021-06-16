@@ -29,6 +29,16 @@
     - [28）、Hive动态分区？]()
 ---
 ###### [1）、简述Hive主要结构？]()
+![Hive主要结构](images/Hive主要结构.png)  
+    
+    1.用户接口主要有三个：CLI，Client 和 WUI。
+    最常用的是CLI，Cli启动的时候，会同时启动一个Hive副本。
+    Client是Hive的客户端，用户连接至Hive Server。在启动 Client模式的时候，需要指出Hive Server所在节点，并且在该节点启动Hive Server。 
+    WUI是通过浏览器访问Hive。
+    2.Hive将元数据存储在数据库中，如mysql、derby。Hive中的元数据包括表的名字，表的列和分区及其属性，表的属性（是否为外部表等），表的数据所在目录等。
+    3.解释器、编译器、优化器完成HQL查询语句从词法分析、语法分析、编译、优化以及查询计划的生成。生成的查询计划存储在HDFS中，并在随后有MapReduce调用执行。
+    4.Hive的数据存储在HDFS中，大部分的查询、计算由MapReduce完成（包含*的查询，比如select * from tbl不会生成MapRedcue任务）。
+
 ###### [2）、Hive解析成MapReduce过程？]()
 ###### [3）、Hive与传统数据库的区别？]()
     查询语言不同,传统数据库用的是SQL语句,hive是集成的HQL语句.
