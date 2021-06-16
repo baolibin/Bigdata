@@ -80,6 +80,31 @@
     dense_rank() over() : 排名函数，有并列名次，名次连续。如：1，1，2
 
 ###### [7）、Hive中常用的系统函数有哪些？]()
+    1、聚合函数：函数处理的数据粒度为多条记录。
+    sum()—求和
+    count()—求数据量
+    avg()—求平均直
+    distinct—求不同值数
+    min—求最小值
+    max—求最人值
+    
+    2、分析函数 Analytics functions
+    RANK
+    ROW_NUMBER
+    DENSE_RANK
+    CUME_DIST
+    PERCENT_RANK
+    
+    3、字符串连接函数
+    concat
+    concat_ws
+    collect_list
+    collect_set
+    
+    4、其他函数
+    cast -类型转换
+    if判断 -- if(con,'','');
+
 ###### [8）、Hive使用过udf函数么？如何使用的？]()
      Hive中有三种UDF:
       1、用户定义函数(user-defined function)UDF
@@ -124,6 +149,8 @@
             hive> DROP TEMPORARY FUNCTION getLen;
 
 ###### [9）、Hive如何实现分区？]()
+    
+
 ###### [10）、Hive导入和导出数据的方式？]()
 ###### [11）、Hive窗口函数有哪些?]()
     聚合函数:
