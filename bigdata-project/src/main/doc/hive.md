@@ -205,14 +205,20 @@
 
 ###### [13）、Hive表关联查询，如何解决数据倾斜问题？]()
     1） 过滤掉脏数据：如果大key是无意义的脏数据，直接过滤掉。
-    2）数据预处理：数据做一下预处理，尽量保证join的时候，同一个key对应的记录不要有太多。
+    2） 数据预处理：数据做一下预处理，尽量保证join的时候，同一个key对应的记录不要有太多。
     3） 增加reduce个数：如果数据中出现了多个大key，增加reduce个数，可以让这些大key落到同一个reduce的概率小很多。
     4） 转换为mapjoin：如果两个表join的时候，一个表为小表，可以用mapjoin做。
     5） 大key单独处理：将大key和其他key分开处理
-    6）hive.optimize.skewjoin：会将一个join sql 分为两个job。另外可以同时设置下hive.skewjoin.key，默认为10000。
-    7）调整内存设置：适用于那些由于内存超限内务被kill掉的场景。
+    6） hive.optimize.skewjoin：会将一个join sql 分为两个job。另外可以同时设置下hive.skewjoin.key，默认为10000。
+    7） 调整内存设置：适用于那些由于内存超限内务被kill掉的场景。
     如：set mapreduce.reduce.memory.mb=5120 ;
        set mapreduce.reduce.java.opts=-Xmx5000M -XX:MaxPermSize=128m ;
+       
+    倾斜原因：map输出数据按key Hash的分配到reduce中，由于key分布不均匀、业务数据本身的特、建表时考虑不周、等原因造成的reduce 上的数据量差异过大。
+      （1）key分布不均匀;
+      （2）业务数据本身的特性;
+      （3）建表时考虑不周;
+      （4）某些SQL语句本身就有数据倾斜;
 
 ###### [14）、Hive中数据的null在底层是如何存储的？]()
     null在hive底层默认是用'\N'来存储的。
@@ -286,17 +292,45 @@
 
 ###### [27）、Hive动态分区？]()
 ###### [28）、Hive底层与数据库交互原理？]()
+    由于Hive的元数据可能要面临不断地更新、修改和读取操作，所以它显然不适合使用Hadoop文件系统进行存储。
+    目前Hive将元数据存储在RDBMS中，比如存储在MySQL、Derby中。
+    元数据信息包括：存在的表、表的列、权限和更多的其他信息。
+
 ###### [29）、Hive的Fetch抓取？]()
+    Fetch抓取是指，Hive中对某些情况的查询可以不必使用MapReduce计算。
+    例如：SELECT * FROM employees;在这种情况下，Hive可以简单地读取employee对应的存储目录下的文件，然后输出查询结果到控制台。
+    在hive-default.xml.template文件中hive.fetch.task.conversion默认是more，老版本hive默认是minimal，
+    该属性修改为more以后，在全局查找、字段查找、limit查找等都不走mapreduce。
+
 ###### [30）、Hive的Group By？]()
+    默认情况下，Map阶段同一Key数据分发给一个reduce，当一个key数据过大时就倾斜了。
+    并不是所有的聚合操作都需要在Reduce端完成，很多聚合操作都可以先在Map端进行部分聚合，最后在Reduce端得出最终结果。
+    开启Map端聚合参数设置
+    （1）是否在Map端进行聚合，默认为True
+        hive.map.aggr = true
+    （2）在Map端进行聚合操作的条目数目
+        hive.groupby.mapaggr.checkinterval = 100000
+    （3）有数据倾斜的时候进行负载均衡（默认是false）
+        hive.groupby.skewindata = true
+        当选项设定为 true，生成的查询计划会有两个MR Job。
+        第一个MR Job中，Map的输出结果会随机分布到Reduce中，每个Reduce做部分聚合操作，并输出结果，这样处理的结果是相同的Group By Key有可能被分发到不同的Reduce中，从而达到负载均衡的目的；
+        第二个MR Job再根据预处理的数据结果按照Group By Key分布到Reduce中,这个过程可以保证相同的Group By Key被分布到同一个Reduce中,最后完成最终的聚合操作。 
+
 ###### [31）、Hive的Count(Distinct) 去重统计？]()
+    数据量小的时候无所谓，数据量大的情况下，由于COUNT DISTINCT操作需要用一个Reduce Task来完成，这一个Reduce需要处理的数据量太大，就会导致整个Job很难完成，
+    一般COUNT DISTINCT使用先GROUP BY再COUNT的方式替换
+
 ###### [32）、Hive的笛卡尔积？]()
+    尽量避免笛卡尔积，join的时候不加on条件，或者无效的on条件，Hive只能使用1个reducer来完成笛卡尔积
+
 ###### [33）、Hive的JVM重用？]()
     在MR job中，默认是每执行一个task就启动一个JVM。如果task非常小而碎，那么JVM启动和关闭的耗时就会很长。
     可以通过调节参数mapred.job.reuse.jvm.num.tasks来重用。
     例如将这个参数设成5，那么就代表同一个MR job中顺序执行的5个task可以重复使用一个JVM，减少启动和关闭的开销。但它对不同MR job中的task无效。
 
 ###### [34）、Hive的行列过滤？]()
-    
+    列处理：在SELECT中，只拿需要的列，如果有，尽量使用分区过滤，少用SELECT *。
+    行处理：在分区剪裁中，当使用外关联时，如果将副表的过滤条件写在Where后面，那么就会先全表关联，之后再过滤。
 
 ###### [35）、Hive的Map数？]()
     mapper数量与输入文件的split数息息相关，在Hadoop源码org.apache.hadoop.mapreduce.lib.input.FileInputFormat类中可以看到split划分的具体逻辑。
