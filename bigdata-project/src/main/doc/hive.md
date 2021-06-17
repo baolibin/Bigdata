@@ -31,7 +31,7 @@
     - [30）、Hive的Group By？]()
     - [31）、Hive的Count(Distinct) 去重统计？]()
     - [32）、Hive的笛卡尔积？]()
-    - [33）、Hive的笛卡尔积？]()
+    - [33）、Hive的JVM重用？]()
     - [34）、Hive的行列过滤？]()
     - [35）、Hive的Map数？]()
     - [36）、Hive的Reduce数？]()
@@ -39,6 +39,8 @@
     - [38）、Hive的本地模式？]()
     - [39）、Hive的列裁剪和分区裁剪？]()
     - [40）、Hive的谓词下推?]()
+    - [41）、Hive的严格模式?]()
+    - [42）、Hive启用压缩?]()
 
 ---
 ###### [1）、简述Hive主要结构？]()
@@ -283,20 +285,55 @@
     set hive.input.format= org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
 
 ###### [27）、Hive动态分区？]()
-
-
 ###### [28）、Hive底层与数据库交互原理？]()
 ###### [29）、Hive的Fetch抓取？]()
 ###### [30）、Hive的Group By？]()
 ###### [31）、Hive的Count(Distinct) 去重统计？]()
 ###### [32）、Hive的笛卡尔积？]()
-###### [33）、Hive的笛卡尔积？]()
+###### [33）、Hive的JVM重用？]()
+    在MR job中，默认是每执行一个task就启动一个JVM。如果task非常小而碎，那么JVM启动和关闭的耗时就会很长。
+    可以通过调节参数mapred.job.reuse.jvm.num.tasks来重用。
+    例如将这个参数设成5，那么就代表同一个MR job中顺序执行的5个task可以重复使用一个JVM，减少启动和关闭的开销。但它对不同MR job中的task无效。
+
 ###### [34）、Hive的行列过滤？]()
+    
+
 ###### [35）、Hive的Map数？]()
+    mapper数量与输入文件的split数息息相关，在Hadoop源码org.apache.hadoop.mapreduce.lib.input.FileInputFormat类中可以看到split划分的具体逻辑。
+    可以直接通过参数mapred.map.tasks（默认值2）来设定mapper数的期望值，但它不一定会生效
+    设输入文件的总大小为total_input_size。HDFS中，一个块的大小由参数dfs.block.size指定，默认值64MB或128MB。
+    在默认情况下，mapper数就是：
+        default_mapper_num = total_input_size / dfs.block.size。
+    参数mapred.min.split.size（默认值1B）和mapred.max.split.size（默认值64MB）分别用来指定split的最小和最大大小。
+    split大小和split数计算规则是：
+        split_size = MAX(mapred.min.split.size, MIN(mapred.max.split.size, dfs.block.size))
+        split_num = total_input_size / split_size。
+    得出mapper数：
+        mapper_num = MIN(split_num, MAX(default_num, mapred.map.tasks))。
+    
+    如果想减少mapper数，就适当调高mapred.min.split.size，split数就减少了。
+    如果想增大mapper数，除了降低mapred.min.split.size之外，也可以调高mapred.map.tasks。
+    如果输入文件是少量大文件，就减少mapper数；如果输入文件是大量非小文件，就增大mapper数；至于大量小文件的情况，得考虑“合并小文件”
+
 ###### [36）、Hive的Reduce数？]()
+    reducer数量的确定方法比mapper简单得多。使用参数mapred.reduce.tasks可以直接设定reducer数量，不像mapper一样是期望值。
+    但如果不设这个参数的话，Hive就会自行推测，逻辑如下：
+    参数hive.exec.reducers.bytes.per.reducer用来设定每个reducer能够处理的最大数据量，默认值1G（1.2版本之前）或256M（1.2版本之后）。
+    参数hive.exec.reducers.max用来设定每个job的最大reducer数量，默认值999（1.2版本之前）或1009（1.2版本之后）。
+    得出reducer数：reducer_num = MIN(total_input_size / reducers.bytes.per.reducer, reducers.max)。
+    reducer数量与输出文件的数量相关。如果reducer数太多，会产生大量小文件，对HDFS造成压力。如果reducer数太少，每个reducer要处理很多数据，容易拖慢运行时间或者造成OOM。
+
 ###### [37）、Hive的并行执行？]()
+    Hive中互相没有依赖关系的job间是可以并行执行的，最典型的就是多个子查询union all。
+    在集群资源相对充足的情况下，可以开启并行执行，即将参数hive.exec.parallel设为true。
+    另外hive.exec.parallel.thread.number可以设定并行执行的线程数，默认为8，一般都够用。
 
 ###### [38）、Hive的本地模式？]()
+    Hive也可以不将任务提交到集群进行运算，而是直接在一台节点上处理。因为消除了提交到集群的overhead，所以比较适合数据量很小，且逻辑不复杂的任务。
+    设置hive.exec.mode.local.auto为true可以开启本地模式。
+    但任务的输入数据总量必须小于hive.exec.mode.local.auto.inputbytes.max（默认值128MB），且mapper数必须小于hive.exec.mode.local.auto.tasks.max（默认值4），
+    reducer数必须为0或1，才会真正用本地模式执行。
+
 ###### [39）、Hive的列裁剪和分区裁剪？]()
     列裁剪就是在查询时只读取需要的列，分区裁剪就是只读取需要的分区。
 
@@ -315,4 +352,16 @@
     对forum_topic做过滤的where语句写在子查询内部，而不是外部。
     Hive中有谓词下推优化的配置项hive.optimize.ppd，默认值true，与它对应的逻辑优化器是PredicatePushDown。
     该优化器就是将OperatorTree中的FilterOperator向上提
-![Hive谓词下推](images/Hive谓词下推.jpeg)  
+![Hive谓词下推](images/Hive谓词下推.jpeg)
+
+###### [41）、Hive的严格模式?]()
+    所谓严格模式，就是强制不允许用户执行3种有风险的HiveSQL语句，一旦执行会直接失败。这3种语句是：
+    1.查询分区表时不限定分区列的语句；
+    2.两表join产生了笛卡尔积的语句；
+    3.用order by来排序但没有指定limit的语句。
+
+###### [42）、Hive启用压缩?]()
+    压缩job的中间结果数据和输出数据，可以用少量CPU时间节省很多空间。压缩方式一般选择Snappy，效率最高。
+    要启用中间压缩，需要设定hive.exec.compress.intermediate为true，同时指定压缩方式hive.intermediate.compression.codec为org.apache.hadoop.io.compress.SnappyCodec。
+    另外，参数hive.intermediate.compression.type可以选择对块（BLOCK）还是记录（RECORD）压缩，BLOCK的压缩率比较高。
+    输出压缩的配置基本相同，打开hive.exec.compress.output即可。
