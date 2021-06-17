@@ -284,13 +284,43 @@
         Logical plan optimizer：物理层优化器进行MapReduce任务的变换，生成最终的执行计划。
 
 ###### [24）、Hive用过哪些优化？]()
+    1、设置合理的map reduce的task数量
+    2、小文件合并优化
+    3、列裁剪与分区裁剪
+    4、一般COUNT DISTINCT使用先GROUP BY再COUNT的方式替换COUNT(DISTINCT)
+    5、用MapJoin把小表全部加载到内存在map端进行join，避免reducer处理
+    6、left semi join替代in/exists操作
+![Hive的MapJoin](images/Hive的MapJoin工作机制.jpg)
+
 ###### [25）、Hive如何设置并行数？]()
+    set hive.exec.parallel=true 修改并行度
+
 ###### [26）、Hive如何合并小文件？]()
     在map执行前合并小文件，减少map数：CombineHiveInputFormat具有对小文件进行合并的功能（系统默认的格式）。
     HiveInputFormat没有对小文件合并功能。
     set hive.input.format= org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
 
 ###### [27）、Hive动态分区？]()
+    hive中支持两种类型的分区：
+    静态分区SP（static partition）
+    动态分区DP（dynamic partition）
+    静态分区与动态分区的主要区别在于静态分区是手动指定，而动态分区是通过数据来进行判断。
+    静态分区的列实在编译时期，通过用户传递来决定的；动态分区只有在SQL执行时才能决定。
+    
+    实战演示如何在hive中使用动态分区：
+    创建一张分区表，包含两个分区dt和ht表示日期和小时
+    CREATE TABLE partition_table001 
+    (
+        name STRING,
+        ip STRING
+    )
+    PARTITIONED BY (dt STRING, ht STRING)
+    ROW FORMAT DELIMITED FIELDS TERMINATED BY "\t";
+    
+    启用hive动态分区，只需要在hive会话中设置两个参数：
+    set hive.exec.dynamic.partition=true;
+    set hive.exec.dynamic.partition.mode=nonstrict;
+
 ###### [28）、Hive底层与数据库交互原理？]()
     由于Hive的元数据可能要面临不断地更新、修改和读取操作，所以它显然不适合使用Hadoop文件系统进行存储。
     目前Hive将元数据存储在RDBMS中，比如存储在MySQL、Derby中。
