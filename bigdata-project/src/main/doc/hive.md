@@ -36,6 +36,10 @@
     - [35）、Hive的Map数？]()
     - [36）、Hive的Reduce数？]()
     - [37）、Hive的并行执行？]()
+    - [38）、Hive的本地模式？]()
+    - [39）、Hive的列裁剪和分区裁剪？]()
+    - [40）、Hive的谓词下推?]()
+
 ---
 ###### [1）、简述Hive主要结构？]()
 ![Hive主要结构](images/Hive主要结构.png)  
@@ -291,3 +295,24 @@
 ###### [35）、Hive的Map数？]()
 ###### [36）、Hive的Reduce数？]()
 ###### [37）、Hive的并行执行？]()
+
+###### [38）、Hive的本地模式？]()
+###### [39）、Hive的列裁剪和分区裁剪？]()
+    列裁剪就是在查询时只读取需要的列，分区裁剪就是只读取需要的分区。
+
+###### [40）、Hive的谓词下推?]()
+    将SQL语句中的where谓词逻辑都尽可能提前执行，减少下游处理的数据量。
+    
+    例如以下HiveSQL语句：
+    select a.uid,a.event_type,b.topic_id,b.title
+    from calendar_record_log a
+    left outer join (
+    select uid,topic_id,title from forum_topic
+    where pt_date = 20190224 and length(content) >= 100
+    ) b on a.uid = b.uid
+    where a.pt_date = 20190224 and status = 0;
+
+    对forum_topic做过滤的where语句写在子查询内部，而不是外部。
+    Hive中有谓词下推优化的配置项hive.optimize.ppd，默认值true，与它对应的逻辑优化器是PredicatePushDown。
+    该优化器就是将OperatorTree中的FilterOperator向上提
+![Hive谓词下推](images/Hive谓词下推.jpeg)  
