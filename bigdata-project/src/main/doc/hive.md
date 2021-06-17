@@ -26,6 +26,16 @@
     - [25）、Hive如何设置并行数？]()
     - [26）、Hive如何合并小文件？]()
     - [27）、Hive动态分区？]()
+    - [28）、Hive底层与数据库交互原理？]()
+    - [29）、Hive的Fetch抓取？]()
+    - [30）、Hive的Group By？]()
+    - [31）、Hive的Count(Distinct) 去重统计？]()
+    - [32）、Hive的笛卡尔积？]()
+    - [33）、Hive的笛卡尔积？]()
+    - [34）、Hive的行列过滤？]()
+    - [35）、Hive的Map数？]()
+    - [36）、Hive的Reduce数？]()
+    - [37）、Hive的并行执行？]()
 ---
 ###### [1）、简述Hive主要结构？]()
 ![Hive主要结构](images/Hive主要结构.png)  
@@ -269,4 +279,15 @@
     set hive.input.format= org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;
 
 ###### [27）、Hive动态分区？]()
-https://www.cnblogs.com/shan13936/p/13841582.html
+
+
+###### [28）、Hive底层与数据库交互原理？]()
+###### [29）、Hive的Fetch抓取？]()
+###### [30）、Hive的Group By？]()
+###### [31）、Hive的Count(Distinct) 去重统计？]()
+###### [32）、Hive的笛卡尔积？]()
+###### [33）、Hive的笛卡尔积？]()
+###### [34）、Hive的行列过滤？]()
+###### [35）、Hive的Map数？]()
+###### [36）、Hive的Reduce数？]()
+###### [37）、Hive的并行执行？]()
