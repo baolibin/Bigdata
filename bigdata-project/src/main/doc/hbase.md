@@ -26,6 +26,7 @@
     - [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
     - [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
     - [27）、HBase的RowFilter和BloomFilter原理？]()
+    - [28）、HBase的HRegion如何划分的？]()
 ---
 ###### [1）、HBase是什么？特点有哪些？]()
     hbase是一个分布式的、面向列的开源数据库，它是一个适合于非结构化数据存储的数据库。
@@ -50,6 +51,7 @@
 
 ###### [4）、简述HBase架构模块？]()
 ![HBase架构](images/HBase架构.png)  
+
 
 ###### [5）、描述HBase中一个cell结构？]()
     cell：由{row key, column(=<CF> + <CQ>), version}唯一确定的单元，cell中的数据是没有类型的，全部是字节码形式存储。
@@ -147,3 +149,9 @@
 ###### [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
 ###### [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
 ###### [27）、HBase的RowFilter和BloomFilter原理？]()
+
+###### [28）、HBase的HRegion如何划分的？]()
+    Table中所有行都按照row key的字典序排列。
+    Table在行的方向上分割为多个HRegion。
+    HRegion按大小分割的，每个表开始只有一个HRegion，随着数据增多，HRegion不断增大，当增大到一个阀值的时候，HRegion就会等分会两个新的HRegion，之后会有越来越多的Region。
+    HRegion是Hbase中分布式存储和负载均衡的最小单元，不同HRegion分布到不同HRegionServer上。
