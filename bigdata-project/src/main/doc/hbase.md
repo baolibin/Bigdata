@@ -52,6 +52,8 @@
 ###### [4）、简述HBase架构模块？]()
 ![HBase架构](images/HBase架构.png)  
 
+    HMaster链接Zookeeper的目的：HMaster需要知道哪些HRegionServere是活的及HRegionServer所在的位置，然后管理HRegionServer。
+    
 
 ###### [5）、描述HBase中一个cell结构？]()
     cell：由{row key, column(=<CF> + <CQ>), version}唯一确定的单元，cell中的数据是没有类型的，全部是字节码形式存储。
