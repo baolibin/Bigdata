@@ -53,7 +53,12 @@
 ![HBase架构](images/HBase架构.png)  
 
     HMaster链接Zookeeper的目的：HMaster需要知道哪些HRegionServere是活的及HRegionServer所在的位置，然后管理HRegionServer。
-    
+    HBase内部是通过DFS client把数据写到HDFS上的
+    每一个HRegionServer有多个HRegion，每一个HRegion有多个Store，每一个Store对应一个列簇。
+    HFile是HBase中KeyValue数据的存储格式，HFile是Hadoop的二进制格式文件，StoreFile就是对HFile进行了封装，然后进行数据的存储。
+    HStore由MemStore和StoreFile组成。
+    HLog记录数据的所有变更，可以用来做数据恢复。
+    hdfs对应的目录结构为:namespace->table->列簇->列->单元格
 
 ###### [5）、描述HBase中一个cell结构？]()
     cell：由{row key, column(=<CF> + <CQ>), version}唯一确定的单元，cell中的数据是没有类型的，全部是字节码形式存储。
@@ -122,19 +127,51 @@
     ⑨ 当 Storefile 越来越大，Region 也会越来越大，达到阈值后，会触发 Split 操作，将Region 一分为二。
 
 ###### [13）、HBase内部机制是什么？]()
+    Hbase是一个能适应联机业务的数据库系统
+    物理存储：hbase的持久化数据是将数据存储在HDFS上。
+    存储管理：一个表是划分为很多region的，这些region分布式地存放在很多regionserver上Region内部还可以划分为store，store内部有memstore和storefile。
+    版本管理：hbase中的数据更新本质上是不断追加新的版本，通过compact操作来做版本间的文件合并Region的split。
+    集群管理：ZooKeeper + HMaster + HRegionServer。
+
 ###### [14）、HBase在进行模型设计时重点在什么地方？一张表定义多个Column Family最合适？为什么？]()
+    Column Family的个数具体看表的数据，一般来说划分标准是根据数据访问频度，如一张表里有些列访问相对频繁，而另一些列访问很少，这时可以把这张表划分成两个列族，分开存储，提高访问效率。
+    Column Family数量不要太多,一个列簇对应一个store
+
 ###### [15）、如何提高HBase客户端的读写性能？]()
+    开启bloomfilter过滤器，开启bloomfilter比没开启要快3、4倍
+    Hbase对于内存有特别的需求，在硬件允许的情况下配足够多的内存给它
+    通过修改hbase-env.sh中的 export HBASE_HEAPSIZE=3000 #这里默认为1000m
+    增大RPC数量
+
 ###### [16）、直接将时间戳作为行键存储在HBase中，在写入单个Region时候会发生热点问题，为什么？]()
+    region中的rowkey是有序存储，若时间比较集中。就会存储到一个region中，这样一个region的数据变多，其它的region数据很少，加载数据就会很慢，直到region分裂
+
 ###### [17）、请描述如何解决HBase中Region太大和Region太小带来的冲突？]()
+    Region过大会发生多次compaction，将数据读一遍并重写一遍到hdfs 上，占用io，region过小会造成多次split，region 会下线，影响访问服务，
+    最佳的解决方法是调整hbase.hregion. max.filesize 为256m。
+
 ###### [18）、简述下布隆过滤器的原理？HBase中如何使用的？]()
+    hbase的storefile有很多，随机查的时候可能需要遍历很多storefile，如果在建表的时候指定了bloomfilter，则在get查询（scan不管用）的时候就可以过滤掉很多不符合规则的storefile，
+    提高查询效率。
+
 ###### [19）、简述下LSM树的原理？HBase中如何使用的？]()
+    LSM树使得HBase具有高性能的读写能力
+    HBase使用了一种LSM的存储结构，在LSM树的实现方式中，会在数据存储之前先对数据进行排序。
+    LSM树是Google BigTable和HBase的基本存储算法，它是传统关系型数据库的B+树的改进。
+    算法的核心在于尽量保证数据是顺序存储到磁盘上的，并且会有频率地对数据进行整理，确保其顺序性。
+    LSM树就是一堆小树，在内存中的小树即memstore，每次flush，内存中的memstore变成磁盘上一个新的storefile。这种批量的读写操作使得HBase的性能较高。
+
 ###### [20）、HBase中二级索引原理？有使用过么？]()
     默认情况下，Hbase只支持rowkey的查询，对于多条件的组合查询的应用场景不太友好。
     如果将多条件组合查询的字段都拼接在RowKey中显然又不太可能，全表扫描再结合过滤器筛选出目标数据(太低效)，所以通过设计HBase的二级索引来解决这个问题。
     这里所谓的二级索引其实就是创建新的表，并建立各列值（family：column）与行键（rowkey）之间的映射关系。这种方式需要额外的存储空间，属于一种以空间换时间的方式
 
 ###### [21）、HBase有put方法，那如何批量进HBase中？用什么方法？]()
+    
+
 ###### [22）、访问HBase有哪些方式？]()
+    
+
 ###### [23）、HBase中最小存储单元是什么？]()
     HBase 会对表按行进行切分，划分为多个区域块儿，每个块儿名为 HRegion
     HBase 是集群结构，会把这些块儿分散存储到多个服务器中，每个服务器名为 HRegionServer
@@ -149,7 +186,16 @@
     HFile 对应于列族，一个列族可以有多个 HFile，但一个 HFile 不能存储多个列族的数据。
 
 ###### [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
+    setCache用于设置缓存，即设置一次RPC请求可以获取多行数据。
+    setBatch 用于设置批量处理，批量可以让用户选择每一次ResultScanner实例的next操作要取回多少列，例如，在扫描中设置setBatch(5)，则一次next()返回的Result实例会包括5列。
+
 ###### [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
+    数据量百亿条，什么概念呢？假设一整天60x60x24 = 86400秒都在写入数据，那么每秒的写入条数高达100万条，HBase当然是支持不了每秒百万条数据的，
+    所以这百亿条数据可能不是通过实时地写入，而是批量地导入。批量导入推荐使用BulkLoad方式,性能是普通写入方式几倍以上；
+    存入HBase：普通写入是用JavaAPI put来实现，批量导入推荐使用BulkLoad；
+    保证数据的正确：这里需要考虑RowKey的设计、预建分区和列族设计等问题；
+    在规定时间内完成也就是存入速度不能过慢，并且当然是越快越好，使用BulkLoad。
+
 ###### [27）、HBase的RowFilter和BloomFilter原理？]()
 
 ###### [28）、HBase的HRegion如何划分的？]()
