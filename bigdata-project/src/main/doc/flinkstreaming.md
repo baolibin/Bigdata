@@ -90,13 +90,9 @@
 ###### [3）、Flink程序消费过慢如何解决？]()
     常见消费过慢问题:
     1.代码问题,比如发生数据倾斜
-    
     2.sink端阻塞,sink过慢
-    
     3.source遇到峰值,流量激增
-    
     4.程序运行资源过少,分区过少
-
 
 ###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
     详细见代码.    
@@ -184,13 +180,35 @@
         (eg:没链化之前, source和map是2个线程运行这2个task,链化之后,source和map合并为一个task，用一个线程执行,这样可以减少source operator和map operator两个线程之间的交接和缓存开销)
     
 ###### [9）、Flink中StreamExecutionEnvironment初始化流程？]()
+    StreamExecutionEnvironment是一个任务的启动的入口
+    StreamGraph 相关的代码主要在 org.apache.flink.streaming.api.graph 包中。
+    构造StreamGraph的入口函数是 StreamGraphGenerator.generate(env, transformations)。
+    该函数会由触发程序执行的方法StreamExecutionEnvironment.execute()调用到。
+
 ###### [10）、用过DataStream里面的哪些方法？]()
     map,flatmap,filter,keyby,reduce,fold,aggregations,window,windowAll,union
 
 ###### [11）、Flink程序调优？]()
-    1.数据端:
-        
-    2.内存端:
+    1.内存调优
+    Flink是依赖内存计算，计算过程中内存不够对Flink的执行效率影响很大。可以通过监控GC（Garbage Collection），评估内存使用及剩余情况来判断内存是否变成性能瓶颈，并根据情况优化。
+    2.设置并行度
+    并行度控制任务的数量，影响操作后数据被切分成的块数。调整并行度让任务的数量和每个任务处理的数据与机器的处理能力达到最优。，一般并行度设置为集群CPU核数总和的2-3倍。
+    1).算子层次
+    一个算子、数据源和sink的并行度可以通过调用setParallelism方法来指定
+    2).执行环境层次
+    Flink程序运行在执行环境中。执行环境为所有执行的算子、数据源、data sink定义了一个默认的并行度。执行环境的默认并行度可以通过调用setParallelism方法指定。
+    3).客户端层次
+    并行度可以在客户端将job提交到Flink时设定。对于CLI客户端，可以通过“-p”参数指定并行度。例如：./bin/flink run -p 10 ../examples/WordCount-java.jar
+    4).系统层次
+    在系统级可以通过修改Flink客户端conf目录下的“flink-conf.yaml”文件中的“parallelism.default”配置选项来指定所有执行环境的默认并行度。
+    3.配置进程参数
+    Flink on YARN模式下，有JobManager和TaskManager两种进程。在任务调度和运行的过程中，JobManager和TaskManager承担了很大的责任。
+    1).配置JobManager内存:JobManager负责任务的调度，以及TaskManager、RM之间的消息通信。当任务数变多，任务平行度增大时，JobManager内存都需要相应增大。
+    2).配置TaskManager个数: 每个TaskManager每个核同时能跑一个task，所以增加了TaskManager的个数相当于增大了任务的并发度。在资源充足的情况下，可以相应增加TaskManager的个数，以提高运行效率。
+    3). 配置TaskManager Slot数: 每个TaskManager多个核同时能跑多个task，相当于增大了任务的并发度。但是由于所有核共用TaskManager的内存，所以要在内存和核数之间做好平衡。
+    4). 配置TaskManager内存: TaskManager的内存主要用于任务执行、通信等。当一个任务很大的时候，可能需要较多资源，因而内存也可以做相应的增加。
+    4.解决数据倾斜
+    5.Checkpoint 调优
 
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
     Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
@@ -259,8 +277,17 @@
     Kafka 0.11在TwoPhaseCommitSinkFunction实现了事务支持，并且开销很小。
 
 ###### [15）、海量key去重,双十一场景,滑动窗口长度为1小时,滑动距离为10s,亿级别用户,如何计算UV？]()
+    去重可以考虑使用布隆过滤器（Bloom Filter）来去重。
+
 ###### [16）、Flink的checkpoint和spark streaming比较？]()
+    spark streaming 的 checkpoint 仅仅是针对 driver 的故障恢复做了数据和元数据的 checkpoint。
+    flink 的 checkpoint 机制 要复杂了很多，它采用的是轻量级的分布式快照，实现了每个算子的快照，及流动中的数据的快照。
+
 ###### [17）、Flink CEP编程中当状态没有达到时候,数据会保存在哪里？]()
+    在流式处理中，CEP 当然是要支持 EventTime 的，那么相对应的也要支持数据的迟到现象，也就是 watermark 的处理逻辑。
+    CEP 对未匹配成功的事件序列的处理，和迟到数据是类似的。在 Flink CEP 的处理逻辑中，状态没有满足的和迟到的数据，都会存储在一个 Map 数据结构中，也就是说，
+    如果我们限定判断事件序列的时长为 5 分钟，那么内存中就会存储 5 分钟的数据，这在我看来，也是对内存的极大损伤之一。
+
 ###### [18）、3种时间语义？]()
     流处理引擎通常为用户的应用程序提供三种数据处理语义：最多一次，至少一次和精确一次。
     1).最多一次（At-most-Once）：这种语义理解起来很简单，用户的数据只会被处理一次，不管成功还是失败，不会重试也不会重发。
@@ -274,8 +301,17 @@
     Flink在1.4版本引入了一个很重要得功能：两阶段提交，也即是TwoPhaseCommitSinkFunction。两阶段搭配特定得source和sink（特别是0.11版本kafka）使得”精确一次处理语义“成为可能。
 
 ###### [19）、Flink面对高峰数据如何处理？]()
+    1.限流反压,设置消费速率
+    2.增大作业并行度
+
 ###### [20）、Flink程序运行慢如何优化处理？]()
+    1.增大作业并行度
+    2.内存调优
+
 ###### [21）、Flink程序延迟高如何解决？]()
+    1.内存调优
+    2.代码逻辑调优
+
 ###### [22）、Flink如何做容错？]()
     Flink基于分布式快照与可部分重发的数据源实现了容错。用户可自定义对整个Job进行快照的时间间隔，当任务失败时，Flink会将整个Job恢复到最近一次快照，并从数据源重发快照之后的数据。
     
@@ -344,10 +380,6 @@
         CaseClassTypeInfo: 任意的 Scala CaseClass(包括 Scala tuples)。
         PojoTypeInfo: 任意的 POJO (Java or Scala)，例如，Java对象的所有成员变量，要么是 public 修饰符定义，要么有 getter/setter 方法。
         GenericTypeInfo: 任意无法匹配之前几种类型的类。
-        
-
-    
-
 
 ###### [28）、Flink的window出现了数据倾斜,如何解决?]()
     这里window产生的数据倾斜指的是不同的窗口内积攒的数据量不同，主要是由源头数据的产生速度导致的差异。
@@ -364,6 +396,14 @@
         技术上出现热点时，要调整方案打散原来的 key，避免直接聚合；此外 Flink 还提供了大量的功能可以避免数据倾斜。
 
 ###### [29）、Flink在使用聚合函数GroupBy、KeyBy、Distinct等函数出现数据热点如何解决?]()
+    数据倾斜和数据热点是所有大数据框架绕不过去的问题。处理这类问题主要从3个方面入手：
+    （1）在业务上规避这类问题
+    例如一个假设订单场景，北京和上海两个城市订单量增长几十倍，其余城市的数据量不变。这时候我们在进行聚合的时候，北京和上海就会出现数据堆积，我们可以单独数据北京和上海的数据。
+    （2）Key的设计上
+    把热key进行拆分，比如上个例子中的北京和上海，可以把北京和上海按照地区进行拆分聚合。
+    （3）参数设置
+    Flink 1.9.0 SQL(Blink Planner) 性能优化中一项重要的改进就是升级了微批模型，即 MiniBatch。原理是缓存一定的数据后再触发处理，以减少对State的访问，从而提升吞吐和减少数据的输出量。
+
 ###### [30）、Flink如何处理反压?和spark streaming和storm区别有了解么?]()
     反压（backpressure）是实时计算应用开发中，特别是流式计算中，十分常见的问题。反压意味着数据管道中某个节点成为瓶颈，处理速率跟不上上游发送数据的速率，而需要对上游进行限速。
     由于实时计算应用通常使用消息队列来进行生产端和消费端的解耦，消费端数据源是 pull-based 的，所以反压通常是从某个节点传导至数据源并降低数据源（比如 Kafka consumer）的摄入速率。
@@ -389,6 +429,12 @@
                           2).上下游算子之间没有数据shuffle
 
 ###### [33）、Flink1.7特性?Flink1.9特性]()
+    Flink1.9的新特性
+    支持hive读写，支持UDF
+    Flink SQL TopN和GroupBy等优化
+    Checkpoint跟savepoint针对实际业务场景做了优化
+    Flink state查询
+
 ###### [34）、Flink组件栈有哪些?]()
 ![Flink组件](./images/flink组件.png) 
 
@@ -400,6 +446,8 @@
     物理部署层：Flink 支持多种部署模式，本机，集群（Standalone/YARN）、云（GCE/EC2）、Kubenetes。
 
 ###### [35）、Flink运行需要依赖哪些组件?必须依赖Hadoop么?]()
+    Flink可以完全独立于Hadoop，在不依赖Hadoop组件下运行。但是做为大数据的基础设施，Hadoop体系是任何大数据框架都绕不过去的。Flink可以集成众多Hadooop 组件，例如Yarn、Hbase、HDFS等等。例如，Flink可以和Yarn集成做资源调度，也可以读写HDFS，或者利用HDFS做检查点。
+
 ###### [36）、Flink基础编程模型?]()
     Flink 程序的基础构建单元是流（streams）与转换（transformations）。
     DataSet API 中使用的数据集也是一种流。数据流（stream）就是一组永远不会停止的数据记录流，而转换（transformation）是将一个或多个流作为输入，并生成一个或多个输出流的操作。
@@ -541,38 +589,113 @@
                             从GC的角度来看，可以把这里看成的新生代，也就是说这里主要都是由用户代码生成的短期对象。
 
 ###### [49）、Flink Job提交流程?]()
+    通用提交流程（ResourceManager未指定）
+    步骤如下：
+    1.application提交时，被dispatcher分发器将job提交给JobManager
+    2.JobManager向资源管理器ResourceManager申请资源（插槽slot，每个slot为一个线程）
+    3.ResourceManager注册空闲的slot
+    4.由JobManager将slot分配给TaskManager
+    5.job开始执行
+    
+    运行在yarn上的提交流程
+    Flink 任务提交后，Client 向 HDFS 上传 Flink 的 Jar 包和配置，之后向 YarnResourceManager 提交任务，ResourceManager 分配 Container 资源并通知对应的
+    NodeManager 启动 ApplicationMaster，ApplicationMaster 启动后加载 Flink 的 Jar 包和配置构建环境，然后启动 JobManager，之后 ApplicationMaster 向
+    ResourceManager申请资源启动 TaskManager ， ResourceManager 分 配 Container 资 源 后 ， 由ApplicationMaster 通 知 资 源 所 在 节 点 的 NodeManager 
+    启动 TaskManager ，NodeManager 加载 Flink 的 Jar 包和配置构建环境并启动 TaskManager，TaskManager 启动后向 JobManager 发送心跳包，
+    并等待JobManager 向其分配任务。
+
 ###### [50）、Flink的三层图结构是哪几个图?]()
+    Flink Job的提交流程 用户提交的Flink Job会被转化成一个DAG任务运行，分别是：StreamGraph、JobGraph、ExecutionGraph，
+    Flink中JobManager与TaskManager，JobManager与Client的交互是基于Akka工具包的，是通过消息驱动。
+    整个Flink Job的提交还包含着ActorSystem的创建，JobManager的启动，TaskManager的启动和注册。
+    
+    一个Flink任务的DAG生成计算图大致经历以下三个过程：
+    StreamGraph 最接近代码所表达的逻辑层面的计算拓扑结构，按照用户代码的执行顺序向StreamExecutionEnvironment添加StreamTransformation构成流式图。
+    JobGraph 从StreamGraph生成，将可以串联合并的节点进行合并，设置节点之间的边，安排资源共享slot槽位和放置相关联的节点，上传任务所需的文件，设置检查点配置等。相当于经过部分初始化和优化处理的任务图。
+    ExecutionGraph 由JobGraph转换而来，包含了任务具体执行所需的内容，是最贴近底层实现的执行图。
+
 ###### [51）、Flink中JobManager在集群中扮演的角色?]()
+    JobManager 负责整个 Flink 集群任务的调度以及资源的管理，从客户端中获取提交的应用，然后根据集群中 TaskManager 上 TaskSlot 的使用情况，为提交的应用分配相应的 TaskSlot 资源并命令 TaskManager 启动从客户端中获取的应用。
+    JobManager 相当于整个集群的 Master 节点，且整个集群有且只有一个活跃的 JobManager ，负责整个集群的任务管理和资源管理。
+    JobManager 和 TaskManager 之间通过 Actor System 进行通信，获取任务执行的情况并通过 Actor System 将应用的任务执行情况发送给客户端。
+    同时在任务执行的过程中，Flink JobManager 会触发 Checkpoint 操作，每个 TaskManager 节点 收到 Checkpoint 触发指令后，完成 Checkpoint 操作，所有的 Checkpoint 协调过程都是在 Fink JobManager 中完成。
+    当任务完成后，Flink 会将任务执行的信息反馈给客户端，并且释放掉 TaskManager 中的资源以供下一次提交任务使用。    
+
 ###### [52）、Flink中JobManager在集群启动中扮演的角色?]()
+    JobManager的职责主要是接收Flink作业，调度Task，收集作业状态和管理TaskManager。它包含一个Actor，并且做如下操作：
+    RegisterTaskManager: 它由想要注册到JobManager的TaskManager发送。注册成功会通过AcknowledgeRegistration消息进行Ack。
+    SubmitJob: 由提交作业到系统的Client发送。提交的信息是JobGraph形式的作业描述信息。
+    CancelJob: 请求取消指定id的作业。成功会返回CancellationSuccess，否则返回CancellationFailure。
+    UpdateTaskExecutionState: 由TaskManager发送，用来更新执行节点(ExecutionVertex)的状态。成功则返回true，否则返回false。
+    RequestNextInputSplit: TaskManager上的Task请求下一个输入split，成功则返回NextInputSplit，否则返回null。
+    JobStatusChanged： 它意味着作业的状态(RUNNING, CANCELING, FINISHED,等)发生变化。这个消息由ExecutionGraph发送。
+
 ###### [53）、Flink中TaskManager在集群中扮演的角色?]()
+    TaskManager 相当于整个集群的 Slave 节点，负责具体的任务执行和对应任务在每个节点上的资源申请和管理。
+    客户端通过将编写好的 Flink 应用编译打包，提交到 JobManager，然后 JobManager 会根据已注册在 JobManager 中 TaskManager 的资源情况，将任务分配给有资源的 TaskManager节点，然后启动并运行任务。
+    TaskManager 从 JobManager 接收需要部署的任务，然后使用 Slot 资源启动 Task，建立数据接入的网络连接，接收数据并开始数据处理。同时 TaskManager 之间的数据交互都是通过数据流的方式进行的。
+    可以看出，Flink 的任务运行其实是采用多线程的方式，这和 MapReduce 多 JVM 进行的方式有很大的区别，Flink 能够极大提高 CPU 使用效率，在多个任务和 Task 之间通过 TaskSlot 方式共享系统资源，每个 TaskManager 中通过管理多个 TaskSlot 资源池进行对资源进行有效管理。
+
 ###### [54）、Flink中TaskManager在集群启动时候扮演的角色?]()
+    TaskManager的启动流程较为简单： 启动类：org.apache.flink.runtime.taskmanager.TaskManager 
+    核心启动方法 ： selectNetworkInterfaceAndRunTaskManager 启动后直接向JobManager注册自己，注册完成后，进行部分模块的初始化。
+
 ###### [55）、Flink计算资源的调度是如何实现的?]()
+    TaskManager中最细粒度的资源是Task slot，代表了一个固定大小的资源子集，每个TaskManager会将其所占有的资源平分给它的slot。
+    通过调整 task slot 的数量，用户可以定义task之间是如何相互隔离的。每个 TaskManager 有一个slot，也就意味着每个task运行在独立的 JVM 中。
+    每个 TaskManager 有多个slot的话，也就是说多个task运行在同一个JVM中。
+    而在同一个JVM进程中的task，可以共享TCP连接（基于多路复用）和心跳消息，可以减少数据的网络传输，也能共享一些数据结构，一定程度上减少了每个task的消耗。 
+    每个slot可以接受单个task，也可以接受多个连续task组成的pipeline.
+
 ###### [56）、简述Flink的数据抽象以及数据交换过程?]()
+    Flink 为了避免JVM的固有缺陷例如java对象存储密度低，FGC影响吞吐和响应等，实现了自主管理内存。MemorySegment就是Flink的内存抽象。
+    默认情况下，一个MemorySegment可以被看做是一个32kb大的内存块的抽象。这块内存既可以是JVM里的一个byte[]，也可以是堆外内存（DirectByteBuffer）。
+    在MemorySegment这个抽象之上，Flink在数据从operator内的数据对象在向TaskManager上转移，预备被发给下个节点的过程中，使用的抽象或者说内存对象是Buffer。
+    对接从Java对象转为Buffer的中间对象是另一个抽象StreamRecord。
+
 ###### [57）、FlinkSQL的实现原理?]()
+    Flink 将 SQL 校验、SQL 解析以及 SQL 优化交给了Apache Calcite。Calcite 在其他很多开源项目里也都应用到了，
+    譬如 Apache Hive, Apache Drill, Apache Kylin, Cascading。Calcite 在新的架构中处于核心的地位
+    构建抽象语法树的事情交给了 Calcite 去做。SQL query 会经过 Calcite 解析器转变成 SQL 节点树，通过验证后构建成 Calcite 的抽象语法树（也就是图中的 Logical Plan）。另一边，Table API 上的调用会构建成 Table API 的抽象语法树，并通过 Calcite 提供的 RelBuilder 转变成 Calcite 的抽象语法树。然后依次被转换成逻辑执行计划和物理执行计划。
+    在提交任务后会分发到各个 TaskManager 中运行，在运行时会使用 Janino 编译器编译代码后运行。
+
 ###### [58）、Flink压测和监控?]()
     一，产生数据流的速度如果过快，而下游的算子消费不过来的话，会产生背压。
     背压的监控可以使用 Flink Web UI(localhost:8081) 来可视化监控，一旦报警就能知道。
-    
     二，设置 watermark 的最大延迟时间这个参数，如果设置的过大，可能会造成 内存的压力。
     可以设置最大延迟时间小一些，然后把迟到元素发送到侧输出流中去。
-
     三，还有就是滑动窗口的长度如果过长，而滑动距离很短的话，Flink 的性能会下降的很厉害。
     我们主要通过时间分片的方法，将每个元素只存入一个“重叠窗 口”，这样就可以减少窗口处理中状态的写入
 
 ###### [59）、有了Spark为啥还要用Flink?]()
+    实时处理方面优于spark
+
 ###### [60）、Flink的应用架构有哪些?]()
+    Deploy 层：该层主要涉及了Flink的部署模式，Flink 支持包括local、Standalone、Cluster、Cloud等多种部署模式。
+    Runtime 层：Runtime层提供了支持 Flink 计算的核心实现，比如：支持分布式 Stream 处理、JobGraph到ExecutionGraph的映射、调度等等，为上层API层提供基础服务。
+    API层：API 层主要实现了面向流（Stream）处理和批（Batch）处理API，其中面向流处理对应DataStream API，面向批处理对应DataSet API
+    Libraries层：该层称为Flink应用框架层，根据API层的划分，在API层之上构建的满足特定应用的实现计算框架，也分别对应于面向流处理和面向批处理两类。
+    面向流处理支持：CEP（复杂事件处理）、基于SQL-like的操作（基于Table的关系操作）；面向批处理支持：FlinkML（机器学习库）、Gelly（图处理）。
+
 ###### [61）、Flink Barrier对齐?]()
+    一个Barrier把数据流分割成两部分：一部分进入到当前快照，另一部分进入到下一个快照。每个Barrier都带有快照ID，并且Barrier之前的数据都进入了此快照。Barrier不会干扰数据流处理，所以非常轻量。多个不同快照的多个Barrier会在流中同时出现，即多个快照可能会同时被创建。
+![Flink Barrier](images/flinkBarrier1.png) 
+
+    Barrier随着正常数据继续往下流动，当一个operator从其所有的输入流都接收到snapshot n的Barrier时，它会向其所有输出流插入一个标识（也叫snapshot n）的Barrier。当sink operator（即DAG流的终点）从其输入流接收到所有的Barrier n时，表示这一批数据处理完成，它会向checkpoint coordinator发送消息确认snapshot n已完成。当所有sink都确认了这个snapshot，则标识本次处理已成功，该snapshot被标识为已完成。
+![Flink Barrier](images/flinkBarrier.png) 
+
+    基于Stream Aligning操作能够实现Exactly Once语义，但是也会给流处理应用带来延迟，因为为了排列对齐Barrier，会暂时缓存一部分Stream的记录到Buffer中，尤其是在数据流并行度很高的场景下可能更加明显，通常以最迟对齐Barrier的一个Stream为处理Buffer中缓存记录的时刻点。在Flink中，提供了一个开关，选择是否使用Stream Aligning，如果关掉则Exactly Once会变成At least once。
+
 ###### [62）、Flink slot和cpu core区别?]()
-    slot是jvm进程.
-    Flink中每一个worker(TaskManager)都是一个JVM进程，它可能会在独立的线程（Solt）上执行一个或多个 subtask。Flink 的每个 TaskManager 为集群提供 Solt。
-    Solt 的数量通常与每个 TaskManager 节点的可用 CPU 内核数成比例，一般情况下 Slot 的数量就是每个节点的 CPU 的核数。
+    Flink中每一个worker(TaskManager)都是一个JVM进程，它可能会在独立的线程（slot）上执行一个或多个 subtask。Flink 的每个 TaskManager 为集群提供 slot。
+    slot 的数量通常与每个 TaskManager 节点的可用 CPU 内核数成比例，一般情况下 slot 的数量就是每个节点的 CPU 的核数。
     Slot的数量与CPU-core的数量一致为好。但考虑到超线程，可以让slotNumber=2*cpuCore。
-    
     指定了每个TaskManager内存 为3G 那么一个TM里面有3个Slot，每个Slot 分到1G内存 。
-    
-    Flink TaskManager的slot有点类似于Spark的executor.
 
 ###### [63）、JobGraph生成?]()
+    StreamGraph 和 JobGraph 都是在 Client 端生成的
+    JobGraph 的相关数据结构主要在 org.apache.flink.runtime.jobgraph 包中。构造 JobGraph 的代码主要集中在 StreamingJobGraphGenerator 类中，入口函数是 StreamingJobGraphGenerator.createJobGraph()。
+
 ###### [64）、Flink和SparkStreaming区别?]()
     1).架构模型上：
     Spark Streaming 的task运行依赖driver和executor和worker，driver和excutor还依赖于集群管理器Standalone或者yarn等。
