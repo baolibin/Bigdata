@@ -1,5 +1,6 @@
 * [9.14、SQL]()
     - [1）、SQL执顺序？]()
+    - [2）、排名函数ROW_NUMBER,RANK,DENSE_RANK啥区别？]()
 
 ---
 ###### 1、SQL执顺序？
@@ -28,3 +29,8 @@
     (7) HAVING <having_condition>
     (10) ORDER BY <order_by_list>
     (11) LIMIT <limit_number>
+
+###### 2、排名函数ROW_NUMBER,RANK,DENSE_RANK啥区别？
+    row_number() over() : 排名函数，不会重复，适合于生成主键或者不并列排名
+    rank() over() :  排名函数，有并列名次，名次不连续。如:1,1,3
+    dense_rank() over() : 排名函数，有并列名次，名次连续。如：1，1，2
