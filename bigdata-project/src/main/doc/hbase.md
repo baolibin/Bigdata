@@ -167,10 +167,23 @@
     这里所谓的二级索引其实就是创建新的表，并建立各列值（family：column）与行键（rowkey）之间的映射关系。这种方式需要额外的存储空间，属于一种以空间换时间的方式
 
 ###### [21）、HBase有put方法，那如何批量进HBase中？用什么方法？]()
+    单条put: 记录单条插入，如报文记录，处理记录，写入后htable对象即释放。每次提交就是一次rpc请求。
+    批量put: List<Put>，这种方式操作时和单条put没有区别，将put对象add到list中，然后调用put(List<Put>)方法，过程和单条put基本一致，通过批量提交减少请求次数
+    使用Mapreduce: 面对数据量多的时候,常见的做法使用多线程来并行向hbase中写入
+    bluckload: 
+        上述几种方式虽然实现的方式涉及到的东西不同，但是本质是一样的，都是使用HTable对象调用put方法，然后HTable通过rpc提交到reginserver上，然后通过LSM过程之后最终写入到磁盘上。HBase的数据最终会变成hfile文件落到磁盘上.
+        bulkload写入hbase的原理,直接生成最终的hfile文件,使用mapreduce来生成hbase的hfile文件，然后将文件塞到hbase存储数据的目录下，这样做可以减少了海量的数据请求时间，也完全避免了regionserver的处理数据的压力。
     
+    HTable负责向一张hbase表中读或者写数据，HTable对象是非线程安全的。
+    HTable对象时需要指定表名参数，HTable内部有一个LinkedList<Row>的队列writeAsyncBuffer ，负责对写入到hbase的数据在客户端缓存，开启缓存使用参数 table.setAutoFlushTo(true);
 
 ###### [22）、访问HBase有哪些方式？]()
-    
+    1、Native Java API：最常规和高效的访问方式；
+    2、HBase Shell：HBase的命令行工具，最简单的接口，适合HBase管理使用；
+    3、Thrift Gateway：利用Thrift序列化技术，支持C++，PHP，Python等多种语言，适合其他异构系统在线访问HBase表数据；
+    4、REST Gateway：支持REST 风格的Http API访问HBase, 解除了语言限制；
+    5、MapReduce：直接使用MapReduce作业处理Hbase数据；
+    6、使用Pig/hive处理Hbase数据。
 
 ###### [23）、HBase中最小存储单元是什么？]()
     HBase 会对表按行进行切分，划分为多个区域块儿，每个块儿名为 HRegion
@@ -197,6 +210,29 @@
     在规定时间内完成也就是存入速度不能过慢，并且当然是越快越好，使用BulkLoad。
 
 ###### [27）、HBase的RowFilter和BloomFilter原理？]()
+    1.RowFilter顾名思义就是对rowkey进行过滤，那么rowkey的过滤无非就是相等（EQUAL）、大于(GREATER)、小于(LESS)，大于等于(GREATER_OR_EQUAL)，小于等于(LESS_OR_EQUAL)和不等于(NOT_EQUAL)几种过滤方式。Hbase中的RowFilter采用比较符结合比较器的方式来进行过滤。
+    比较器的类型如下：
+        BinaryComparator
+        BinaryPrefixComparator
+        NullComparator
+        BitComparator
+        RegexStringComparator
+        SubStringComparator
+    例子(比较符为EQUAL，比较器为BinaryComparator):
+        Filter rowFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(rowKeyValue)));
+        Scan scan = new Scan();
+        scan.setFilter(rowFilter)
+    
+    2.BloomFilter原理简析
+    主要功能：提供随机读的性能
+    存储开销：BloomFilter是列族级别的配置，一旦表格中开启BloomFilter，那么在生成StoreFile时同时会生成一份包含BloomFilter结构的文件MetaBlock，所以会增加一定的存储开销和内存开销
+    粒度控制：ROW和ROWCOL
+    BloomFilter的原理:
+        内部是一个bit数组，初始值均为0
+        插入元素时对元素进行hash并且映射到数组中的某一个index，将其置为1，再进行多次不同的hash算法，将映射到的index置为1，同一个index只需要置1次。
+        查询时使用跟插入时相同的hash算法，如果在对应的index的值都为1，那么就可以认为该元素可能存在，注意，只是可能存在
+        所以BlomFilter只能保证过滤掉不包含的元素，而不能保证误判包含
+    设置：在建表时对某一列设置BloomFilter即可
 
 ###### [28）、HBase的HRegion如何划分的？]()
     Table中所有行都按照row key的字典序排列。
