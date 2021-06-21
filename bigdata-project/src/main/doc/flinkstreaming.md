@@ -64,6 +64,9 @@
     - [63）、JobGraph生成?]()
     - [64）、Flink和SparkStreaming区别?]()
     - [65）、Flink中什么场景会用到state?]()
+    - [66）、Flink如何快速定位问题?]()
+    - [67）、Flink中watermark 机制?]()
+    - [68）、Flink集群有哪些角色？各自有什么作用？]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -231,6 +234,9 @@
     算子做快照时，如果等所有输入端的barrier都到了才开始做快照，那么就可以保证算子的exactly-once；
     如果为了降低延时而跳过，从而继续处理数据，那么等barrier都到齐后做快照就是at-least-once了，因为这次的快照掺杂了下一次快照的数据，当作业失败恢复的时候，这些数据会重复作用系统，就好像这些数据被消费了两遍。
     注：对齐只会发生在算子的上端是join操作以及上游存在partition或者shuffle的情况，对于直连操作类似map、flatMap、filter等还是会保证exactly-once的语义。
+    
+    端到端的 exactly-once 对 sink 要求比较高，具体实现主要有幂等写入和事务性写入两种方式。幂等写入的场景依赖于业务逻辑，更常见的是用事务性写入。
+    而事务性写入又有预写日志（WAL）和两阶段提交（2PC）两种方式。如果外部系统不支持事务，那么可以用预写日志的方式，把结果数据先当成状态保存，然后在收到 checkpoint 完成的通知时，一次性写入 sink 系统。
     
     端到端的Exactly once实现:
     以一个简单的flink读写kafka作为例子来说明（kafka0.11版本开始支持exactly-once语义）。
@@ -429,6 +435,15 @@
                           2).上下游算子之间没有数据shuffle
 
 ###### [33）、Flink1.7特性?Flink1.9特性]()
+    Flink 的特性包含：
+    支持高吞吐、低延迟、高性能的流处理 支持带有事件时间的窗口 （Window） 操作 支持有状态计算的 Exactly-once语义
+    支持高度灵活的窗口 （Window） 操作，
+    支持基于 time、count、session 以及 data-driven 的窗口操作
+    支持具有 Backpressure 功能的持续流模型
+    支持基于轻量级分布式快照（Snapshot）实现的容错 一个运行时同时支持 Batch on Streaming 处理和 Streaming 处理 Flink 在 JVM 内部实现了自己的内存管理
+    支持迭代计算
+    支持程序自动优化：避免特定情况下 Shuffle、排序等昂贵操作，中间结果有必要进行缓存
+    
     Flink1.9的新特性
     支持hive读写，支持UDF
     Flink SQL TopN和GroupBy等优化
@@ -669,6 +684,7 @@
 
 ###### [59）、有了Spark为啥还要用Flink?]()
     实时处理方面优于spark
+    
 
 ###### [60）、Flink的应用架构有哪些?]()
     Deploy 层：该层主要涉及了Flink的部署模式，Flink 支持包括local、Standalone、Cluster、Cloud等多种部署模式。
@@ -698,6 +714,7 @@
 
 ###### [64）、Flink和SparkStreaming区别?]()
     1).架构模型上：
+    Spark Streaming 在运行时的主要角色包括：Master、Worker、Driver、Executor，Flink 在运行时主要包含：Jobmanager、Taskmanager和Slot。
     Spark Streaming 的task运行依赖driver和executor和worker，driver和excutor还依赖于集群管理器Standalone或者yarn等。
     Spark Streaming 是微批处理，运行的时候需要指定批处理的时间，每次运行 job 时处理一个批次的数据；
 ![SparkStreaming架构流程](images/SparkStreaming架构流程.png) 
@@ -738,6 +755,22 @@
     看 Checkpoint 时长：Checkpoint 时长能在一定程度影响 job 的整体吞吐。
     看核心指标：指标是对一个任务性能精准判断的依据，延迟指标和吞吐则是其中最为关键的指标。
     资源的使用率：提高资源的利用率是最终的目的。
+
+###### [67）、Flink中watermark 机制?]()
+    Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制，主要用来处理乱序数据。    
+
+###### [68）、Flink集群有哪些角色？各自有什么作用？]()
+    Flink 程序在运行时主要有 TaskManager，JobManager，Client三种角色。
+    1.JobManager扮演着集群中的管理者Master的角色，它是整个集群的协调者，负责接收Flink Job，协调检查点，Failover 故障恢复等，同时管理Flink集群中从节点TaskManager。
+    a. JobManager 接收待执行的 application。application 包含一个 JobGraph 和 JAR （包含所有需要的classes,libraries 和其他资源）。
+    b. JobManager 将 JobGraph 转成 ExecutionGraph，ExecutionGraph中包含可以并发执行的 tasks。
+    c. JobManager 向 ResourceManager 申请需要的资源（TaskManager slots），一旦分配到足够的slots，则分发 tasks 到 TaskManager 执行。
+    d. 执行期间，JobManager 负责中央协调，如协调checkpoint等
+    2.TaskManager是实际负责执行计算的Worker，在其上执行Flink Job的一组Task，每个TaskManager负责管理其所在节点上的资源信息，如内存、磁盘、网络，在启动的时候将资源的状态向JobManager汇报。
+    a. 启动之后，TaskManager 向 ResourceManager 注册 slots 数，当接收到 ResourceManager 的分配通知后，会向 JobManager 提供一个或多个slots
+    b. 紧接着 JobManager 将 tasks 分配到 slots 执行。
+    c. 执行期间，不同的 TaskManager 之间会进行数据交换
+    3.Client是Flink程序提交的客户端，当用户提交一个Flink程序时，会首先创建一个Client，该Client首先会对用户提交的Flink程序进行预处理，并提交到Flink集群中处理，所以Client需要从用户提交的Flink程序配置中获取JobManager的地址，并建立到JobManager的连接，将Flink Job提交给JobManager。
 
 ---
 参考:
