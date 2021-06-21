@@ -33,6 +33,8 @@
     - [32）、说说Kafka的使用场景？]()
     - [33）、Kafka与传统MQ消息系统之间有三个关键区别？]()
     - [34）、kafka如何保证不丢失消息？]()
+    - [35）、Kafka分区的目的？]()
+    - [36）、Kafka消息是采用Pull模式，还是Push模式？]()
 
 ---
 ###### [1）、Kafka如何保证消息的顺序？]()
@@ -87,8 +89,15 @@
     拦截器->序列化器->分区器
 
 ###### [8）、Kafka生产者客户端整体结构式什么样子的？使用了几个线程处理？分别是什么？]()
+    2个，主线程和Sender线程。主线程负责创建消息，然后通过分区器、序列化器、拦截器作用之后缓存到累加器RecordAccumulator中。
+    Sender线程负责将RecordAccumulator中消息发送到kafka中.
+
 ###### [9）、Kafka消费组中的消费者个数如果超过了topic的分区，那么就会有消费者消费不到数据，这句话是否正确？]()
+    不正确，通过自定义分区分配策略，可以将一个consumer指定消费所有partition。
+
 ###### [10）、Kafka中消费者提交消费位移时提交的是当前消费到的最新消息offset还是offset+1？]()
+    offset+1
+
 ###### [11）、Kafka中有哪些情形会造成重复消费？]()
     消费者消费后没有commit offset(程序崩溃/强行kill/消费耗时/自动提交偏移情况下unscrible)
 
@@ -126,19 +135,83 @@
     4.从最近位置开始逐条寻找
 
 ###### [20）、Kafka Controller的作用？]()
-###### [21）、Kafka中有哪些地方需要选举，这些地方的选举策略有哪些？]()
-###### [22）、Kafka失效副本是指什么？有哪些应对策略？]()
-###### [23）、Kafka的哪些设计让它有如此高的性能？]()
-###### [24）、简述Kafka的基础架构？]()
-###### [25）、Kafka的用途有哪些？适用于哪些使用场景？]()
-###### [26）、Kafka中过期数据清理？]()
-###### [27）、Kafka中幂等是怎么实现的？]()
+    控制器组件（Controller），是 Apache Kafka 的核心组件。它的主要作用是在 Apache ZooKeeper 的帮助下管理和协调整个 Kafka 集群。
+    集群中任意一台 Broker 都能充当控制器的角色，但是，在运行过程中，只能有一个 Broker 成为控制器，行使其管理和协调的职责。
 
+###### [21）、Kafka中有哪些地方需要选举，这些地方的选举策略有哪些？]()
+    partition leader（ISR），controller（先到先得）
+
+###### [22）、Kafka失效副本是指什么？有哪些应对策略？]()
+    不能及时与leader同步，暂时踢出ISR，等其追上leader之后再重新加入
+
+###### [23）、Kafka的哪些设计让它有如此高的性能？]()
+    分区，顺序写磁盘，0-copy
+
+###### [24）、简述Kafka的基础架构？]()
+    Kafka 架构分为以下几个部分
+    Producer ：消息生产者，就是向 kafka broker 发消息的客户端。
+    Consumer ：消息消费者，向 kafka broker 取消息的客户端。
+    Topic ：可以理解为一个队列，一个 Topic 又分为一个或多个分区，
+    Consumer Group：这是 kafka 用来实现一个 topic 消息的广播（发给所有的 consumer）和单播（发给任意一个 consumer）的手段。一个 topic 可以有多个 Consumer Group。
+    Broker ：一台 kafka 服务器就是一个 broker。一个集群由多个 broker 组成。一个 broker 可以容纳多个 topic。
+    Partition：为了实现扩展性，一个非常大的 topic 可以分布到多个 broker上，每个 partition 是一个有序的队列。partition 中的每条消息都会被分配一个有序的id（offset）。将消息发给 consumer，kafka 只保证按一个 partition 中的消息的顺序，不保证一个 topic 的整体（多个 partition 间）的顺序。
+    Offset：kafka 的存储文件都是按照 offset.kafka 来命名，用 offset 做名字的好处是方便查找。例如你想找位于 2049 的位置，只要找到 2048.kafka 的文件即可。当然 the first offset 就是 00000000000.kafka。
+
+###### [25）、Kafka的用途有哪些？适用于哪些使用场景？]()
+    消息系统： Kafka 和传统的消息系统（也称作消息中间件）都具备系统解耦、冗余存储、流量削峰、缓冲、异步通信、扩展性、可恢复性等功能。Kafka 还提供了大多数消息系统难以实现的消息顺序性保障及回溯消费的功能。
+    存储系统： Kafka 把消息持久化到磁盘，相比于其他基于内存存储的系统而言，有效地降低了数据丢失的风险。也正是得益于 Kafka 的消息持久化功能和多副本机制，我们可以把 Kafka 作为长期的数据存储系统来使用，只需要把对应的数据保留策略设置为“永久”或启用主题的日志压缩功能即可。
+    流式处理平台： Kafka 不仅为每个流行的流式处理框架提供了可靠的数据来源，还提供了一个完整的流式处理类库，比如窗口、连接、变换和聚合等各类操作。
+    
+###### [26）、Kafka中过期数据清理？]()
+    Kafka将数据持久化到了硬盘上，允许你配置一定的策略对数据清理，清理的策略有两个，删除和压缩。
+    删除:直接删除，删除后的消息不可恢复。
+    压缩:将数据压缩，只保留每个key最后一个版本的数据。
+
+###### [27）、Kafka中幂等是怎么实现的？]()
+    为了实现生产者的幂等性，Kafka 为此引入了 producer id（以下简称 PID）和序列号（sequence number）这两个概念。
+    每个新的生产者实例在初始化的时候都会被分配一个 PID，这个 PID 对用户而言是完全透明的。对于每个 PID，消息发送到的每一个分区都有对应的序列号，这些序列号从0开始单调递增。生产者每发送一条消息就会将 对应的序列号的值加1。
+    broker 端会在内存中为每一对 维护一个序列号。对于收到的每一条消息，只有当它的序列号的值（SN_new）比 broker 端中维护的对应的序列号的值（SN_old）大1（即 SN_new = SN_old + 1）时，broker 才会接收它。
+    如果 SN_new< SN_old + 1，那么说明消息被重复写入，broker 可以直接将其丢弃。如果 SN_new> SN_old + 1，那么说明中间有数据尚未写入，出现了乱序，暗示可能有消息丢失，对应的生产者会抛出 OutOfOrderSequenceException，这个异常是一个严重的异常，后续的诸如 send()、beginTransaction()、commitTransaction() 等方法的调用都会抛出 IllegalStateException 的异常。
 
 ###### [28）、Kafka中优先副本是什么？有什么特殊的作用？]()
+    所谓的优先副本是指在AR集合列表中的第一个副本。
+    理想情况下，优先副本就是该分区的leader 副本，所以也可以称之为 preferred leader。Kafka 要确保所有主题的优先副本在 Kafka 集群中均匀分布，这样就保证了所有分区的 leader 均衡分布。以此来促进集群的负载均衡，这一行为也可以称为“分区平衡”。
+
 ###### [29）、Kafka中zookeeper作用是什么？]()
+    1、Broker注册:
+    Broker是分布式部署并且相互之间相互独立，但是需要有一个注册系统能够将整个集群中的Broker管理起来，此时就使用到了Zookeeper。在Zookeeper上会有一个专门用来进行Broker服务器列表记录的节点：/brokers/ids
+    2、Topic注册
+    在Kafka中，同一个Topic的消息会被分成多个分区并将其分布在多个Broker上，这些分区信息及与Broker的对应关系也都是由Zookeeper在维护，由专门的节点来记录，如：/borkers/topics
+    3、生产者负载均衡
+    由于同一个Topic消息会被分区并将其分布在多个Broker上，因此，生产者需要将消息合理地发送到这些分布式的Broker上，那么如何实现生产者的负载均衡，Kafka支持传统的四层负载均衡，也支持Zookeeper方式实现负载均衡。
+    4、分区 与 消费者 的关系:
+    在Kafka中，规定了每个消息分区 只能被同组的一个消费者进行消费，因此，需要在 Zookeeper 上记录 消息分区 与 Consumer 之间的关系
+    5.消费进度Offset 记录:
+    在消费者对指定消息分区进行消息消费的过程中，需要定时地将分区消息的消费进度Offset记录到Zookeeper上,
+    Offset在Zookeeper中由一个专门节点进行记录，其节点路径为:
+    /consumers/[group_id]/offsets/[topic]/[broker_id-partition_id]
+    6、消费者注册:
+    注册到消费者分组。每个消费者服务器启动时，都会到Zookeeper的指定节点下创建一个属于自己的消费者节点，例如/consumers/[group_id]/ids/[consumer_id]
+
 ###### [30）、Kafka的ACK机制？]()
+    ack机制，即producer发送消息的确认机制，会影响到kafka的消息吞吐量和安全可靠性，二者不可兼得，只能平均；
+    ack的取值有三个1、0、-1
+    ack=0，producer只发送一次消息，无论consumer是否收到；
+    ack=-1，producer发送的消息，只有收到分区内所有副本都成功写入的通知后才认为发动成功；
+    ack=1，producer发送的消息只有leader接收成功后才认为消息发送成功，无论leader是否成功将消息同步到follower，所以，ack值为1 也不一定是安全的。
+
 ###### [31）、Kafka如何实现ExactlyOnce？]()
+    在0.11.x版本之前，Apache Kafka支持at-least-once delivery语义以及partition内部的顺序delivery，某些场景下可能会导致数据重复消费。而Kafka 0.11.x支持exactly-once语义，其中主要包括三个内部逻辑的改造：
+    1.幂等：partition内部的exactly-once顺序语义
+    幂等操作，是指可以执行多次，而不会产生与仅执行一次不同结果的操作，Producer的send操作现在是幂等的。
+    发送到Kafka的每批消息将包含一个序列号，该序列号用于重复数据的删除。与TCP不同，TCP只能在transient in-memory中提供保证。序列号将被持久化存储topic中，因此即使leader replica失败，接管的任何其他broker也将能感知到消息是否重复。
+    这种机制的开销相当低：它只是在每批消息中添加了几个额外字段:
+    PID，在Producer初始化时分配，作为每个Producer会话的唯一标识；
+    序列号（sequence number），Producer发送的每条消息（更准确地说是每一个消息批次，即ProducerBatch）都会带有此序列号，从0开始单调递增。Broker根据它来判断写入的消息是否可接受。
+    2.跨partition的原子性写操作
+    Kafka现在支持使用新事务API原子性的对跨partition进行写操作，该API允许producer发送批量消息到多个partition。该功能同样支持在同一个事务中提交消费者offsets，因此真正意义上实现了end-to-end的exactly-once delivery语义。
+    3.Exactly-once 流处理
+    基于幂等和原子性，通过Streams API实现exactly-once流处理成为可能。
 
 ###### [32）、说说Kafka的使用场景？]()
     异步处理:将一些实时性要求不是很强的业务异步处理，起到缓冲的作用，一定程度上也会避免因为有些消费者处理的太慢或者网络问题导致的通讯等待太久，因而导致的单个服务崩溃
@@ -156,3 +229,10 @@
     1.复制因子：创建topic的时候指定复制因子大于1时，一个分区被分配到一个broker上，同时会在其他broker上维护一个分区副本；
     2.isr列表：分区及其副本分别为leader和follower，leader对外提供读写服务，follower会向leader发送同步请求，拉取最新的数据，如果follower和leader的消息差距保持在一定范围之内，那么这个follower在isr列表内；当分区leader所在broker宕机，会从isr列表中选举一个follower作为新的leader提供服务
     3.通过kafka的acks参数可以控制消息的发送行为，acks可选的值有0、1、all；当设置为0时，生产者消息发送成功即为成功，不关心是否写入到磁盘及后续操作；当设置为1时，消息发送到分区leader后写入磁盘即为成功；当设置为all时，消息发送到分区leader并写入磁盘后，同步给isr列表中的所有分区副本后即为成功
+
+###### [35）、Kafka 分区的目的？]()
+    分区对于 Kafka 集群的好处是：实现负载均衡。分区对于消费者来说，可以提高并发度，提高效率。
+
+###### [36）、Kafka消息是采用Pull模式，还是Push模式？]()
+    Pull模式的一个好处是consumer可以自主决定是否批量的从broker拉取数据。onsumer就可以根据自己的消费能力去决定这些策略。
+    Pull有个缺点是，如果broker没有可供消费的消息，将导致consumer不断在循环中轮询，直到新消息到达。为了避免这点，Kafka有个参数可以让consumer阻塞知道新消息到达.
