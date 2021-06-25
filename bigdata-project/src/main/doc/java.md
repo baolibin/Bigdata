@@ -619,7 +619,6 @@
 ###### [52）、String s与new String与有什么区别?]()
     1、String str ="sss";
     先在常量池中查找有没有"sss" 这个对象,如果有，就让str指向那个"sss".如果没有，在常量池中新建一个“sss”对象，并让str指向在常量池中新建的对象"sss"。
-    
     2、String newStr =new String ("sss"); 
     是在堆中建立的对象"sss" ,在栈中创建堆中"sss" 对象的内存地址。
 
