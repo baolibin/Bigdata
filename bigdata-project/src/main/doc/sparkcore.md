@@ -585,6 +585,19 @@
       2) Apache Mesos:与hadoop MR兼容性良好的一种资源调度框架
       3) Hadoop Yarn: 主要是指Yarn中的ResourceManager
 
+###### [55）、IV,WOE计算？]()
+    IV (information value) 衡量的是某一个变量的信息量,N 为分组的组数，IV 可用来表示一个变量的预测能力。
+     IV          预测能力
+    <0.03	     无预测能力
+    0.03-0.09	 低
+    0.1-0.29	 中
+    0.3-0.49	 高
+    >=0.5	     极高且可疑
+    IV值的取值范围是[0,+∞)，且当前分组中只包含响应客户或者未响应客户时，IV = +∞。
+
+    WOE的全称是“Weight of Evidence”，即证据权重。WOE是对原始自变量的一种编码形式。
+    要对一个变量进行WOE编码，需要首先把这个变量进行分组处理（也叫离散化、分箱等等，说的都是一个意思）。
+
 ---
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
