@@ -610,6 +610,11 @@
         极端情况下，当前分组的0标签比例和1标签比例和样本整体的0和1的比例相等时，IV值为0；
         IV值的取值范围是[0,+∞)，且，当当前分组中只包含0标签数量或者1标签数量时，IV = +∞。
 
+    AUC（Area Under Curve）被定义为ROC曲线下与坐标轴围成的面积，显然这个面积的数值不会大于1。
+    又由于ROC曲线一般都处于y=x这条直线的上方，所以AUC的取值范围在0.5和1之间。
+    AUC越接近1.0，检测方法真实性越高;
+    等于0.5时，则真实性最低，无应用价值。
+    
 ---
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
