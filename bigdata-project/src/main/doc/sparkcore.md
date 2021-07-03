@@ -84,10 +84,12 @@
     用于存储Spark task执行过程中需要的对象，如Shuffle、Join、Sort、Aggregation等计算过程中的临时数据。
     2.1.2、存储Storage内存
     主要用于存储Spark的cache数据，例如RDD的cache，Broadcast变量，Unroll数据等。需要注意的是，unrolled的数据如果内存不够，会存储在driver端。
+    RDD 在缓存到存储内存之后，Partition 被转换成 Block，Record 在堆内或堆外存储内存中占用一块连续的空间。将Partition由不连续的存储空间转换为连续存储空间的过程，Spark称之为"展开"（Unroll）。
     2.1.3、用户内存User Memory
-    分配Spark Memory剩余的内存，用户可以根据需要使用。可以存储RDD transformations需要的数据结构。
+    分配Spark Memory剩余的内存，用户可以根据需要使用。例如RDD依赖等信息。
     2.1.4、预留内存Reserved Memory
     这部分内存是预留给系统使用，是固定不变的。在1.6.0默认为300MB(RESERVED_SYSTEM_MEMORY_BYTES = 300 * 1024 * 1024)，不过在2.4.4版本中已经看不到这个参数了。
+    系统预留内存，会用来存储Spark内部对象。
     
     堆外内存划分
     这里Off-heap Memory从概念上可以分为两个：
@@ -145,6 +147,8 @@
     5).将reduce join变为map join实现(比如广播...)
     6).两阶段聚合（局部聚合+全局聚合）
     7).过滤少数导致倾斜的key
+    
+    预、拆、随、并、join、两、过
 
 ###### 8、Spark有哪些聚合类的算子，我们应该怎么避免使用这些算子？ReduceByKey和GroupByKey的区别？
     groupByKey,reduceByKey,aggregateByKey,sortByKey,join等
@@ -467,8 +471,8 @@
     
     方法二：extraClassPath
     提交时在spark-default中设定参数，将所有需要的jar包考到一个文件里，然后在参数中指定该目录就可以
-    spark.executor.extraClassPath=/home/hadoop/wzq_workspace/lib/* 
-    spark.driver.extraClassPath=/home/hadoop/wzq_workspace/lib/*
+    spark.executor.extraClassPath=/home/hadoop/xxx_workspace/lib/* 
+    spark.driver.extraClassPath=/home/hadoop/xxx_workspace/lib/*
 
 ###### 47、Spark中RDD有哪些特性？
     RDD（Resilient Distributed Dataset）叫做分布式数据集，是Spark中最基本的数据抽象，它代表一个不可变、可分区、里面的元素可并行计算的集合。
