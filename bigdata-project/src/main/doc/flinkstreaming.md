@@ -85,7 +85,6 @@
     
 ###### [2）、Flink如何做checkPoint检查点？分布式快照原理是啥?]()
     Flink使用的检查点算法是分布式快照算法（基于Chandy-Lamport算法的分布式快照），将检查点的保存和数据分开处理，不需要暂停整个应用。
-    
     检查点分界线(checkpoint barrier):
     Flink检查点算法用到了一种称为分界线(barrier)的特殊数据格式,用来把一条流上数据按照不同的检查点分开.
     分界线之前到来的数据导致的状态修改,都被包含在当前分界线所属的检查点中,而基于分界线之后的数据导致的所有修改,都被包含在之后的检查点中.
@@ -116,6 +115,7 @@
 
 ###### [6）、Flink中窗口有几种？]()
     滑动窗口（Tumbling Window，无重叠），滚动窗口（Sliding Window，有重叠），和会话窗口（Session Window，活动间隙）。
+
 ![Flink窗口](./images/flink窗口.png)  
 
     1)、滚动时间窗口（Tumbling Time Window）
