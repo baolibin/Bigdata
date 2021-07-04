@@ -12,7 +12,7 @@
     Spark SQL 比 Hadoop Hive 快，是有一定条件的，而且不是 Spark SQL 的引擎比 Hive 的引擎快，相反，Hive 的 HQL 引擎还比 Spark SQL 的引擎更快。其实，关键还是在于 Spark 本身快。
     1.Shuffle时候spark sql处理数据不一定落盘,而hive是强制写磁盘
     2.spark提供丰富的算子,而hive每次都是一个完整的mr操作
-    3.JVM优化,hive每次mr是启动一个进程处理,而spark的Mr是基于线程的,只在启动executor时候启动一次线程.
+    3.JVM优化,hive每次mr是启动一个进程处理,而spark的Mr是基于线程的
 
 ###### 2、Spark SQL有使用过么？在哪些项目中使用过？
     必须的，经常使用
@@ -71,7 +71,7 @@
 ###### 7、Spark SQL运行原理？
     SparkSQL的运行架构：
     sparksql先会将SQL语句进行解析（parse）形成一个Tree,然后使用Rule对Tree进行绑定，优化等处理过程，通过模式匹配对不同类型的节点采用不同操作。
-    而sparksql的查询优化器是catalyst，它负责处理查询语句的解析，绑定，优化和生成物理执行计划等过程，catalyst是sparksql最核心部分。
+    而sparksql的查询优化器是，它负责处理查询语句的解析，绑定，优化和生成物理执行计划等过程，catalyst是sparksql最核心部分。
     
     Spark SQL由core，catalyst，hive和hive-thriftserver4个部分组成。
     core: 负责处理数据的输入/输出，从不同的数据源获取数据（如RDD,Parquet文件和JSON文件等），然后将结果查询结果输出成Data Frame。
