@@ -54,6 +54,9 @@
     - [53）、Spark中task有几种类型？](#53、Spark中task有几种类型？)
     - [54）、Spark中基本概念？]()
     - [55）、Spark中的ShuffleManager？]()
+    - [56）、Spark中Shuffle时候数据一定会落磁盘么？]()
+    - [57）、Spark和MR中Shuffle不同？Spark的优势?]()
+    - [58）、Spark如何做checkpoint?]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -656,6 +659,17 @@
     对比未经优化的 HashShuffleManager：
     其实前面的步骤和未经优化的 HashShuffleManager是一摸一样额，只是最后多了一了merge的操作，产生的文件包括一个盘文件和一个索引文件。
     最终磁盘文件的数量等于上游task的数量
+
+
+###### [56）、Spark中Shuffle时候数据一定会落磁盘么？]()
+
+
+###### [57）、Spark和MR中Shuffle不同？Spark的优势?]()
+
+
+###### [58）、Spark如何做checkpoint?]()
+
+
 
 ---
 参考:

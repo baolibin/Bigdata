@@ -67,6 +67,8 @@
     - [66）、Flink如何快速定位问题?]()
     - [67）、Flink中watermark 机制?]()
     - [68）、Flink集群有哪些角色？各自有什么作用？]()
+    - [69）、Flink中多流Join?]()
+    - [70）、Flink中两阶段提交?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -757,7 +759,8 @@
     资源的使用率：提高资源的利用率是最终的目的。
 
 ###### [67）、Flink中watermark 机制?]()
-    Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制，主要用来处理乱序数据。    
+    Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制，主要用来处理乱序数据。
+    
 
 ###### [68）、Flink集群有哪些角色？各自有什么作用？]()
     Flink 程序在运行时主要有 TaskManager，JobManager，Client三种角色。
@@ -771,6 +774,12 @@
     b. 紧接着 JobManager 将 tasks 分配到 slots 执行。
     c. 执行期间，不同的 TaskManager 之间会进行数据交换
     3.Client是Flink程序提交的客户端，当用户提交一个Flink程序时，会首先创建一个Client，该Client首先会对用户提交的Flink程序进行预处理，并提交到Flink集群中处理，所以Client需要从用户提交的Flink程序配置中获取JobManager的地址，并建立到JobManager的连接，将Flink Job提交给JobManager。
+
+###### [69）、Flink中多流Join?]()
+
+
+###### [70）、Flink中两阶段提交?]()
+
 
 ---
 参考:
