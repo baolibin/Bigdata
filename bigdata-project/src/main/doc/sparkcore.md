@@ -57,6 +57,7 @@
     - [56）、Spark中Shuffle时候数据一定会落磁盘么？]()
     - [57）、Spark和MR中Shuffle不同？Spark的优势?]()
     - [58）、Spark如何做checkpoint?]()
+    - [59）、Spark比MR速度快的原因?]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -668,6 +669,10 @@
 
 
 ###### [58）、Spark如何做checkpoint?]()
+
+
+
+###### [59）、Spark比MR速度快的原因?]()
 
 
 
