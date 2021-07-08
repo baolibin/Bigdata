@@ -14,6 +14,7 @@
     - [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？]()
     - [14）、Spark Streaming面对高峰数据如何处理？]()
     - [15）、Spark Streaming反压机制？]()
+    - [16）、Spark Streaming如何实现ExactlyOnce？]()
 
 ---
 ###### [1）、Spark Streaming如何保证数据仅且消费一次？]()
@@ -158,3 +159,6 @@
     开启反压机制，即设置spark.streaming.backpressure.enabled为true，Spark Streaming会自动根据处理能力来调整输入速率，从而在流量高峰时仍能保证最大的吞吐和性能。
     
     Spark Streaming的反压机制主要是通过RateController组件来实现。
+
+###### [16）、Spark Streaming如何实现ExactlyOnce？]()
+
