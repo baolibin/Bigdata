@@ -673,8 +673,11 @@
 
 
 ###### [59）、Spark比MR速度快的原因?]()
-
-
+    1).shuffle机制: mr的每次mapreduce都会有一次shuffle,而spark只有碰到宽依赖时候才会发生shuffle
+    2).jvm优化: mr是以进程的方式运行在yarn集群上,一个job有1024个MapTask，这个时候就需要开启1024个进程取处理这 1024个task，每启动一个task就会启动一次jvm。
+    Spark的任务是以线程方式运行在进程中的，只在启动Executor进程时启动一 次jvm，每次执行一个task都是复用Executor进程中的线程.
+    (Executor中维护着一个线程池）。Spark和MR相比节省了大量启动 jvm的时间
+    3).IO操作: mr是基于磁盘的,spark是基于内存的,mr的每次shuffle必须要写入磁盘
 
 ---
 参考:
