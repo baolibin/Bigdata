@@ -2,7 +2,7 @@
     - [1）、Flink如何保证数据仅且消费一次？]()
     - [2）、Flink如何做checkPoint检查点？分布式快照原理是啥?]()
     - [3）、Flink程序消费过慢如何解决？]()
-    - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
+    - [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](../../../../bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
     - [5）、Flink中时间有几种？]()
     - [6）、Flink中窗口有几种？]()
     - [7）、Flink中state如何理解？状态机制?]()
@@ -71,6 +71,7 @@
     - [70）、Flink中两阶段提交?]()
     - [71）、Flink中多流checkpoint?]()
     - [72）、Flink中多流合并反压?]()
+    - [73）、Flink中多流Join，数据延迟?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -777,17 +778,52 @@
     c. 执行期间，不同的 TaskManager 之间会进行数据交换
     3.Client是Flink程序提交的客户端，当用户提交一个Flink程序时，会首先创建一个Client，该Client首先会对用户提交的Flink程序进行预处理，并提交到Flink集群中处理，所以Client需要从用户提交的Flink程序配置中获取JobManager的地址，并建立到JobManager的连接，将Flink Job提交给JobManager。
 
-###### [69）、Flink中多流Join?]()
-
+###### [69）、Flink中多流Join?](../../../../bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromJoin.scala)
+    代码
 
 ###### [70）、Flink中两阶段提交?]()
+    EXACTLY_ONCE简称EOS，指每条输入消息只会影响最终结果一次，而非处理一次。
+    Flink支持EOS实际是对Flink内部来说的，对于外部系统（端到端）则有较强的限制。
+        1）、外部系统写入支持幂等写
+        2）、外部系统支持以事务方式写入
+    Flink在1.4.0版本引入了TwoPhaseCommitSinkFunction接口，并在Kafka Producer的connector中实现了它，支持了对外部Kafka Sink的EXACTLY_ONCE语义。
+    Kafka在0.11版本之前只能保证At-Least-Once或At-Most-Once语义，从0.11版本开始，引入了幂等发送和事务，从而开始保证EXACTLY_ONCE语义。
 
+    为了实现Producer的幂等语义，Kafka引入了Producer ID（即PID）和Sequence Number。
+    每个新的Producer在初始化的时候会被分配一个唯一的PID，该PID对用户完全透明而不会暴露给用户。
+    
+    Producer发送每条消息<Topic, Partition>对于Sequence Number会从0开始单调递增，broker端会为每个<PID, Topic, Partition>维护一个序号，
+    每次commit一条消息此序号加一，对于接收的每条消息，如果其序号比Broker维护的序号（即最后一次Commit的消息的序号）大1以上，则Broker会接受它，否则将其丢弃：
+        序号比Broker维护的序号大1以上，说明存在乱序。
+        序号比Broker维护的序号小，说明此消息以及被保存，为重复数据。
+    
+    幂等性机制仅解决了单分区上的数据重复和乱序问题，对于跨session和所有分区的重复和乱序问题不能得到解决。于是需要引入事务。
+    
+    事务是指所有的操作作为一个原子，要么都成功，要么都失败，而不会出现部分成功或部分失败的可能。
+    
+    为了解决跨session和所有分区不能EXACTLY-ONCE问题，Kafka从0.11开始引入了事务。
+    
+    两阶段提交指的是一种协议，经常用来实现分布式事务，可以简单理解为预提交+实际提交，
+    一般分为协调器Coordinator(以下简称C)和若干事务参与者Participant(以下简称P)两种角色。
+    
+    Flink在1.4.0版本引入了TwoPhaseCommitSinkFunction接口，封装了两阶段提交逻辑，
+    并在Kafka Sink connector中实现了TwoPhaseCommitSinkFunction，依赖Kafka版本为0.11+
+
+    flink使用两阶段提交协议:
+            1、预提交。预提交是所有的算子全部完成checkpoint，并JM会向所有算子发通知说这次checkpoint完成。
+            2、正式提交。flink负责向kafka写入数据的算子也会正式提交之前写操作的数据。在任务运行中的任何阶段失败，都会从上一次的状态恢复，所有没有正式提交的数据也会回滚。
+    
+    Pre-commit失败，将恢复到最近一次CheckPoint位置
+    一旦pre-commit完成，必须要确保commit也要成功
 
 ###### [71）、Flink中多流checkpoint?]()
 
 
 ###### [72）、Flink中多流合并反压?]()
 
+
+###### [73）、Flink中多流Join，数据延迟?]()
+    使用Flink state缓存前面的流(RocksDb，保留到磁盘，而非内存)，会导致非常大的checkpoint和显著的背压。
 
 ---
 参考:

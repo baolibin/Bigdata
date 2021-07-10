@@ -22,4 +22,8 @@ object FlinkStreamingLoader {
         env.socketTextStream(hostname, port, '\n')
     }
 
+    def getSourceDataBySocketFromPort(env: StreamExecutionEnvironment, hostname: String, port: Int): DataStream[String] = {
+        env.socketTextStream(hostname, port, '\n')
+    }
+
 }
