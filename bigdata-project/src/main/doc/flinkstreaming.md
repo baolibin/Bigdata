@@ -72,6 +72,8 @@
     - [71）、Flink中多流checkpoint?]()
     - [72）、Flink中多流合并反压?]()
     - [73）、Flink中多流Join，数据延迟?]()
+    - [74）、Flink中checkpoint存的数据是什么?]()
+    - [75）、Flink中checkpoint和savepoint区别?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -817,13 +819,44 @@
     一旦pre-commit完成，必须要确保commit也要成功
 
 ###### [71）、Flink中多流checkpoint?]()
-
+    参考24
 
 ###### [72）、Flink中多流合并反压?]()
-
+    反压意味着数据管道中某个节点成为瓶颈，处理速率跟不上上游发送数据的速率，而需要对上游进行限速。
+    实时计算应用通常使用消息队列来进行生产端和消费端的解耦，消费端数据源是 pull-based 的，所以反压通常是从某个节点传导至数据源并降低数据源（比如 Kafka consumer）的摄入速率。
 
 ###### [73）、Flink中多流Join，数据延迟?]()
     使用Flink state缓存前面的流(RocksDb，保留到磁盘，而非内存)，会导致非常大的checkpoint和显著的背压。
+
+###### [74）、Flink中checkpoint存的数据是什么?]()
+    Flink提供了Exactly once特性，是依赖于带有barrier的分布式快照+可部分重发的数据源功能实现的。而分布式快照中，就保存了operator的状态信息。
+    Flink的失败恢复依赖于 检查点机制 + 可部分重发的数据源。
+    检查点机制机制：checkpoint定期触发，产生快照，快照中记录了：
+        1）、当前检查点开始时数据源（例如Kafka）中消息的offset。
+        2）、记录了所有有状态的operator当前的状态信息（例如sum中的数值）。
+        
+    可部分重发的数据源：Flink选择最近完成的检查点K，然后系统重放整个分布式的数据流，然后给予每个operator他们在检查点k快照中的状态。
+    数据源被设置为从位置Sk开始重新读取流。例如在Apache Kafka中，那意味着告诉消费者从偏移量Sk开始重新消费。
+
+###### [75）、Flink中checkpoint和savepoint区别?]()
+    Savepoint是通过Flink的检查点机制创建的流作业执行状态的一致图像。可以使用Savepoints来停止和恢复，分叉或更新Flink作业。
+    保存点由两部分组成：稳定存储（例如HDFS，S3，…）上的（通常是大的）二进制文件和（相对较小的）元数据文件的目录。
+    
+    checkpoint检查点的主要目的是在意外的作业失败时提供恢复机制。
+    
+    Checkpoint的生命周期由Flink管理，即Flink创建，拥有和发布Checkpoint，无需用户交互。
+    Savepoints由用户创建，拥有和删除。
+
+###### [76）、Flink中join类型?]()
+    Flink DataStream中join只支持inner join。
+    left join与right join无法通过join来实现，但是可以用coGroup来实现。
+
+    coGroup操作是将两个数据流/集合按照key进行group，然后将相同key的数据进行处理，但是它和join操作稍有区别，
+    它在一个流/数据集中没有找到与另一个匹配的数据还是会输出。
+    
+    coGroup的用法类似于Join，不同的是在apply中传入的是一个CoGroupFunction，而不是JoinFunction
+
+    flink Table/SQL 支持join、left join、right join
 
 ---
 参考:

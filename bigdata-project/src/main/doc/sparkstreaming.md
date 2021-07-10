@@ -161,4 +161,15 @@
     Spark Streaming的反压机制主要是通过RateController组件来实现。
 
 ###### [16）、Spark Streaming如何实现ExactlyOnce？]()
-
+    基于direct stream的方法采用Kafka的简单消费者API。
+    driver进程只需要每次从Kafka获得批次消息的offset range，然后executor进程根据offset range去读取该批次对应的消息即可。
+    由于offset在Kafka中能唯一确定一条消息，且在外部只能被Streaming程序本身感知到，因此消除了不一致性，达到了exactly once。
+    
+    Spark Streaming的输出一般是靠foreachRDD()算子来实现，它默认是at least once的。如果输出过程中途出错，那么就会重复执行直到写入成功。
+    为了让它符合exactly once，可以施加两种限制之一：幂等性写入（idempotent write）、事务性写入（transactional write）。
+    
+    使用幂等写入实现 Exactly-once：幂等写入就是写入多次与写入一次的结果完全相同，可以自动将at least once转化为exactly once。
+    使用事务写入实现 Exactly-once：就是对数据进行一系列访问与更新操作所组成的逻辑块。
+        为了符合事务的ACID特性，必须引入一个唯一ID标识当前的处理逻辑，并且将计算结果与该ID一起落盘。
+        ID可以由主题、分区、时间、offset等共同组成。
+        事务操作可以在foreachRDD()时进行。如果数据写入失败，或者offset写入与当前offset range不匹配，那么这一批次数据都将失败并且回滚。
