@@ -661,16 +661,20 @@
     其实前面的步骤和未经优化的 HashShuffleManager是一摸一样额，只是最后多了一了merge的操作，产生的文件包括一个盘文件和一个索引文件。
     最终磁盘文件的数量等于上游task的数量
 
-
 ###### [56）、Spark中Shuffle时候数据一定会落磁盘么？]()
-
+    在目前的 Spark 实现中，shuffle block 一定是落地到磁盘的。
+    在Spark 0.6和0.7时，Shuffle的结果都需要先存储到内存中（有可能要写入磁盘），因此对于大数据量的情况下，发生GC和OOM的概率非常大。
+    因此在Spark 0.8的时候，Shuffle的每个record都会直接写入磁盘，并且为下游的每个Task都生成一个单独的文件。
 
 ###### [57）、Spark和MR中Shuffle不同？Spark的优势?]()
-
+    功能上，MR的shuffle和Spark的shuffle是没啥区别的，都是对Map端的数据进行分区，要么聚合排序，要么不聚合排序，然后Reduce端或者下一个调度阶段进行拉取数据，完成map端到reduce端的数据传输功能。
+    方案上，有很大的区别，MR的shuffle是基于合并排序的思想，在数据进入reduce端之前，都会进行sort，为了方便后续的reduce端的全局排序，而Spark的shuffle是可选择的聚合，特别是1.2之后，需要通过调用特定的算子才会触发排序聚合的功能。
+    数据拉取，MR的reduce是直接拉去Map端的分区数据，而Spark是根据索引读取，而且是在action触发的时候才会拉去数据。
 
 ###### [58）、Spark如何做checkpoint?]()
-
-
+    用sparkContext设置hdfs的checkpoint的目录。
+    sc.setCheckpointDir("hdfs://localhost:9001/checkpoint_xxx")
+    checkpoint也是个transformation的算子,获取数据可以使用collect。
 
 ###### [59）、Spark比MR速度快的原因?]()
     1).shuffle机制: mr的每次mapreduce都会有一次shuffle,而spark只有碰到宽依赖时候才会发生shuffle
