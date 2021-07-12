@@ -58,6 +58,7 @@
     - [57）、Spark和MR中Shuffle不同？Spark的优势?]()
     - [58）、Spark如何做checkpoint?]()
     - [59）、Spark比MR速度快的原因?]()
+    - [60）、Spark distinct去重原理?]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -682,6 +683,10 @@
     Spark的任务是以线程方式运行在进程中的，只在启动Executor进程时启动一 次jvm，每次执行一个task都是复用Executor进程中的线程.
     (Executor中维护着一个线程池）。Spark和MR相比节省了大量启动 jvm的时间
     3).IO操作: mr是基于磁盘的,spark是基于内存的,mr的每次shuffle必须要写入磁盘
+
+###### [60）、Spark distinct去重原理?]()
+    map(x => (x, null)).reduceByKey((x, y) => x).map(_._1)
+    使用map算子把元素转为带有null的元组,使用reduceByKey对具有相同key的元素统计,之后再使用map算子,取得元组中的单词元素,实现去重效果
 
 ---
 参考:
