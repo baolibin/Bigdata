@@ -74,6 +74,8 @@
     - [73）、Flink中多流Join，数据延迟?]()
     - [74）、Flink中checkpoint存的数据是什么?]()
     - [75）、Flink中checkpoint和savepoint区别?]()
+    - [76）、Flink中join类型?]()
+    - [77）、Flink与SparkStreaming的优缺点?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -103,7 +105,7 @@
     3.source遇到峰值,流量激增
     4.程序运行资源过少,分区过少
 
-###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
+###### [4）、统计实时流中某一单词出现的总个数（eg：比如一天某商品被点击的PV）？](../../../../bigdata-flink/src/main/scala/com/libin/data/flink/streaming/etl/GenCodeFromState.scala)
     详细见代码.    
 
 ###### [5）、Flink中时间有几种？]()
@@ -857,6 +859,8 @@
     coGroup的用法类似于Join，不同的是在apply中传入的是一个CoGroupFunction，而不是JoinFunction
 
     flink Table/SQL 支持join、left join、right join
+
+###### [77）、Flink与SparkStreaming的优缺点?]()
 
 ---
 参考:
