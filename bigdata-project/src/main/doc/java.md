@@ -148,6 +148,7 @@
     
     HashMap的初始容量为16，Hashtable初始容量为11，两者的填充因子默认都是0.75。
     HashMap扩容时是当前容量翻倍即:capacity*2，Hashtable扩容时是容量翻倍+1即:capacity*2+1。
+    扩容每次是2的幂，原因是(n-1)二进制都为1，更好的散列性
     
     Hashtable是线程安全，而HashMap则非线程安全。
     Hashtable的实现方法里面都添加了synchronized关键字来确保线程同步。
