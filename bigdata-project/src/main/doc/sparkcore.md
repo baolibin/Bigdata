@@ -59,6 +59,7 @@
     - [58）、Spark如何做checkpoint?]()
     - [59）、Spark比MR速度快的原因?]()
     - [60）、Spark distinct去重原理?]()
+    - [61）、Spark cache和checkpoint区别?]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -687,6 +688,9 @@
 ###### [60）、Spark distinct去重原理?]()
     map(x => (x, null)).reduceByKey((x, y) => x).map(_._1)
     使用map算子把元素转为带有null的元组,使用reduceByKey对具有相同key的元素统计,之后再使用map算子,取得元组中的单词元素,实现去重效果
+
+###### [61）、Spark cache和checkpoint区别?]()
+    
 
 ---
 参考:
