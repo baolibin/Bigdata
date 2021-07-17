@@ -861,6 +861,7 @@
     flink Table/SQL 支持join、left join、right join
 
 ###### [77）、Flink与SparkStreaming的优缺点?]()
+    Flink优点
 
 ---
 参考:

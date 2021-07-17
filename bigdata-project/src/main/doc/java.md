@@ -689,3 +689,13 @@
 ###### [58）、CurrentHashMap底层结构?]()
 
 ###### [59）、单例模式双重检测机制?]()
+    public static Singleton getInstanceDC() {
+         if (_instance == null) {                // Single Checked
+             synchronized (Singleton.class) {
+                 if (_instance == null) {        // Double checked
+                     _instance = new Singleton();
+                 }
+             }
+         }
+         return _instance;
+    }
