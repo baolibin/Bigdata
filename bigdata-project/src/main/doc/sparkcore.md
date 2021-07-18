@@ -690,7 +690,15 @@
     使用map算子把元素转为带有null的元组,使用reduceByKey对具有相同key的元素统计,之后再使用map算子,取得元组中的单词元素,实现去重效果
 
 ###### [61）、Spark cache和checkpoint区别?]()
+    cache是persist默认存储级别调用，如果内存放不下会丢掉，下次使用重新计算。
+    // Persist this RDD with the default storage level (`MEMORY_ONLY`).
+    def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
     
+    // Persist this RDD with the default storage level (`MEMORY_ONLY`).
+    def cache(): this.type = persist()
+    如果内存空间不够，部分数据分区将不再缓存，在每次需要用到这些数据时重新进行计算。这是默认的级别。
+    
+    checkpoint不会丢弃数据，会对数据做持久化存储。
 
 ---
 参考:
