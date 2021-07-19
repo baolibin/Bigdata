@@ -862,7 +862,7 @@
 
 ###### [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
     Flink优点：
-    低延迟、对SQL支持友好
+    低延迟、对SQL支持友好、watermark、CEP、time
 
 ---
 参考:
