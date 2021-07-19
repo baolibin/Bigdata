@@ -861,7 +861,8 @@
     flink Table/SQL 支持join、left join、right join
 
 ###### [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
-    Flink优点
+    Flink优点：
+    低延迟、对SQL支持友好
 
 ---
 参考:
