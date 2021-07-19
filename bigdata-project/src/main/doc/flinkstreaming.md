@@ -75,7 +75,7 @@
     - [74）、Flink中checkpoint存的数据是什么?]()
     - [75）、Flink中checkpoint和savepoint区别?]()
     - [76）、Flink中join类型?]()
-    - [77）、Flink与SparkStreaming的优缺点?]()
+    - [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -860,7 +860,7 @@
 
     flink Table/SQL 支持join、left join、right join
 
-###### [77）、Flink与SparkStreaming的优缺点?]()
+###### [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
     Flink优点
 
 ---
