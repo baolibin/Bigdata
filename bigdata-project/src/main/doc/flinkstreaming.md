@@ -76,6 +76,8 @@
     - [75）、Flink中checkpoint和savepoint区别?]()
     - [76）、Flink中join类型?]()
     - [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
+    - [78）、Flink背压如何实现?]()
+    - [79）、Flink如何取消state?1.7版本如如何取消?]()
 
 ---
 ###### [1）、Flink如何保证数据仅且消费一次？]()
@@ -863,6 +865,12 @@
 ###### [77）、Flink与SparkStreaming的优缺点?适用的场景?]()
     Flink优点：
     低延迟、对SQL支持友好、watermark、CEP、time
+
+###### [78）、Flink背压如何实现?]()
+
+
+###### [79）、Flink如何取消state?1.7版本如如何取消?]()
+
 
 ---
 参考:
