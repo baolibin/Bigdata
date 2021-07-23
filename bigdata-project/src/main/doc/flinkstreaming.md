@@ -872,7 +872,8 @@
 
 
 ###### [79）、Flink如何取消state?1.7版本如如何取消?]()
-
+    如果状态不断累计的话，势必会造成内存和效率问题，所以状态的正确清理非常重要。
+    可以在RichXXXFunction中通过Timer定期清理State，也可以使用Flink提供的TTL State。
 
 ###### [80）、Flink如何实现自定义sink?]()
 
