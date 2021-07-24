@@ -876,6 +876,7 @@
     可以在RichXXXFunction中通过Timer定期清理State，也可以使用Flink提供的TTL State。
 
 ###### [80）、Flink如何实现自定义sink?]()
+    需要继承RichSinkFunction
 
 ###### [81）、Flink分布式缓存?]()
 
