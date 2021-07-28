@@ -699,3 +699,5 @@
          }
          return _instance;
     }
+
+###### [60）、Java map的contains实现?]()
