@@ -60,6 +60,7 @@
     - [59）、Spark比MR速度快的原因?]()
     - [60）、Spark distinct去重原理?]()
     - [61）、Spark cache和checkpoint区别?]()
+    - [62）、Spark Core和Spark SQL区别?]()
 
 ---
 ###### 1、Spark作业提交流程？
@@ -699,6 +700,9 @@
     如果内存空间不够，部分数据分区将不再缓存，在每次需要用到这些数据时重新进行计算。这是默认的级别。
     
     checkpoint不会丢弃数据，会对数据做持久化存储。
+    
+###### [62）、Spark Core和Spark SQL区别?]()
+    
 
 ---
 参考:
