@@ -60,6 +60,7 @@
     - [59）、Spark比MR速度快的原因?]()
     - [60）、Spark distinct去重原理?]()
     - [61）、Spark cache和checkpoint区别?]()
+    - [62）、Spark Core和Spark SQL区别?]()
 
 ---
 ###### 1、Spark作业提交流程？

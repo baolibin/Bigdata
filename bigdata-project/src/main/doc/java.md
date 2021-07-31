@@ -57,6 +57,8 @@
     - [57）、rpc服务和http服务区别?]()
     - [58）、CurrentHashMap底层结构?]()
     - [59）、单例模式双重检测机制?]()
+    - [60）、java字符串contains实现原理?]()
+    - [61）、Java map的contains实现?]()
 
 ---
 ###### [1）、说说Java中有哪些数据结构？]()
@@ -700,4 +702,9 @@
          return _instance;
     }
 
+
 ###### [60）、Java map的contains实现?]()
+
+###### [61）、java字符串contains实现原理?]()
+
+
