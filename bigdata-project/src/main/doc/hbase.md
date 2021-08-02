@@ -27,6 +27,9 @@
     - [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？]()
     - [27）、HBase的RowFilter和BloomFilter原理？]()
     - [28）、HBase的HRegion如何划分的？]()
+    - [29）、HBase的HRegion如何分裂的？]()
+    - [30）、HBase的MemStore和BlockCache区别？]()
+
 ---
 ###### [1）、HBase是什么？特点有哪些？]()
     hbase是一个分布式的、面向列的开源数据库，它是一个适合于非结构化数据存储的数据库。
@@ -239,3 +242,15 @@
     Table在行的方向上分割为多个HRegion。
     HRegion按大小分割的，每个表开始只有一个HRegion，随着数据增多，HRegion不断增大，当增大到一个阀值的时候，HRegion就会等分会两个新的HRegion，之后会有越来越多的Region。
     HRegion是Hbase中分布式存储和负载均衡的最小单元，不同HRegion分布到不同HRegionServer上。
+
+
+###### [29）、HBase的HRegion如何分裂的？]()
+
+
+###### [30）、HBase的MemStore和BlockCache区别？]()
+    HBase实现了2种缓存结构，MemStore和BlockCache。
+    MemStore称为写缓存，HBase执行写操作首先会将数据写入MemStore，并顺序写入HLog，等满足一定条件后统一将MemStore中数据刷新到磁盘，这种设计可以极大地提升HBase的写性能。
+    BlockCache称为读缓存，HBase会将一次文件查找的Block块缓存到Cache中，以便后续同一请求或者邻近数据查找请求，可以直接从内存中获取，避免昂贵的IO操作。
+
+###### [30）、HBase的HFile格式？]()
+
