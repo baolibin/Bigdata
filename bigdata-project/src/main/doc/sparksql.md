@@ -101,3 +101,7 @@
     5.使用SparkPlanner生成可执行计划的物理计划
         SparkPlanner使用Planning Strategies对优化的逻辑计划进行转化，生成可执行的物理计划。
     6.使用QueryExecution执行物理计划
+
+
+###### 8、Spark SQL适用的场景,Spark Core不适合的?
+
