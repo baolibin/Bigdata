@@ -105,3 +105,7 @@
 
 ###### 8、Spark SQL适用的场景,Spark Core不适合的?
 
+
+###### 9、Spark SQL2.0和3.0区别?
+
+
