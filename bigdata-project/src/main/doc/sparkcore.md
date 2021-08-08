@@ -704,6 +704,9 @@
 ###### [62）、Spark Core和Spark SQL区别?]()
     Spark SQL构建在Spark Core之上，专门用来处理结构化数据(不仅仅是SQL)。即Spark SQL是Spark Core封装而来的。
 
+###### [63）、Spark和MapReduce区别?]()
+    
+
 ---
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
