@@ -6,6 +6,7 @@
     - [5）、MapReduce如何读取小文件？]()
     - [6）、MapReduce调优？]()
     - [7）、MapReduce作业执行过程？]()
+    - [8）、MapReduce切片机制？]()
 
 ---
 ###### [1）、MapReduce和Spark都是并行计算，有什么区别？]()
@@ -23,4 +24,7 @@
 ###### [6）、MapReduce调优？]()
 
 ###### [7）、MapReduce作业执行过程？]()
+
+###### [8）、MapReduce切片机制？]()
+
 
