@@ -8,6 +8,7 @@
     - [7）、MapReduce作业执行过程？]()
     - [8）、MapReduce切片机制？]()
     - [9）、描述mapReduce中combiner的作用是什么，一般使用情景，哪些情况不需要，及和reduce的区别？]()
+    - [10）、描述Hadoop MapReduce的容错机制？]()
 
 ---
 ###### [1）、MapReduce和Spark都是并行计算，有什么区别？]()
@@ -29,4 +30,8 @@
 ###### [8）、MapReduce切片机制？]()
 
 ###### [9）、描述mapReduce中combiner的作用是什么，一般使用情景，哪些情况不需要，及和reduce的区别？]()
+
+###### [10）、描述Hadoop MapReduce的容错机制？]()
+
+
 
