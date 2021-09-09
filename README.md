@@ -452,6 +452,10 @@
 
 * [9.14、SQL](bigdata-project/src/main/doc/sql.md)
     - [1）、SQL执顺序？]()
+    - [2）、排名函数ROW_NUMBER,RANK,DENSE_RANK啥区别？]()
+    - [3)、用一条sql语句查询出每门课都大于80分的学生姓名？]()
+    - [4)、sql窗口函数？]()
+    - [5)、sql窗口函数使用？]()
 
 * [9.15、Doris](bigdata-project/src/main/doc/doris.md)
     - [1）、Doris数据模型？]()
