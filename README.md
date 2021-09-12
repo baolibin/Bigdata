@@ -83,7 +83,11 @@
 ##### 8.2、大数据学习书籍       
 * [Hadoop权威指南]()       
 * [Hadoop技术内幕（3本）]()       
-* [Hadoop实战]()
+* [Hadoop实战]()       
+* [Hive编程指南]()    
+* [HBase权威指南]()  
+* [Spark快速大数据分析]()
+* [Spark技术内幕]()
 
 ##### 8.3、大数据论文
 * [The Google File System (HDFS)]()
