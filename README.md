@@ -479,6 +479,12 @@
     - [29）、Kafka中zookeeper作用是什么？]()
     - [30）、Kafka的ACK机制？]()
     - [31）、Kafka如何实现ExactlyOnce？]()
+    - [32）、说说Kafka的使用场景？]()
+    - [33）、Kafka与传统MQ消息系统之间有三个关键区别？]()
+    - [34）、kafka如何保证不丢失消息？]()
+    - [35）、Kafka分区的目的？]()
+    - [36）、Kafka消息是采用Pull模式，还是Push模式？]()
+    - [37）、Kafka 数据存储类型？]()
 
 * [9.14、SQL](bigdata-project/src/main/doc/sql.md)
     - [1）、SQL执顺序？]()
