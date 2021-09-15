@@ -446,6 +446,8 @@
     - [14）、Array和ArrayBuffer区别？](bigdata-project/src/main/doc/scala.md)
     - [15）、Scala中协变和逆变区别？](bigdata-project/src/main/doc/scala.md)
     - [16）、Scala中有break么？](bigdata-project/src/main/doc/scala.md)
+    - [17）、Scala中上界和下界区别？](bigdata-project/src/main/doc/scala.md)
+    - [18）、Scala中Any AnyRef AnyVal区别？](bigdata-project/src/main/doc/scala.md)
 
 * [9.13、Kafka](bigdata-project/src/main/doc/kafka.md)
     - [1）、Kafka如何保证消息的顺序？]()
