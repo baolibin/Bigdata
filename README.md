@@ -494,6 +494,7 @@
     - [3)、用一条sql语句查询出每门课都大于80分的学生姓名？]()
     - [4)、sql窗口函数？]()
     - [5)、sql窗口函数使用？]()
+    - [6)、sql中条件函数使用？]()
 
 * [9.15、Doris](bigdata-project/src/main/doc/doris.md)
     - [1）、Doris数据模型？]()
