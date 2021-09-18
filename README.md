@@ -331,6 +331,9 @@
     - [25）、HBase中scan对象的setCache和setBatch方法的使用？](bigdata-project/src/main/doc/hbase.md)
     - [26）、每天百亿数据存入HBase，如何保证数据的存储正确以及在规定时间里全部录入完毕，不残留数据？](bigdata-project/src/main/doc/hbase.md)
     - [27）、HBase的RowFilter和BloomFilter原理？](bigdata-project/src/main/doc/hbase.md)
+    - [28）、HBase的HRegion如何划分的？]()
+    - [29）、HBase的HRegion如何分裂的？]()
+    - [30）、HBase的MemStore和BlockCache区别？]()
 
 * [9.8、HDFS](bigdata-project/src/main/doc/hdfs.md)
     - [1）、自己写个HDFS需要实现哪些模块？]()
