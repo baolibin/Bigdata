@@ -184,6 +184,8 @@
     - [12）、Spark Streaming窗口大小？每个窗口处理的数据量？](bigdata-project/src/main/doc/sparkstreaming.md)
     - [13）、Spark Streaming中updateStateByKey和mapWithState的区别与使用？](bigdata-project/src/main/doc/sparkstreaming.md)
     - [14）、Spark Streaming面对高峰数据如何处理？](bigdata-project/src/main/doc/sparkstreaming.md)
+    - [15）、Spark Streaming反压机制？]()
+    - [16）、Spark Streaming如何实现ExactlyOnce？]()
 
 * [9.4、Flink Streaming](bigdata-project/src/main/doc/flinkstreaming.md)
     - [1）、Flink如何保证数据仅且消费一次？](bigdata-project/src/main/doc/flinkstreaming.md)
