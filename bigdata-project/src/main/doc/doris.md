@@ -13,6 +13,10 @@
     - [12）、Doris的数据划分？]()  
 
 ---
+###### [0）、Doris资料网址？]()
+* [Doris GitHub地址](https://github.com/apache/incubator-doris/wiki)
+* [Doris 官网地址](http://doris.apache.org/master/zh-CN/)
+
 ###### [1）、Doris数据模型？]()
 
 

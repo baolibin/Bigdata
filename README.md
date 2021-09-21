@@ -95,6 +95,14 @@
 * [MapReduce]()
 * [Spark]()
 
+##### 8.4、学习网址收藏
+* [Apache 官网地址](https://www.apache.org/)
+* [Hadoop 官网地址](http://hadoop.apache.org/)
+* [Spark 官网地址](http://spark.apache.org/)
+* [Flink 官网地址](http://flink.apache.org/)
+* [Doris GitHub地址](https://github.com/apache/incubator-doris/wiki)
+* [Doris 官网地址](http://doris.apache.org/master/zh-CN/)
+
 ## 9、必会知识点
 * [9.1、Spark Core](bigdata-project/src/main/doc/sparkcore.md)
     - [1）、Spark作业提交流程？](./bigdata-project/src/main/doc/sparkcore.md)
