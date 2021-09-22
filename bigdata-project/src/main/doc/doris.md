@@ -18,7 +18,10 @@
 * [Doris 官网地址](http://doris.apache.org/master/zh-CN/)
 
 ###### [1）、Doris数据模型？]()
-
+    Doris 的数据模型主要分为3类:
+    Aggregate（聚合模型）
+    Uniq（唯一主键）
+    Duplicate（冗余模型）
 
 ###### [2）、Doris底层存储原理？]()
 
