@@ -47,6 +47,13 @@
     这种数据模型区别于 Aggregate 和 Uniq 模型。数据完全按照导入文件中的数据进行存储，不会有任何聚合。即使两行数据完全相同，也都会保留。 
 
 ###### [2）、Doris底层存储原理？]()
+    Doris是基于MPP架构的交互式SQL数据仓库，主要用于解决近实时的报表和多维分析。
+    
+    Doris分成两部分FE和BE，FE 负责存储以及维护集群元数据、接收、解析、查询、设计规划整体查询流程，BE 负责数据存储和具体的实施过程。
+    
+    在 Doris 的存储引擎中，用户数据被水平划分为若干个数据分片（Tablet，也称作数据分桶）。每个 Tablet 包含若干数据行。
+    多个 Tablet 在逻辑上归属于不同的分区Partition。一个 Tablet 只属于一个 Partition。而一个 Partition 包含若干个 Tablet。
+    Tablet 是数据移动、复制等操作的最小物理存储单元。
 
 ###### [3）、MPP引擎的选型？]()
     目前开源的比较受关注的OLAP引擎很多，比如Greenplum、Apache Impala、Presto、Doris、ClickHouse、Druid、TiDB等等
