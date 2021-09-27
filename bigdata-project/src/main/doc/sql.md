@@ -83,3 +83,5 @@
     select *,row_number over (partition by 要分组的列名 order by 要排序的列名 desc) as ranking 
     from score
     where ranking<=N;
+
+###### 6、sql子查询
