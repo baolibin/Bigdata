@@ -12,6 +12,7 @@
     - [11）、Doris的调度？]()  
     - [12）、Doris的数据划分？]()  
     - [13）、Doris的Bitmap去重？]()  
+    - [14）、Doris、ClickHouse、Druid对比？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
@@ -93,5 +94,5 @@
 ###### [13）、Doris的bitmap实现？]()  
 
 
-###### [14）、Doris、ClickHouse、Druid对比？]()  
+
 
