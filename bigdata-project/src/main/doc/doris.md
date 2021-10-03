@@ -92,9 +92,9 @@
 
 
 
-###### [13）、Doris的Bitmap去重？]()  
+###### [13）、Doris的Bitmap去重实现？]()  
     
-###### [14）、Doris的bitmap实现？]()  
+###### [14）、Doris、ClickHouse、Druid对比？]()  
 
 
 
