@@ -543,4 +543,6 @@
     - [9）、Doris优缺点？]()  
     - [10）、Doris查询方式？]()  
     - [11）、Doris的调度？]()  
-    - [12）、Doris的数据划分？]()  
+    - [12）、Doris的数据划分？]()    
+    - [13）、Doris的Bitmap去重？]()  
+    - [14）、Doris、ClickHouse、Druid对比？]()  
