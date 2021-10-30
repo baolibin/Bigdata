@@ -109,3 +109,5 @@
     HLL函数
     分析函数（窗口函数）
 
+###### [16）、MPP数据库？]() 
+    存储和计算都是有MPP数据库来提供的，有代表性的GREENPLUM、CLICKHOUSE、DORIS等。
