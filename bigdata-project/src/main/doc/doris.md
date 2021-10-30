@@ -60,7 +60,8 @@
     目前开源的比较受关注的OLAP引擎很多，比如Greenplum、Apache Impala、Presto、Doris、ClickHouse、Druid、TiDB等等
 
 
-###### [4）、Doris简介？]()
+###### [4）、Doris简介？历史背景？]()
+    Doris是一个MPP的OLAP系统，主要整合了Google Mesa（数据模型），Apache Impala（MPP Query Engine)和Apache ORCFile (存储格式，编码和压缩) 的技术。
     Apache Doris是一个现代化的MPP分析型数据库产品。仅需亚秒级响应时间即可获得查询结果，有效地支持实时数据分析。
     Apache Doris的分布式架构非常简洁，易于运维，并且可以支持10PB以上的超大数据集。
     Apache Doris可以满足多种数据分析需求，例如固定历史报表，实时数据分析，交互式数据分析和探索式数据分析等。
