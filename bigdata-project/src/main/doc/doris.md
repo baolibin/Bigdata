@@ -112,3 +112,7 @@
 
 ###### [16）、MPP数据库？]() 
     存储和计算都是有MPP数据库来提供的，有代表性的GREENPLUM、CLICKHOUSE、DORIS等。
+    
+    MPP (Massively Parallel Processing)，大规模并行处理系统，由许多松耦合的处理单元组成的，
+    每个单元内的 CPU都有自己私有的资源，如总线，内存，硬盘等。
+    
