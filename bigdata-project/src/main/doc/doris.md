@@ -81,11 +81,20 @@
     将本身在用户查询时才会进行聚合计算的数据预先计算好，并存储在Doris中，从而达到提升用户粗粒度上的查询效率。
 
 ###### [8）、Doris的写入方式？]()  
-    Broker Load通过部署的Broker程序，DorisDB可读取对应数据源（如HDFS, S3）上的数据，利用自身的计算资源对数据进行预处理和导入。这是一种异步的导入方式，用户需要通过MySQL协议创建导入，并通过查看导入命令检查导入结果。
-    Spark Load 通过外部的 Spark 资源实现对导入数据的预处理，提高 DorisDB 大数据量的导入性能并且节省 Doris 集群的计算资源。主要用于初次迁移、大数据量导入 DorisDB 的场景（数据量可到TB级别）。Spark Load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并可以通过 SHOW LOAD 查看导入结果。
-    Stream Load 是一种同步的导入方式，用户通过发送 HTTP 请求将本地文件或数据流导入到 DorisDB 中。Stream Load 同步执行导入并返回导入结果。用户可直接通过请求的返回值判断导入是否成功。DorisDB支持从本地直接导入数据，支持CSV文件格式。数据量在10GB以下。
+    Broker Load通过部署的Broker程序，DorisDB可读取对应数据源（如HDFS, S3）上的数据，利用自身的计算资源对数据进行预处理和导入。
+    这是一种异步的导入方式，用户需要通过MySQL协议创建导入，并通过查看导入命令检查导入结果。
+    
+    Spark Load 通过外部的 Spark 资源实现对导入数据的预处理，提高 DorisDB 大数据量的导入性能并且节省 Doris 集群的计算资源。
+    主要用于初次迁移、大数据量导入 DorisDB 的场景（数据量可到TB级别）。
+    Spark Load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并可以通过 SHOW LOAD 查看导入结果。
+    
+    Stream Load 是一种同步的导入方式，用户通过发送 HTTP 请求将本地文件或数据流导入到 DorisDB 中。Stream Load 同步执行导入并返回导入结果。
+    用户可直接通过请求的返回值判断导入是否成功。DorisDB支持从本地直接导入数据，支持CSV文件格式。数据量在10GB以下。
+    
     Routine Load 是一种例行导入方式，DorisDB通过这种方式支持从Kafka持续不断的导入数据，并且支持通过SQL控制导入任务的暂停、重启、停止。
-I   nsert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 DorisDB 中，所有的数据写入都是一个独立的导入作业。
+    
+    Insert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 DorisDB 中，所有的数据写入都是一个独立的导入作业。
+    
     http://doc.dorisdb.com/2145999
 
 
