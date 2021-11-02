@@ -705,7 +705,12 @@
     Spark SQL构建在Spark Core之上，专门用来处理结构化数据(不仅仅是SQL)。即Spark SQL是Spark Core封装而来的。
 
 ###### [63）、Spark和MapReduce区别?]()
-    
+
+
+
+###### [64）、Spark不同版本区别?]()
+
+
 
 ---
 参考:
