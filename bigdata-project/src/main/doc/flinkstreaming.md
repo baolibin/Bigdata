@@ -835,6 +835,51 @@
 
 ###### [73）、Flink中多流Join，数据延迟?]()
     使用Flink state缓存前面的流(RocksDb，保留到磁盘，而非内存)，会导致非常大的checkpoint和显著的背压。
+    多流Join是实时处理难点，常见问题面临关联流时差大（可能数天）、关联类型多样（左外关联、自关联等）、数据量级不一致。
+    
+    Flink Regular Join：用Flink常规SQL关联，Flink SQL执行引擎会将数据缓存在state中，再根据sql关联语义进行关联；
+    Flink State Join：利用Flink API自定义的state数据结构进行关联。将两条流数据都存储在state中，当某条流数据到来时，从另一个state中取出对应的key数据关联后下发；
+    Flink外存Join：利用高速缓存进行关联，比如Redis、HBase、Tair等，当某条流到来时，从另一条流的外存中取出对应key数据关联后下发，与“Flink State Join”类似，用高速缓存替代state；
+    窗口Join：Flink Windows Join 都是 Inner Join,两个流join时，先做join操作，形成JoinedStream，然后再指定Window，最后接着join后的transform操作。
+    
+        inputStream1:DataStream[(Long,String,Int)] = ...
+        inputStream2:DataStream[(String,Long,Int)] = ...
+        //通过DataStream Join方法将两个数据流关联
+        inputStream1.join(inputStream2)
+        //指定inputStream1的关联Key
+        .where(_._1) 
+        //指定inputStream2的关联Key
+        .equalTo(_._2)/
+        //指定Window Assigner
+        .window(TumblingEventTimeWindows.of(Time.milliseconds(10)))
+        .apply(<JoinFunction>) //指定窗口计算函数
+        
+    根据窗口的不同，数据计算的方式不同:
+    滚动窗口关联：Tumbling Window Join
+    滑动窗口关联：Sliding Window Join
+    会话窗口关联:Session Window Join
+    间隔关联：Interval Join : 间隔关联与其他窗口关联不同，间隔关联的数据元素关联范围不依赖窗口划分，而是通过DataStream元素的时间加上或减去指定Interval作为关联窗口，
+                            然后和另外一个DataStream的数据元素时间在窗口内进行Join操作。
+                            
+        //创建黑色元素数据集
+        val blackStream: DataStream[(Int, Long)] = env.fromElements((2, 21L), (4, 1L), (5, 4L))
+        //创建白色元素数据集
+        val whiteStream: DataStream[(Int, Long)] = env.fromElements((2, 21L), (1, 1L), (3, 4L))
+        //通过Join方法将两个数据集进行关联
+        val windowStream: DataStream[String] = blackStream.keyBy(_._1)
+        //调用intervalJoin方法关联另外一个DataStream
+        .intervalJoin(whiteStream.keyBy(_._1))
+        //设定时间上限和下限
+         .between(Time.milliseconds(-2), Time.milliseconds(1))
+         .process(new ProcessWindowFunciton())
+        //通过单独定义ProcessWindowFunciton实现ProcessJoinFunction
+        class ProcessWindowFunciton extends ProcessJoinFunction[(Int, Long), (Int, Long), String] {
+            override def processElement(in1: (Int, Long), in2: (Int, Long), 
+                                        context: ProcessJoinFunction[(Int, Long), (Int, Long), String]#Context, 
+                                        collector: Collector[String]): Unit = {
+                collector.collect(in1  + ":" + (in1._2 + in2._2))
+            }
+        }
 
 ###### [74）、Flink中checkpoint存的数据是什么?]()
     Flink提供了Exactly once特性，是依赖于带有barrier的分布式快照+可部分重发的数据源功能实现的。而分布式快照中，就保存了operator的状态信息。
@@ -906,6 +951,7 @@
                          在 Temporal Table Join 中，Build Table 是一个基于 append-only 数据流的带时间版本的视图，
                          所以又称为 Temporal Table。Temporal Table 要求定义一个主键和用于版本化的字段（通常就是 Event Time 时间字段），
                          以反映记录内容在不同时间的内容。
+*[Table API&SQL 流上的Join 官网地址](https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/streaming/joins.html)
 
 
 ---
