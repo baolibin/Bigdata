@@ -835,6 +835,7 @@
 
 ###### [73）、Flink中多流Join，数据延迟?]()
     使用Flink state缓存前面的流(RocksDb，保留到磁盘，而非内存)，会导致非常大的checkpoint和显著的背压。
+    
     多流Join是实时处理难点，常见问题面临关联流时差大（可能数天）、关联类型多样（左外关联、自关联等）、数据量级不一致。
     
     Flink Regular Join：用Flink常规SQL关联，Flink SQL执行引擎会将数据缓存在state中，再根据sql关联语义进行关联；
@@ -857,7 +858,7 @@
     根据窗口的不同，数据计算的方式不同:
     滚动窗口关联：Tumbling Window Join
     滑动窗口关联：Sliding Window Join
-    会话窗口关联:Session Window Join
+    会话窗口关联：Session Window Join
     间隔关联：Interval Join : 间隔关联与其他窗口关联不同，间隔关联的数据元素关联范围不依赖窗口划分，而是通过DataStream元素的时间加上或减去指定Interval作为关联窗口，
                             然后和另外一个DataStream的数据元素时间在窗口内进行Join操作。
                             
