@@ -901,9 +901,11 @@
     Flink SQL 分别提供了 Regular Join、Time-Windowed Join 和 Temporal Table Join 来应对不同业务场景。
     Regular Join：Regular Join 是最为基础的没有缓存剔除策略的 Join。Regular Join 中两个表的输入和更新都会对全局可见，影响之后所有的 Join 结果。
     Time-Windowed Join：Time-Windowed Join 利用窗口的给两个输入表设定一个 Join 的时间界限，超出时间范围的数据则对 JOIN 不可见并可以被清理掉。
-    Temporal Table Join：Temporal Table Join 类似于 Hash Join，将输入分为 Build Table 和 Probe Table。前者一般是纬度表的 changelog，后者一般是业务数据流，
-                         典型情况下后者的数据量应该远大于前者。在 Temporal Table Join 中，Build Table 是一个基于 append-only 数据流的带时间版本的视图，
-                         所以又称为 Temporal Table。Temporal Table 要求定义一个主键和用于版本化的字段（通常就是 Event Time 时间字段），以反映记录内容在不同时间的内容。
+    Temporal Table Join：Temporal Table Join 类似于 Hash Join，将输入分为 Build Table 和 Probe Table。
+                         前者一般是纬度表的 changelog，后者一般是业务数据流，典型情况下后者的数据量应该远大于前者。
+                         在 Temporal Table Join 中，Build Table 是一个基于 append-only 数据流的带时间版本的视图，
+                         所以又称为 Temporal Table。Temporal Table 要求定义一个主键和用于版本化的字段（通常就是 Event Time 时间字段），
+                         以反映记录内容在不同时间的内容。
 
 
 ---
