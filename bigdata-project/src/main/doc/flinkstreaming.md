@@ -954,7 +954,7 @@
                          在 Temporal Table Join 中，Build Table 是一个基于 append-only 数据流的带时间版本的视图，
                          所以又称为 Temporal Table。Temporal Table 要求定义一个主键和用于版本化的字段（通常就是 Event Time 时间字段），
                          以反映记录内容在不同时间的内容。
-*[Table API&SQL 流上的Join 官网地址](https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/streaming/joins.html)
+* [Table API&SQL 流上的Join 官网地址](https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/streaming/joins.html)
 
 
 ---
