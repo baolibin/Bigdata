@@ -956,6 +956,8 @@
                          以反映记录内容在不同时间的内容。
 * [Table API&SQL 流上的Join 官网地址](https://ci.apache.org/projects/flink/flink-docs-release-1.12/zh/dev/table/streaming/joins.html)
 
+###### [86）、Flink SQL解析方式?]()
+
 
 ---
 参考:
