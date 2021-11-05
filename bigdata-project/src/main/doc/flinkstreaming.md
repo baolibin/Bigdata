@@ -997,13 +997,13 @@
 
     //指定Window Assigner
         .window(TumblingEventTimeWindows.of(Time.milliseconds(10)))
-        
+
     Flink有一些内置的触发器:
 　　      EventTimeTrigger(前面提到过)触发是根据由水印衡量的事件时间的进度来的
 　　      ProcessingTimeTrigger 根据处理时间来触发
 　　      CountTrigger 一旦窗口中的元素个数超出了给定的限制就会触发
 　　      PurgingTrigger 作为另一个触发器的参数并将它转换成一个清除类型
-      
+
 ###### [90)、Flink Window 的窗口函数？]()  
     每个 Window 都有一个触发器Trigger和一个附属于 Window 的函数。
     在定义好了窗口之后，需要指定对每个窗口的计算逻辑。（.apply(<JoinFunction>) //指定窗口计算函数）
