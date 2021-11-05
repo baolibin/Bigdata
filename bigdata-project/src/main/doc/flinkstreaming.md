@@ -959,6 +959,32 @@
 ###### [86）、Flink SQL解析方式?]()
 
 
+###### [87)、Flink Window的理解？]()
+    Window是无限数据流处理的核心，Window将一个无限的stream拆分成有限大小的”buckets”桶，我们可以在这些桶上做计算操作。
+    
+    窗口化的Flink程序的一般结构如下，第一个代码段中是分组的流，而第二段是非分组的流。
+    Keyed Windows：
+        stream.keyBy(...)          <-  keyed versus non-keyed windows
+            .window(...)         <-  required: "assigner"
+            [.trigger(...)]       <-  optional: "trigger" (else default trigger)
+            [.evictor(...)]       <-  optional: "evictor" (else no evictor)
+            [.allowedLateness()]  <-  optional, else zero
+            .reduce/fold/apply() <-  required: "function"
+    
+    Non-Keyed Windows：
+        stream.windowAll(...)      <-  required: "assigner"
+            [.trigger(...)]       <-  optional: "trigger" (else default trigger)
+            [.evictor(...)]       <-  optional: "evictor" (else no evictor)
+            [.allowedLateness()]  <-  optional, else zero
+            .reduce/fold/apply() <-  required: "function"
+    
+    使用 keyBy(...) 会将你的无限数据流拆分成逻辑分组的数据流，如果 keyBy(...) 函数不被调用的话，你的数据流将不是分组的。
+    分组数据流将你的window计算通过多任务并发执行，以为每一个逻辑分组流在执行中与其他的逻辑分组流是独立地进行的。
+    在非分组数据流中，你的原始数据流并不会拆分成多个逻辑流并且所有的window逻辑将在一个任务中执行，并发度为1。
+
+
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
