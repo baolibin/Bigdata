@@ -959,7 +959,7 @@
 ###### [86）、Flink SQL解析方式?]()
 
 
-###### [87)、Flink Window的理解？]()
+###### [87)、Flink Window的分组？]()
     Window是无限数据流处理的核心，Window将一个无限的stream拆分成有限大小的”buckets”桶，我们可以在这些桶上做计算操作。
     
     窗口化的Flink程序的一般结构如下，第一个代码段中是分组的流，而第二段是非分组的流。
@@ -982,8 +982,36 @@
     分组数据流将你的window计算通过多任务并发执行，以为每一个逻辑分组流在执行中与其他的逻辑分组流是独立地进行的。
     在非分组数据流中，你的原始数据流并不会拆分成多个逻辑流并且所有的window逻辑将在一个任务中执行，并发度为1。
 
+###### [87)、Flink Window 的生命周期？]()
+    当一个属于window的元素到达之后这个window就创建了，当当前时间(事件或者处理时间)为window的创建时间，
+    跟用户指定的延迟时间相加时，窗口将被彻底清除。
+    Flink 确保了只清除基于时间的window，其他类型的window不清除，例如:全局window
+    
+    例如:对于一个每5分钟创建无覆盖的(即 翻滚窗口)窗口，允许一个1分钟的时延的窗口策略，
+    Flink将会在12:00到12:05这段时间内第一个元素到达时创建窗口，当水印通过12:06时，移除这个窗口。
+    
+###### [88)、Flink Window 的触发器？]()
+    每个 Window 都有一个触发器Trigger和一个附属于 Window 的函数。
+    Trigger(触发器)则指定了函数在什么条件下可被应用(函数何时被触发),一个触发策略可以是 "当窗口中的元素个数超过4个时" 或者 "当水印达到窗口的边界时"。
+    触发器还可以决定在窗口创建和删除之间的任意时刻清除窗口的内容，本例中的清除仅指清除窗口的内容而不是窗口的元数据,也就是说新的数据还是可以被添加到当前的window中。
 
-
+    //指定Window Assigner
+        .window(TumblingEventTimeWindows.of(Time.milliseconds(10)))
+        
+###### [89)、Flink Window 的附属函数？]()  
+    每个 Window 都有一个触发器Trigger和一个附属于 Window 的函数。
+    在定义好了窗口之后，需要指定对每个窗口的计算逻辑。（.apply(<JoinFunction>) //指定窗口计算函数）
+    Window Function 有四种：
+        ReduceFunction
+        AggregateFunction
+        FoldFunction
+        ProcessWindowFunction
+    
+    ReduceFunction指定了如何通过两个输入的参数进行合并输出一个同类型的参数的过程，Flink使用ReduceFunction来对窗口中的元素进行增量聚合。
+    AggregateFunction 比 ReduceFunction 更加的通用，它有三个参数，一个输入类型（IN），一个累加器（ACC），一个输出类型（OUT）。
+    FoldFunction 指定了一个输入元素如何与一个输出类型的元素合并的过程，这个FoldFunction 会被每一个加入到窗口中的元素和当前的输出值增量地调用，
+                 第一个元素是与一个预定义的类型为输出类型的初始值合并。
+    ProcessWindowFunction 有一个 Iterable 迭代器，用来获得窗口中所有的元素。
 
 ---
 参考:
