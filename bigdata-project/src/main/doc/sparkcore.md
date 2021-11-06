@@ -61,6 +61,8 @@
     - [60）、Spark distinct去重原理?]()
     - [61）、Spark cache和checkpoint区别?]()
     - [62）、Spark Core和Spark SQL区别?]()
+    - [63）、Spark和MapReduce区别?]()
+    - [64）、Spark不同版本区别?]()
 
 ---
 ###### 1、Spark作业提交流程？
