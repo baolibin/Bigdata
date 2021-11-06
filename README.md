@@ -45,6 +45,7 @@
 * [大数据产品技能](bigdata-project/src/main/bigdata/大数据产品技能.md)  
 * [大数据应用场景](bigdata-project/src/main/bigdata/大数据应用场景.md)  
 * [大数据相关硬件知识](bigdata-project/src/main/bigdata/大数据相关硬件知识.md)  
+* [大数据平台相关知识]()
 
 ## 6、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
