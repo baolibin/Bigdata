@@ -13,6 +13,8 @@
     - [12）、Doris的数据划分？]()  
     - [13）、Doris的Bitmap去重？]()  
     - [14）、Doris、ClickHouse、Druid对比？]()  
+    - [15）、Doris内置函数？]() 
+    - [16）、MPP数据库？]() 
 
 ---
 ###### [0）、Doris资料网址？]()
