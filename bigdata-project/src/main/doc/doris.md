@@ -15,6 +15,7 @@
     - [14）、Doris、ClickHouse、Druid对比？]()  
     - [15）、Doris内置函数？]() 
     - [16）、MPP数据库？]() 
+    - [17）、数据库架构设计？]() 
 
 ---
 ###### [0）、Doris资料网址？]()
@@ -145,7 +146,27 @@
     然后再去查找 Bitmap Index，知道1对应的Bitmap是1000，我们就知道只有第4行数据符合查询条件，DorisDB就会只读取第4行数据，不会读取所有数据。
     
 ###### [14）、Doris、ClickHouse、Druid对比？]()  
-
+    Doris的前身是百度的Palo，后贡献给apache社区，相应的商业版本是DorisDB。其官方的性能测试也是对标的ClickHouse。
+    
+    存储方式：
+        Apache Doris：shard nothing，本地磁盘存储
+        Clickhouse：列式，本地磁盘存储
+    
+    编程语言：
+        Apache Doris：C++、Java
+        Clickhouse：C++
+    
+    核心原理：
+        Apache Doris：MPP现场计算，向量化执行
+        Clickhouse：MPP现场计算，向量化执行
+    
+    数据库完整度：
+        Apache Doris：完整的DBMS，支持DDL、DML
+        Clickhouse：完整的DBMS，支持DDL、DML
+        
+    运维成本：
+        Apache Doris：不依赖hadoop生态，schema支持修改
+        Clickhouse：不依赖hadoop生态，schema支持修改
 
 ###### [15）、Doris内置函数？]() 
     数学函数
@@ -164,4 +185,13 @@
     
     MPP (Massively Parallel Processing)，大规模并行处理系统，由许多松耦合的处理单元组成的，
     每个单元内的 CPU都有自己私有的资源，如总线，内存，硬盘等。
+    
+###### [17）、数据库架构设计？]() 
+    数据库构架设计中主要有Shared Everthting、Shared Nothing、和Shared Disk。
+    
+    Shared Everthting:一般是针对单个主机，完全透明共享CPU/MEMORY/IO，并行处理能力是最差的，典型的代表SQLServer。
+    Shared Disk：各个处理单元使用自己的私有 CPU和Memory，共享磁盘系统。典型的代表Oracle Rac。
+    Shared Nothing：各个处理单元都有自己私有的CPU/内存/硬盘等，不存在共享资源，类似于MPP（大规模并行处理）模式，
+                    各处理单元之间通过协议通信，并行处理和扩展能力更好。
+    
     
