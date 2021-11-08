@@ -711,8 +711,15 @@
 
 
 ###### [64）、Spark不同版本区别?]()
-
-
+    Spark3.0：
+    2020年6月18日，开发了近两年（自2018年10月份至今）的Apache Spark 3.0.0正式发。这个版本一共解决了 3400 多个 ISSUES。
+    Apache Spark 3.0 增加了很多令人兴奋的新特性，包括：
+        1）、动态分区修剪（Dynamic Partition Pruning）：基于运行时（run time）推断出来的信息来进一步进行分区裁剪。
+        2）、自适应查询执行（Adaptive Query Execution）：对查询执行计划的优化，允许 Spark Planner 在运行时执行可选的执行计划，这些计划将基于运行时统计数据进行优化。
+        3）、加速器感知调度（Accelerator-aware Scheduling）：在 Apache Hadoop 3.1 版本里面已经开始内置原生支持 GPU 和 FPGA 了。
+        4）、支持 Catalog 的数据源API（Data Source API with Catalog Supports）；
+        5）、SparkR 中的向量化（Vectorization in SparkR）；
+        6）、支持 Hadoop 3/JDK 11/Scala 2.12 等等。
 
 ---
 参考:
