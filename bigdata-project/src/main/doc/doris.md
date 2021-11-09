@@ -8,7 +8,7 @@
     - [7）、Doris的Rollup？]()  
     - [8）、Doris的写入方式？]()  
     - [9）、Doris优缺点？]()  
-    - [10）、Doris查询方式？]()  
+    - [10）、Doris提取方式？]()  
     - [11）、Doris的调度？]()  
     - [12）、Doris的数据划分？]()  
     - [13）、Doris的Bitmap去重？]()  
@@ -103,7 +103,15 @@
 
 ###### [9）、Doris优缺点？]()  
 
-###### [10）、Doris查询方式？]()  
+###### [10）、Doris提取方式？]()  
+    1）、Export数据导出：
+    数据导出（Export）是 DorisDB 提供的一种将数据导出并存储到其他介质上的功能。
+    该功能可以将用户指定的表或分区的数据，以文本的格式，通过 Broker 进程导出到远端存储上，如 HDFS/阿里云OSS/AWS S3（或者兼容S3协议的对象存储） 等。
+    
+    2）、Spark-connector：
+    Spark DorisDB Connector 可以支持通过 Spark 读取 DorisDB 中存储的数据。
+    可以将DorisDB表映射为DataFrame或者RDD，推荐使用DataFrame。
+    支持在DorisDB端完成数据过滤，减少数据传输量。
 
 ###### [11）、Doris的调度？]()  
 
