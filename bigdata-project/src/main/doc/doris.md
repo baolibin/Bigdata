@@ -21,6 +21,7 @@
 ###### [0）、Doris资料网址？]()
 * [Doris GitHub地址](https://github.com/apache/incubator-doris/wiki)
 * [Doris 官网地址](http://doris.apache.org/master/zh-CN/)
+* [DorisDB企业版文档](http://doc.dorisdb.com)
 
 ###### [1）、Doris数据模型？]()
     在 Doris 中，数据以表（Table）的形式进行逻辑上的描述。
@@ -71,10 +72,17 @@
   
 ###### [5）、Doris适用场景？]()  
     应用场景包括：固定历史报表分析、实时数据分析、交互式数据分析等。
-    
     一般情况下，用户的原始数据，比如日志或者在事务型数据库中的数据，经过流式系统或离线处理后，
     导入到Doris中以供上层的报表工具或者数据分析师查询使用。
-  
+    
+    DorisDB可以满足企业级用户的多种分析需求，包括OLAP多维分析，定制报表，实时数据分析，Ad-hoc数据分析等。具体的业务场景包括：
+    数据仓库建设
+    OLAP/BI分析
+    用户行为分析
+    广告数据分析
+    系统监控分析
+    探针分析 APM（Application Performance Management）
+
 ###### [6）、Doris的查询规划过程？]()  
 
 ###### [7）、Doris的Rollup？]()  
@@ -201,5 +209,21 @@
     Shared Disk：各个处理单元使用自己的私有 CPU和Memory，共享磁盘系统。典型的代表Oracle Rac。
     Shared Nothing：各个处理单元都有自己私有的CPU/内存/硬盘等，不存在共享资源，类似于MPP（大规模并行处理）模式，
                     各处理单元之间通过协议通信，并行处理和扩展能力更好。
-    
-    
+
+###### [18）、近似去重、精确去重功能？]()
+
+
+
+###### [19）、Index加速查询？]()
+
+
+
+###### [20）、Doris分区？]()
+
+
+
+###### [21）、Doris分桶？]()
+
+
+
+
