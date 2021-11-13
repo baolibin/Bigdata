@@ -4,9 +4,9 @@
 ## 1、Hadoop
     Hadoop是一个由Apache基金会所开发的分布式系统基础架构。
 * [Hadoop](bigdata-hadoop)  
-    - [MapReduce](bigdata-hadoop/src/main/java/com/libin/doc/mapreduce)  
-    - [HDFS](bigdata-hadoop/src/main/java/com/libin/api/hdfs) 
-    - [YARN](bigdata-hadoop/src/main/java/com/libin/doc/yarn) 
+    - [MapReduce](bigdata-hadoop/src/main/java/com/libin/doc/mapreduce/README.md)  
+    - [HDFS](bigdata-hadoop/src/main/java/com/libin/doc/hdfs/README.md) 
+    - [YARN](bigdata-hadoop/src/main/java/com/libin/doc/yarn/README.md) 
 
 ## 2、Spark
     Spark是基于内存计算的大数据并行计算框架，可用于构建大型的、低延迟的数据分析应用程序
