@@ -33,6 +33,10 @@
 * [Hbase](bigdata-hbase/README.md)  
 * [Kafka](bigdata-kafka/README.md)  
 * [Doris](bigdata-doris/README.md)  
+* [Kudu]()  
+* [Kylin]()  
+* [Superset]()  
+* [Parquet]()  
 * [Druid](bigdata-druid/README.md)  
 * [Talos](bigdata-info/src/main/java/com/libin/talos/README.md) 
 * [Pegasus](bigdata-info/src/main/java/com/libin/pegasus/README.md) 
@@ -54,7 +58,7 @@
 * [大数据产品技能](bigdata-project/src/main/bigdata/大数据产品技能.md)  
 * [大数据应用场景](bigdata-project/src/main/bigdata/大数据应用场景.md)  
 * [大数据相关硬件知识](bigdata-project/src/main/bigdata/大数据相关硬件知识.md)  
-* [大数据平台相关知识]()
+* [大数据平台相关知识](bigdata-project/src/main/bigdata/大数据平台相关知识.md)
 
 ## 6、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
