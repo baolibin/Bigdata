@@ -93,6 +93,11 @@
     - [92)、Flink Window 允许时延？]() 
 
 ---
+###### [0）、Flink资料网址？]()
+* [Flink GitHub地址](https://github.com/apache/flink)
+* [Flink 官网地址](https://flink.apache.org/)
+* [Flink 中文文档](https://nightlies.apache.org/flink/flink-docs-release-1.11/zh/)
+
 ###### [1）、Flink如何保证数据仅且消费一次？]()
     Flink是由source --> transformation --> sink三部分组成；也就是说Flink要实现ExactlyOnce语义与这三者脱不了干系；
     
