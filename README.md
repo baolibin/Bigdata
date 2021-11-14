@@ -43,6 +43,8 @@
 * [Griffin](bigdata-info/src/main/java/com/libin/griffin/README.md)
 * [ElasticSearch](bigdata-info/src/main/java/com/libin/elasticsearch/README.md)
 * [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
+* [MySQL]()  
+* [Redis]()  
 * [SpringBoot]()  
 * [Vue]()  
 
