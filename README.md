@@ -590,3 +590,11 @@
     - [25）、Doris的Rollup？](bigdata-project/src/main/doc/doris.md)  
     - [26）、Doris用Bitmap实现精确去重？](bigdata-project/src/main/doc/doris.md)  
     - [27）、Doris用HLL(HyperLogLog)实现近似去重？](bigdata-project/src/main/doc/doris.md)  
+
+* [9.16、大数据算法]()
+    - [1）、逻辑回归公式推导？]()
+
+* [9.17、大数据后端【SpringBoot】]()
+    - [1）、什么是微服务？]()
+
+* [9.18、大数据前端【Vue】]()
