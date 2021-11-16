@@ -39,17 +39,44 @@
 
 ###### [4、Flink Table API & SQL的TableEnvironment？]()
     TableEnvironment是Table API & SQL程序的一个入口，主要包括如下的功能：
-    1）、在内部的catalog中注册Table
-    2）、注册catalog
-    3）、加载可插拔模块
-    4）、执行SQL查询
-    5）、注册用户定义函数
-    6）、DataStream 、DataSet与Table之间的相互转换
-    7）、持有对ExecutionEnvironment 、StreamExecutionEnvironment的引用
+    1).在内部的catalog中注册Table
+    2).注册catalog
+    3).加载可插拔模块
+    4).执行SQL查询
+    5).注册用户定义函数
+    6).DataStream 、DataSet与Table之间的相互转换
+    7).持有对ExecutionEnvironment 、StreamExecutionEnvironment的引用
+
+###### [5、catalog是什么？]()
 
 
+###### [6、catalog中创建临时表与永久表？]()
+    表分为临时表和永久表：
+        1).永久表需要一个catalog(比如Hive的Metastore)来维护表的元数据信息，一旦永久表被创建，
+    只要连接到该catalog就可以访问该表，只有显示删除永久表，该表才可以被删除。
+        2).临时表的生命周期是Flink Session，这些表不能够被其他的Flink Session访问，这些表不属于任何的catalog或者数据库，
+    如果与临时表相对应的数据库被删除了，该临时表也不会被删除。
 
 
+###### [7、catalog中创建虚表(Virtual Tables)？]()
+    一个Table对象相当于SQL中的视图(虚表)，它封装了一个逻辑执行计划，可以通过一个catalog创建。
+    
+    // 获取一个TableEnvironment
+    TableEnvironment tableEnv = ...; 
+    // table对象，查询的结果集
+    Table projTable = tableEnv.from("X").select(...);
+    // 注册一个表，名称为 "projectedTable"
+    tableEnv.createTemporaryView("projectedTable", projTable);
+
+###### [8、catalog中创建外部数据源表(Connector Tables)？]()
+    可以把外部的数据源注册成表，比如可以读取MySQL数据库数据、Kafka数据等。
+    
+    tableEnvironment
+    .connect(...)
+    .withFormat(...)
+    .withSchema(...)
+    .inAppendMode()
+    .createTemporaryTable("MyTable")
 
 
 
