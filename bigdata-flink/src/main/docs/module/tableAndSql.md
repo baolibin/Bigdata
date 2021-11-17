@@ -48,6 +48,8 @@
     7).持有对ExecutionEnvironment 、StreamExecutionEnvironment的引用
 
 ###### [5、catalog是什么？]()
+    
+*[apache calcite](https://calcite.apache.org)
 
 
 ###### [6、catalog中创建临时表与永久表？]()
