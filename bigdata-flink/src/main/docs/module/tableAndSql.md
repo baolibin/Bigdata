@@ -78,6 +78,49 @@
     .inAppendMode()
     .createTemporaryTable("MyTable")
 
+###### [9、查询表Table API方式？]()
+    Table API是一个集成Scala与Java语言的查询API，与SQL相比，它的查询不是一个标准的SQL语句，而是由一步一步的操作组成的。
+    
+    // 获取TableEnvironment
+    TableEnvironment tableEnv = ...;
+    //注册Orders表
+    tableEnv.connect(...).createTemporaryTable("Orders");
+    // 查询注册的表
+    Table orders = tableEnv.from("Orders");
+    // 计算操作
+    Table revenue = orders
+      .filter("cCountry === 'FRANCE'")
+      .groupBy("cID, cName")
+      .select("cID, cName, revenue.sum AS revSum");
+
+###### [10、查询表SQL方式？]()
+    Flink SQL依赖于Apache Calcite，其实现了标准的SQL语法。
+    
+    // 获取TableEnvironment
+    TableEnvironment tableEnv = ...;
+    //注册Orders表
+    // 计算逻辑同上面的Table API
+    Table revenue = tableEnv.sqlQuery(
+        "SELECT cID, cName, SUM(revenue) AS revSum " +
+        "FROM Orders " +
+        "WHERE cCountry = 'FRANCE' " +
+        "GROUP BY cID, cName"
+      );
+    // 注册"RevenueFrance"外部输出表
+    // 计算结果插入"RevenueFrance"表
+    tableEnv.sqlUpdate(
+        "INSERT INTO RevenueFrance " +
+        "SELECT cID, cName, SUM(revenue) AS revSum " +
+        "FROM Orders " +
+        "WHERE cCountry = 'FRANCE' " +
+        "GROUP BY cID, cName"
+      );
+
+
+
+
+
+
 
 
 
