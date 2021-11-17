@@ -118,11 +118,18 @@
         "GROUP BY cID, cName"
       );
 
+###### [11、Table API & SQL底层的转换与执行，Old planner？]()
+    Flink提供了两种planner，分别为old planner和Blink planner，对于不同的planner而言，Table API & SQL底层的执行与转换是有所不同的。
+    Old planner根据是流处理作业还是批处理作业，Table API &SQL会被转换成DataStream或者DataSet程序。
+    一个查询在内部表示为一个逻辑查询计划，会被转换为两个阶段:
+    1）.逻辑查询计划优化
+    2）.转换成DataStream或者DataSet程序
 
-
-
-
-
+###### [12、Table API & SQL底层的转换与执行，Old Blink planner？]()
+    无论是批处理作业还是流处理作业，如果使用的是Blink planner，底层都会被转换为DataStream程序。
+    在一个查询在内部表示为一个逻辑查询计划，会被转换成两个阶段：
+    1）.逻辑查询计划优化
+    2）.转换成DataStream程序
 
 
 
