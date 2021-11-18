@@ -125,11 +125,18 @@
     1）.逻辑查询计划优化
     2）.转换成DataStream或者DataSet程序
 
-###### [12、Table API & SQL底层的转换与执行，Old Blink planner？]()
+###### [12、Table API & SQL底层的转换与执行 Blink planner？]()
     无论是批处理作业还是流处理作业，如果使用的是Blink planner，底层都会被转换为DataStream程序。
     在一个查询在内部表示为一个逻辑查询计划，会被转换成两个阶段：
     1）.逻辑查询计划优化
     2）.转换成DataStream程序
+
+
+###### [13、查询优化，Old planner？]()
+
+
+
+###### [14、查询优化，Blink planner？]()
 
 
 
