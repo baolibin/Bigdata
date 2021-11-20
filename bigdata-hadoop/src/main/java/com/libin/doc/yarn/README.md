@@ -2,7 +2,7 @@
 * [YARN]()
     - [1、YARN原理概述？]()
     - [2、YARN使用场景？]()
-        - [1.1、YARN必会知识点？[点击跳转]](../../../../../../../../bigdata-project/src/main/doc/yarn.md)
+        - [2.1、YARN必会知识点？[点击跳转]](../../../../../../../../bigdata-project/src/main/doc/yarn.md)
     - [3、YARN如何使用？]()
         - [3.1、YARN使用API？[点击跳转]](../../api/yarn)
     - [4、YARN调优？]()

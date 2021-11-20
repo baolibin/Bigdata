@@ -2,7 +2,7 @@
 * [SparkSql]()
     - [1、SparkSql原理概述？]()
     - [2、SparkSql使用场景？]()
-        - [1.1、SparkSql必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparksql.md)
+        - [2.1、SparkSql必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparksql.md)
     - [3、SparkSql如何使用？]()
         - [3.1、SparkSql文档？[点击跳转]](src/main/doc)
         - [3.2、SparkSql示例代码？[点击跳转]](src/main/scala/com/libin/etl)

@@ -2,7 +2,7 @@
 * [SparkStreaming]()
     - [1、SparkStreaming原理概述？]()
     - [2、SparkStreaming使用场景？]()
-        - [1.1、SparkStreaming必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparkstreaming.md)
+        - [2.1、SparkStreaming必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparkstreaming.md)
     - [3、SparkStreaming如何使用？]()
         - [3.1、SparkStreaming文档？[点击跳转]](src/main/doc)
         - [3.2、SparkStreaming示例代码？[点击跳转]](src/main/scala/com/libin/data/streaming)

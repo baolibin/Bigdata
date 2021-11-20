@@ -2,7 +2,7 @@
 * [SparkCore]()
     - [1、SparkCore原理概述？]()
     - [2、SparkCore使用场景？]()
-        - [1.1、SparkCore必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparkcore.md)
+        - [2.1、SparkCore必会知识点？[点击跳转]](../bigdata-project/src/main/doc/sparkcore.md)
     - [3、SparkCore如何使用？]()
         - [3.1、SparkCore公共代码类？[点击跳转]](src/main/scala/com/libin/base)
         - [3.2、SparkCore工具类？[点击跳转]](src/main/scala/com/libin/utils)
