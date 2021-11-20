@@ -1,23 +1,30 @@
+* [Flnik Table API&SQL]()
+  - [1）、1、Flink API&SQL概述？是什么？]()
+  - [2）、Flink API&SQL的planner？]()
+  - [3）、Flink API&SQL的编程模板？]()
+  - [4）、Flink API&SQL的TableEnvironment？]()
+  - [5）、catalog是什么？]()
+  - [6）、catalog中创建临时表与永久表？]()
+  - [7）、catalog中创建虚表(Virtual Tables)？]()
+  - [8）、catalog中创建外部数据源表(Connector Tables)？]()
+  - [9）、查询表Table API方式？]()
+  - [10）、查询表SQL方式？]()
+  - [11）、API&SQL底层的转换与执行，Old planner？]()
+  - [12）、API&SQL底层的转换与执行 Blink planner？]()
+  - [13）、查询优化，Old planner？]()
+  - [14）、查询优化，Blink planner？]()
 
-
-* Flnik Table API & SQL
-  - [Flnik Table API & SQL原理]()
-  - [Flnik Table API & SQL使用场景]()
-  - [Flnik Table API & SQL使用API]()
-  - [Flnik Table API & SQL调优]()
-  - [Flnik Table API & SQL源码]()
-
-
-###### [1、Flink Table API & SQL概述？是什么？]()
+---
+###### [1、Flink API&SQL概述？是什么？]()
     Apache Flink提供了两种顶层的关系型API，分别为Table API和SQL，Flink通过Table API&SQL实现了批流统一。
     Table API是用于Scala和Java的语言集成查询API，它允许以非常直观的方式组合关系运算符（例如select，where和join）的查询。
     Flink SQL基于Apache Calcite 实现了标准的SQL，用户可以使用标准的SQL处理数据集。
     Table API和SQL与Flink的DataStream和DataSet API紧密集成在一起，用户可以实现相互转化，比如可以将DataStream或者DataSet注册为table进行操作数据。
 
-###### [2、Flink Table API & SQL的planner？]()
+###### [2、Flink API&SQL的planner？]()
     从Flink1.9开始，Flink为Table & SQL API提供了两种planner,分别为Blink planner和old planner，其中old planner是在Flink1.9之前的版本使用。
 
-###### [3、Flink Table API & SQL的编程模板？]()
+###### [3、Flink API&SQL的编程模板？]()
     所有的Table API&SQL的程序(无论是批处理还是流处理)都有着相同的形式，下面将给出通用的编程结构形式：
     
     // 创建一个TableEnvironment对象，指定planner、处理模式(batch、streaming)
@@ -35,10 +42,10 @@
     // 执行
     tableEnv.execute("java_job");
     
-    Table API & SQL的查询可以相互集成，另外还可以在DataStream或者DataSet中使用Table API & SQL的API，实现DataStreams、 DataSet与Table之间的相互转换。
+    API&SQL的查询可以相互集成，另外还可以在DataStream或者DataSet中使用API&SQL的API，实现DataStreams、 DataSet与Table之间的相互转换。
 
-###### [4、Flink Table API & SQL的TableEnvironment？]()
-    TableEnvironment是Table API & SQL程序的一个入口，主要包括如下的功能：
+###### [4、Flink API&SQL的TableEnvironment？]()
+    TableEnvironment是API&SQL程序的一个入口，主要包括如下的功能：
     1).在内部的catalog中注册Table
     2).注册catalog
     3).加载可插拔模块
@@ -118,14 +125,14 @@
         "GROUP BY cID, cName"
       );
 
-###### [11、Table API & SQL底层的转换与执行，Old planner？]()
-    Flink提供了两种planner，分别为old planner和Blink planner，对于不同的planner而言，Table API & SQL底层的执行与转换是有所不同的。
+###### [11、API&SQL底层的转换与执行，Old planner？]()
+    Flink提供了两种planner，分别为old planner和Blink planner，对于不同的planner而言，API&SQL底层的执行与转换是有所不同的。
     Old planner根据是流处理作业还是批处理作业，Table API &SQL会被转换成DataStream或者DataSet程序。
     一个查询在内部表示为一个逻辑查询计划，会被转换为两个阶段:
     1）.逻辑查询计划优化
     2）.转换成DataStream或者DataSet程序
 
-###### [12、Table API & SQL底层的转换与执行 Blink planner？]()
+###### [12、API&SQL底层的转换与执行 Blink planner？]()
     无论是批处理作业还是流处理作业，如果使用的是Blink planner，底层都会被转换为DataStream程序。
     在一个查询在内部表示为一个逻辑查询计划，会被转换成两个阶段：
     1）.逻辑查询计划优化
