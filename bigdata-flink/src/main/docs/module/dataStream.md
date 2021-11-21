@@ -19,6 +19,6 @@
 ###### [5、Flink DataStream源码？]()
 
 ###### [6、Flink DataStream学习资料？]()
-    1、官网
-    2、博客网站
-    3、相关书籍
+* [6.1、Flink GitHub地址](https://github.com/apache/flink)
+* [6.2、Flink En官网地址](https://flink.apache.org/)
+* [6.3、Flink Cn官网地址](https://nightlies.apache.org/flink/flink-docs-stable/zh/)
