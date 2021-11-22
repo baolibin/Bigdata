@@ -288,8 +288,19 @@
 
 
 ###### [27）、Doris用HLL(HyperLogLog)实现近似去重？]()  
-
-
+    HyperLogLog（简称 HLL）是一种近似去重算法，它的特点是具有非常优异的空间复杂度O(mloglogn),  时间复杂度为O(n),
+    并且计算结果的误差可控制在1%—10%左右，误差与数据集大小以及所采用的哈希函数有关。
+    
+    HyperLogLog是一种近似的去重算法，能够使用极少的存储空间计算一个数据集的不重复元素的个数。
+    HLL类型是基于HyperLogLog算法的工程实现。用于保存HyperLogLog计算过程的中间结果，它只能作为数据表的指标列类型。
+    
+    如何使用HyperLogLog？
+    1）、使用HyperLogLog去重, 需要在建表语句中, 将目标的指标列的类型设置为HLL,  聚合函数设置为HLL_UNION.
+    2）、目前, 只有聚合表支持HLL类型的指标列.
+    3）、当在HLL类型列上使用count distinct时，DorisDB会自动转化为HLL_UNION_AGG计算。
+    
+    Bitmap和HLL应该如何选择？如果数据集的基数在百万、千万量级，并拥有几十台机器，那么直接使用 count distinct 即可。
+    如果基数在亿级以上，并且需要精确去重，那么只能用Bitmap类型；如果可以接受近似去重，那么还可以使用HLL类型。
 
 ###### [28）、Doris的Colocation Join？]()  
 
