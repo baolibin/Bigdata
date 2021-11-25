@@ -303,9 +303,14 @@
     如果基数在亿级以上，并且需要精确去重，那么只能用Bitmap类型；如果可以接受近似去重，那么还可以使用HLL类型。
 
 ###### [28）、Doris的Colocation Join？]()  
-
-
-
+    Colocation Group（CG）：一个 CG 中会包含一张及以上的 Table。一个CG内的Table 的相同的分桶方式和副本放置方式, 使用Colocation Group Schema描述.
+    Colocation Group Schema（CGS）： 包含CG的分桶键，分桶数以及副本数等信息。
+    
+    Colocation Join 功能，是将一组拥有相同 CGS 的 Table 组成一个 CG。并保证这些 Table 对应的分桶副本会落在相同一组BE 节点上。
+    使得当 CG 内的表进行分桶列上的 Join 操作时，可以直接进行本地数据 Join，减少数据在节点间的传输耗时。
+    
+    分桶键hash值, 对分桶数取模得到桶的序号(Bucket Seq),  假设一个 Table 的分桶数为 8，则共有 [0, 1, 2, 3, 4, 5, 6, 7] 8 个分桶（Bucket)，
+    每个 Bucket 内会有一个或多个子表（Tablet), 子表数量取决于表的分区数(Partition): 为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个Tablet。
 
 ###### [29）、Doris的窗口函数？]()  
 
