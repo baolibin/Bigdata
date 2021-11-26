@@ -328,4 +328,11 @@
     DorisDB 是基于MPP 架构实现的，在使用count distinct做精准去重时，可以保留明细数据，灵活性较高。
     但是，由于在查询执行的过程中需要进行多次数据shuffle（不同节点间传输数据，计算去重），会导致性能随着数据量增大而直线下降。
 
+###### [32）、Doris的CBO优化器？]()  
+    在1.16.0版本，DorisDB推出的新优化器，可以针对复杂Adhoc场景生成更优的执行计划。
+    DorisDB采用cascades技术框架，实现基于成本（Cost-based Optimizer 后面简称CBO）的查询规划框架，新增了更多的统计信息来完善成本估算，
+    也补充了各种全新的查询转换（Transformation）和实现（Implementation）规则，能够在数万级别查询计划空间中快速找到最优计划。
+
+
+
 
