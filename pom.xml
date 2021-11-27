@@ -24,6 +24,7 @@
         <module>spark-mllib</module>
         <module>bigdata-spark-sql</module>
         <module>bigdata-spark-streaming</module>
+        <module>bigdata-springboot</module>
     </modules>
 
 
