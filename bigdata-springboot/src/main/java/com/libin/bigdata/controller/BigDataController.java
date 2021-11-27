@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Purpose :
  */
 @RestController
-@RequestMapping(value = "/big_data")
+@RequestMapping(value = "/api/v1")
 public class BigDataController {
 
 	@RequestMapping("/hello")

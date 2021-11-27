@@ -1,6 +1,7 @@
 package com.libin.bigdata.mapper;
 
 import com.libin.bigdata.entity.BigDataEntity;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * <p>
  * Purpose :
  */
+@Mapper
 public interface BigDataMapper {
 	List<BigDataEntity> queryBigDataList();
 }
