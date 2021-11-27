@@ -45,7 +45,7 @@
 * [Oozie](bigdata-info/src/main/java/com/libin/oozie/README.md)  
 * [Redis]()  
 * [MySQL]()  
-* [SpringBoot](bigdata-springboot/README.md)  
+* [SpringBoot](bigdata-springboot)  
 * [Vue]()  
 
 ## 5、大数据相关技能前奏
