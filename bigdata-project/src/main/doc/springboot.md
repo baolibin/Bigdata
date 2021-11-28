@@ -56,5 +56,11 @@
     spring-boot-starter-test - 支持常规的测试依赖，包括JUnit、Hamcrest、Mockito以及spring-test模块。
     spring-boot-starter-thymeleaf - 支持Thymeleaf模板引擎，包括与Spring的集成。
 
+###### [7、spring-boot-maven-plugin有什么用？]()
+    spring-boot-maven-plugin 提供了一些像 jar 一样打包或者运行应用程序的命令。
+    1）、run运行SpringBoot应用程序。
+    2）、repackage重新打包你的jar包或者是war包使其可执行。
+    3）、管理Spring Boot应用程序的生命周期
+    4）、build-info 生成执行器可以使用的构造信息。
 
 
