@@ -47,6 +47,14 @@
     简化了项目的开发配置流程，一定程度上取消xml配置，是一套快速配置开发的脚手架，能快速开发单个微服务；
 
 ###### [6、什么是Spring Boot Stater？]()
+    Spring Boot Starter解决的是依赖管理配置复杂的问题，当我需要构建一个Web应用程序时，
+    不必再遍历所有的依赖包，一个一个地添加到项目的依赖管理中，而是只需要一个配置spring-boot-starter-web。
+    
+    Spring Boot提供了很多启动器项目，包括：
+    spring-boot-starter - Spring Boot的核心启动器，包含了自动配置、日志和YAML。
+    spring-boot-starter-web - Web 和 RESTful 应用程序。
+    spring-boot-starter-test - 支持常规的测试依赖，包括JUnit、Hamcrest、Mockito以及spring-test模块。
+    spring-boot-starter-thymeleaf - 支持Thymeleaf模板引擎，包括与Spring的集成。
 
 
 
