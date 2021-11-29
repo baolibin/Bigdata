@@ -241,8 +241,8 @@
                     各处理单元之间通过协议通信，并行处理和扩展能力更好。
 
 ###### [18）、Doris的Lateral Join？]()
-
-
+    行列转化是ETL处理过程中常见的操作，Lateral 一个特殊的Join关键字，能够按照每行和内部的子查询或者table function关联，
+    通过Lateral 与unnest配合，我们可以实现一行转多行的功能。
 
 ###### [19）、DorisDB基本概念？]()
     FE：FrontEnd DorisDB的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
