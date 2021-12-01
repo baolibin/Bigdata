@@ -314,8 +314,10 @@
     每个 Bucket 内会有一个或多个子表（Tablet), 子表数量取决于表的分区数(Partition): 为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个Tablet。
 
 ###### [29）、Doris的窗口函数？]()  
-
-
+    窗口函数的语法：
+    function(args) OVER(partition_by_clause order_by_clause [window_clause])    
+    partition_by_clause ::= PARTITION BY expr [, expr ...]    
+    order_by_clause ::= ORDER BY expr [ASC | DESC] [, expr [ASC | DESC] ...]
 
 ###### [30）、Doris精确去重方式？]()  
     使用DorisDB进行精确去重分析时，通常会有两种方式：
