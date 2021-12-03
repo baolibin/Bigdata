@@ -253,7 +253,19 @@
     Tablet：DorisDB 表的逻辑分片，也是DorisDB中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### [20）、Doris分区？]()
-    DorisDB中Range分布，被称之为分区，用于分布的列也被称之为分区列
+    DorisDB使用先分区后分桶的方式, 可灵活地支持支持二种分布方式:
+    Hash分布:  不采用分区方式, 整个table作为一个分区, 指定分桶的数量.
+    Range-Hash的组合数据分布: 即指定分区数量, 指定每个分区的分桶数量.
+    
+    -- 采用Hash分布的建表语句
+    CREATE TABLE site_access(
+    site_id INT DEFAULT '10',
+    city_code SMALLINT,
+    user_name VARCHAR(32) DEFAULT '',
+    pv BIGINT SUM DEFAULT '0'
+    )
+    AGGREGATE KEY(site_id, city_code, user_name)
+    DISTRIBUTED BY HASH(site_id) BUCKETS 10;
     
     -- 采用Range-Hash组合分布的建表语句
     CREATE TABLE site_access(
@@ -271,6 +283,8 @@
     PARTITION p3 VALUES LESS THAN ('2020-03-31')
     )
     DISTRIBUTED BY HASH(site_id) BUCKETS 10;
+    
+    DorisDB中Range分布，被称之为分区，用于分布的列也被称之为分区列
 
 ###### [21）、Doris分桶？]()
 
