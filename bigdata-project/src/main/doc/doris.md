@@ -1,4 +1,4 @@
-* [9.15、Doris](bigdata-project/src/main/doc/doris.md)
+* [9.15、Doris]()
     - [1）、Doris数据模型？]()
     - [2）、Doris底层存储原理？]()
     - [3）、MPP引擎的选型？]()
@@ -301,7 +301,18 @@
     此时需要读取数据块确认目标值是否存在。另外，Bloom Filter索引无法确定具体是哪一行数据具有该指定的值。
 
 ###### [23）、Doris物化视图？]()
-
+    在实际的业务场景中，通常存在两种场景并存的分析需求：对固定维度的聚合分析 和 对原始明细数据任意维度的分析。
+    
+    创建物化视图：
+    CREATE MATERIALIZED VIEW materialized_view_name
+    AS SELECT id, SUM(clicks) AS sum_clicks
+    FROM  database_name.base_table
+    GROUP BY id ORDER BY id’
+    
+    Duplicate 数据模型：DorisDB中的用于存放明细数据的数据模型，建表可指定，数据不会被聚合。
+    Base 表：DorisDB 中通过 CREATE TABLE 命令创建出来的表。
+    Materialized Views 表：简称 MVs，物化视图。
+    
 
 ###### [24）、Doris系统架构？]()
 
