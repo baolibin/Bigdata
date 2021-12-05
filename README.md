@@ -30,7 +30,7 @@
 
 ## 4、大数据生态圈一些其它技术框架
 * [Hive](bigdata-hive/README.md)  
-* [Hbase](bigdata-hbase/README.md)  
+* [HBase](bigdata-hbase/README.md)  
 * [Kafka](bigdata-kafka/README.md)  
 * [Doris](bigdata-doris/README.md)  
 * [Kudu]()  
@@ -49,9 +49,9 @@
 * [Vue](bigdata-info/src/main/java/com/libin/vue/README.md)  
 
 ## 5、大数据相关技能前奏
-* [Scala](bigdata-project/src/main/bigdata/scala.md)  
-* [Java](bigdata-project/src/main/bigdata/java.md)  
-* [SQL](bigdata-project/src/main/bigdata/sql.md)  
+* [Scala](bigdata-info/src/main/java/com/libin/scala/README.md)  
+* [Java](bigdata-info/src/main/java/com/libin/java/README.md)  
+* [SQL](bigdata-info/src/main/java/com/libin/sql/README.md)  
 * [Maven](bigdata-project/src/main/bigdata/maven.md)  
 * [Git](bigdata-project/src/main/bigdata/git.md)  
 * [Linux Shell](bigdata-project/src/main/bigdata/linux.md)  
@@ -65,8 +65,8 @@
 ## 6、大数据一些相关项目
 * [用户画像](bigdata-project/src/main/java/userProfile/readme.md)  
 * [Id-Mapping](bigdata-project/src/main/java/idmapping/readme.md)  
-* [离线仓库](bigdata-project/src/main/java/dataWarehouse/readme.md)  
-* [实时仓库](bigdata-project/src/main/java/realTimeWarehouse/readme.md)  
+* [离线数仓](bigdata-project/src/main/java/dataWarehouse/readme.md)  
+* [实时数仓](bigdata-project/src/main/java/realTimeWarehouse/readme.md)  
 * [特征系统](bigdata-project/src/main/java/featureEngineering/readme.md)  
 * [数据报告](bigdata-project/src/main/java/dataReport/readme.md)  
 * [精准运营]()
