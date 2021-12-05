@@ -46,7 +46,7 @@
 * [Redis]()  
 * [MySQL]()  
 * [SpringBoot](bigdata-springboot/README.md)  
-* [Vue]()  
+* [Vue](bigdata-info/src/main/java/com/libin/vue/README.md)  
 
 ## 5、大数据相关技能前奏
 * [Scala](bigdata-project/src/main/bigdata/scala.md)  
