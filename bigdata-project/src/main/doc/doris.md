@@ -378,5 +378,6 @@
     也补充了各种全新的查询转换（Transformation）和实现（Implementation）规则，能够在数万级别查询计划空间中快速找到最优计划。
 
 
+###### [33）、Spark Doris Connector？]() 
 
 
