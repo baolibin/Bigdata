@@ -7,6 +7,7 @@
         - [3.1、MapReduce使用API？[点击跳转]](../../api/mapreduce)
     - [4、MapReduce调优]()
     - [5、MapReduce源码]()
+    - [6、MapReduce学习资料？]()
 
 ###### [1、MapReduce原理概述？]()
 
@@ -17,3 +18,6 @@
 ###### [4、MapReduce调优？]()
 
 ###### [5、MapReduce源码？]()
+
+###### [6、MapReduce学习资料？]()
+* [Hadoop官网](https://hadoop.apache.org/)
