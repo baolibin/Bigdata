@@ -85,3 +85,7 @@
     where ranking<=N;
 
 ###### 6、sql子查询
+
+
+###### 7、sql优化
+
