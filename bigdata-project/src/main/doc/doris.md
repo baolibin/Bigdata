@@ -383,7 +383,25 @@
 
 
 ###### [34）、Doris数据类型？]() 
-
+    1、数字类型
+        BIGINT
+        LARGEINT
+        SMALLINT
+        TINYINT
+        BOOLEAN
+        DECIMAL
+        DOUBLE
+        FLOAT
+    2、字符串类型
+        CHAR
+        VARCHAR
+        STRING
+    3、日期类型
+        DATE
+        DATETIME
+    4、其他类型
+        HLL(HyperLogLog)
+        BITMAP
 
 
 
