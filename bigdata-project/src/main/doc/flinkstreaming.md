@@ -787,6 +787,8 @@
 
 ###### [67）、Flink中watermark 机制?]()
     Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制，主要用来处理乱序数据。
+* [Event Time and Watermarks](https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/learn-flink/streaming_analytics/)    
+
     
 
 ###### [68）、Flink集群有哪些角色？各自有什么作用？]()
