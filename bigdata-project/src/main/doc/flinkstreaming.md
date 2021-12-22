@@ -195,7 +195,7 @@
 ###### [8）、Flink中Operator是啥？]()
 ![FlinkOperator](images/flinkOperator.png)   
 
-    Task是Flink中执行的基本单位，Operator是算子（Transformation）。
+    Task是Flink中执行的基本单位，Operator是算子。
     
     并行数据流(Parallel Dataflows): Flink中把整个流处理过程叫做Stream Dataflow,
         从数据源提取数据的操作叫做Source Operator,中间的map(),聚合、统计等操作可以统称为Tranformation Operators,最后结果数据的流出被称为sink operator。
