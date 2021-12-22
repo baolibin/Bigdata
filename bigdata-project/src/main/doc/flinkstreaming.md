@@ -243,8 +243,19 @@
     5.Checkpoint 调优
 
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
-    Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
+    Watermark是Apache Flink为了处理EventTime窗口计算提出的一种机制,本质上也是一种时间戳。
     watermark是用于处理乱序事件的，处理乱序事件通常用watermark机制结合window来实现。
+    
+    从设备生成实时流事件，到Flink的source，再到多个oparator处理数据，过程中会受到网络延迟、背压等多种因素影响造成数据乱序。
+    在进行窗口处理时，不可能无限期的等待延迟数据到达，当到达特定watermark时,认为在watermark之前的数据已经全部达到(即使后面还有延迟的数据), 
+    可以触发窗口计算，这个机制就是 Watermark(水位线)。
+    
+    watermark = 进入 Flink 窗口的最大的事件时间(maxEventTime) — 指定的延迟时间(t)
+    
+    Watermark是一种衡量Event Time进展的机制。 Watermark是用于处理乱序事件的，而正确的处理乱序事件，通常用Watermark机制结合window来实现。 
+    数据流中的Watermark用于表示timestamp小于Watermark的数据都已经到达了，因此，window的执行也是由Watermark触发的。 Watermark可以理解成一个延迟触发机制，
+    我们可以设置Watermark的延时时长t，每次系统会校验已经到达的数据中最大的maxEventTime，然后认定eventTime小于maxEventTime - t的所有数据都已经到达，
+    如果有窗口的停止时间等于maxEventTime – t，那么这个窗口被触发执行。
 
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
     这些状态有三种存储方式: HeapStateBackend、MemoryStateBackend、FsStateBackend、RockDBStateBackend。
