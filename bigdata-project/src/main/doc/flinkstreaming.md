@@ -1045,7 +1045,18 @@
     ProcessWindowFunction 有一个 Iterable 迭代器，用来获得窗口中所有的元素。
 
 ###### [91)、Flink Window 的驱逐器Evictors？]() 
+    Flink 的窗口模型允许在窗口分配器和触发器之外指定一个可选的驱逐器(Evictor)。可以使用 evictor(...) 方法来完成。 
+    驱逐器能够在触发器触发之后，以及在应用窗口函数之前或之后从窗口中移除元素。
 
+    内置的Evitor
+    1、TimeEvitor
+    以毫秒为单位的时间间隔作为参数，对于给定的窗口，找到元素中的最大的时间戳max_ts，并删除时间戳小于max_ts - interval的所有元素。
+    本质上是将罪行的元素选出来
+    2、CountEvitor
+    保持窗口内元素数量符合用户指定数量，如果多于用户指定的数量，从窗口缓冲区的开头丢弃剩余的元素。
+    3、DeltaEvitor
+    使用 DeltaFunction和 一个阈值，计算窗口缓冲区中的最后一个元素与其余每个元素之间的 delta 值，并删除 delta 值大于或等于阈值的元素。
+    通过定义的DeltaFunction 和 Threshold ,计算窗口中元素和最新元素的 Delta 值，将Delta 值超过 Threshold的元素删除
 
 ###### [92)、Flink Window 允许时延？]() 
 
