@@ -1062,8 +1062,9 @@
 
 
 ###### [93)、Flink Chandy-Lamport算法？]() 
-
-
+    Chandy-Lamport 算法通过抽象分布式系统模型描述了一种简单直接但是非常有效的分布式快照算法。
+    Flink在2015年发布了一篇论文 Lightweight asynchronous snapshots for distributed dataflows 适合在工程上实现，而且已经应用在了 Flink 项目中。
+    核心思想是在 input source 端插入 barrier 来替代 Chandy-Lamport 算法中的 Marker，通过控制 barrier 的同步来实现 snapshot 的备份和 exactly-once 语义。
 
 ---
 参考:
