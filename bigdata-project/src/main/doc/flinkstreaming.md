@@ -195,7 +195,7 @@
 ###### [8）、Flink中Operator是啥？]()
 ![FlinkOperator](images/flinkOperator.png)   
 
-    Task是Flink中执行的基本单位，Operator是算子（Transformation）。
+    Task是Flink中执行的基本单位，Operator是算子。
     
     并行数据流(Parallel Dataflows): Flink中把整个流处理过程叫做Stream Dataflow,
         从数据源提取数据的操作叫做Source Operator,中间的map(),聚合、统计等操作可以统称为Tranformation Operators,最后结果数据的流出被称为sink operator。
@@ -243,8 +243,19 @@
     5.Checkpoint 调优
 
 ###### [12）、Flink如何解决数据乱序问题？Watermark使用过么?EventTime+Watermark可否解决数据乱序问题?]()
-    Watermark是Apache Flink为了处理EventTime 窗口计算提出的一种机制,本质上也是一种时间戳。
+    Watermark是Apache Flink为了处理EventTime窗口计算提出的一种机制,本质上也是一种时间戳。
     watermark是用于处理乱序事件的，处理乱序事件通常用watermark机制结合window来实现。
+    
+    从设备生成实时流事件，到Flink的source，再到多个oparator处理数据，过程中会受到网络延迟、背压等多种因素影响造成数据乱序。
+    在进行窗口处理时，不可能无限期的等待延迟数据到达，当到达特定watermark时,认为在watermark之前的数据已经全部达到(即使后面还有延迟的数据), 
+    可以触发窗口计算，这个机制就是 Watermark(水位线)。
+    
+    watermark = 进入 Flink 窗口的最大的事件时间(maxEventTime) — 指定的延迟时间(t)
+    
+    Watermark是一种衡量Event Time进展的机制。 Watermark是用于处理乱序事件的，而正确的处理乱序事件，通常用Watermark机制结合window来实现。 
+    数据流中的Watermark用于表示timestamp小于Watermark的数据都已经到达了，因此，window的执行也是由Watermark触发的。 Watermark可以理解成一个延迟触发机制，
+    我们可以设置Watermark的延时时长t，每次系统会校验已经到达的数据中最大的maxEventTime，然后认定eventTime小于maxEventTime - t的所有数据都已经到达，
+    如果有窗口的停止时间等于maxEventTime – t，那么这个窗口被触发执行。
 
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
     这些状态有三种存储方式: HeapStateBackend、MemoryStateBackend、FsStateBackend、RockDBStateBackend。
@@ -787,6 +798,8 @@
 
 ###### [67）、Flink中watermark 机制?]()
     Watermark 本质是 Flink 中衡量 EventTime 进展的一个机制，主要用来处理乱序数据。
+* [Event Time and Watermarks](https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/learn-flink/streaming_analytics/)    
+
     
 
 ###### [68）、Flink集群有哪些角色？各自有什么作用？]()
@@ -1032,7 +1045,18 @@
     ProcessWindowFunction 有一个 Iterable 迭代器，用来获得窗口中所有的元素。
 
 ###### [91)、Flink Window 的驱逐器Evictors？]() 
+    Flink 的窗口模型允许在窗口分配器和触发器之外指定一个可选的驱逐器(Evictor)。可以使用 evictor(...) 方法来完成。 
+    驱逐器能够在触发器触发之后，以及在应用窗口函数之前或之后从窗口中移除元素。
 
+    内置的Evitor
+    1、TimeEvitor
+    以毫秒为单位的时间间隔作为参数，对于给定的窗口，找到元素中的最大的时间戳max_ts，并删除时间戳小于max_ts - interval的所有元素。
+    本质上是将罪行的元素选出来
+    2、CountEvitor
+    保持窗口内元素数量符合用户指定数量，如果多于用户指定的数量，从窗口缓冲区的开头丢弃剩余的元素。
+    3、DeltaEvitor
+    使用 DeltaFunction和 一个阈值，计算窗口缓冲区中的最后一个元素与其余每个元素之间的 delta 值，并删除 delta 值大于或等于阈值的元素。
+    通过定义的DeltaFunction 和 Threshold ,计算窗口中元素和最新元素的 Delta 值，将Delta 值超过 Threshold的元素删除
 
 ###### [92)、Flink Window 允许时延？]() 
 
@@ -1050,6 +1074,11 @@
     3、Gelly: Gelly 是一个可扩展的图形处理和分析库。Gelly 是在 DataSet API 之上实现的，并与 DataSet API 集成。
     因此，它能够受益于其可扩展且健壮的操作符。Gelly 提供了内置算法，如 label propagation、triangle enumeration 
     和 page rank 算法，也提供了一个简化自定义图算法实现的 Graph API。
+
+###### [94)、Flink Chandy-Lamport算法？]() 
+    Chandy-Lamport 算法通过抽象分布式系统模型描述了一种简单直接但是非常有效的分布式快照算法。
+    Flink在2015年发布了一篇论文 Lightweight asynchronous snapshots for distributed dataflows 适合在工程上实现，而且已经应用在了 Flink 项目中。
+    核心思想是在 input source 端插入 barrier 来替代 Chandy-Lamport 算法中的 Marker，通过控制 barrier 的同步来实现 snapshot 的备份和 exactly-once 语义。
 
 ---
 参考:

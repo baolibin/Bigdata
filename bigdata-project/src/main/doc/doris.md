@@ -382,4 +382,34 @@
 
 
 
+###### [34）、Doris数据类型？]() 
+    1、数字类型
+        BIGINT
+        LARGEINT
+        SMALLINT
+        TINYINT
+        BOOLEAN
+        DECIMAL
+        DOUBLE
+        FLOAT
+    2、字符串类型
+        CHAR
+        VARCHAR
+        STRING
+    3、日期类型
+        DATE
+        DATETIME
+    4、其他类型
+        HLL(HyperLogLog)
+        BITMAP
+
+###### [35）、Doris监控报警？]() 
+    DorisDB提供两种监控报警的方案，第一种是使用内置的DorisManager，其自带的Agent从各个Host采集监控信息上报到Center Service然后做可视化展示，也提供了邮件和Webhook的方式发送报警通知。
+    但是如果用户为了二次开发需求，需要自己搭建部署监控服务，也可以使用开源的Prometheus+Grafana的方案，DorisDB提供了兼容Prometheus的信息采集接口，
+    可以通过直接链接BE/FE的HTTP端口来获取集群的监控信息。
+
+
+###### [36）、Doris用户权限？]() 
+
+
 
