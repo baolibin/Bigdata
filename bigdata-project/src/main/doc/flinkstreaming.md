@@ -1037,6 +1037,19 @@
 ###### [92)、Flink Window 允许时延？]() 
 
 
+###### [93)、Flink库？]() 
+    Flink 具有数个适用于常见数据处理应用场景的扩展库。这些库通常嵌入在 API 中，且并不完全独立于其它 API。
+    它们也因此可以受益于 API 的所有特性，并与其他库集成。
+    1、复杂事件处理(CEP)：模式检测是事件流处理中的一个非常常见的用例。Flink 的 CEP 库提供了 API，
+    使用户能够以例如正则表达式或状态机的方式指定事件模式。CEP 库与 Flink 的 DataStream API 集成，
+    以便在 DataStream 上评估模式。CEP 库的应用包括网络入侵检测，业务流程监控和欺诈检测。
+    2、DataSet API：DataSet API 是 Flink 用于批处理应用程序的核心 API。DataSet API 所提供的基础算子
+    包括map、reduce、(outer) join、co-group、iterate等。所有算子都有相应的算法和数据结构支持，
+    对内存中的序列化数据进行操作。如果数据大小超过预留内存，则过量数据将存储到磁盘。Flink 的 DataSet API 
+    的数据处理算法借鉴了传统数据库算法的实现，例如混合散列连接（hybrid hash-join）和外部归并排序（external merge-sort）。
+    3、Gelly: Gelly 是一个可扩展的图形处理和分析库。Gelly 是在 DataSet API 之上实现的，并与 DataSet API 集成。
+    因此，它能够受益于其可扩展且健壮的操作符。Gelly 提供了内置算法，如 label propagation、triangle enumeration 
+    和 page rank 算法，也提供了一个简化自定义图算法实现的 Graph API。
 
 ---
 参考:
