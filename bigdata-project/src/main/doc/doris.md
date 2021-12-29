@@ -350,14 +350,18 @@
     如果基数在亿级以上，并且需要精确去重，那么只能用Bitmap类型；如果可以接受近似去重，那么还可以使用HLL类型。
 
 ###### [28）、Doris的Colocation Join？]()  
-    Colocation Group（CG）：一个 CG 中会包含一张及以上的 Table。一个CG内的Table 的相同的分桶方式和副本放置方式, 使用Colocation Group Schema描述.
-    Colocation Group Schema（CGS）： 包含CG的分桶键，分桶数以及副本数等信息。
+    Colocation Join 是在 Doris 0.9 版本中引入的新功能。旨在为某些 Join 查询提供本地性优化，来减少数据在节点间的传输耗时，加速查询。
     
-    Colocation Join 功能，是将一组拥有相同 CGS 的 Table 组成一个 CG。并保证这些 Table 对应的分桶副本会落在相同一组BE 节点上。
-    使得当 CG 内的表进行分桶列上的 Join 操作时，可以直接进行本地数据 Join，减少数据在节点间的传输耗时。
+    FE：Frontend，Doris 的前端节点。负责元数据管理和请求接入。
+    BE：Backend，Doris 的后端节点。负责查询执行和数据存储。
+    Colocation Group（CG）：一个 CG 中会包含一张及以上的 Table。在同一个 Group 内的 Table 有着相同的 Colocation Group Schema，并且有着相同的数据分片分布。
+    Colocation Group Schema（CGS）：用于描述一个 CG 中的 Table，和 Colocation 相关的通用 Schema 信息。包括分桶列类型，分桶数以及副本数等。
     
-    分桶键hash值, 对分桶数取模得到桶的序号(Bucket Seq),  假设一个 Table 的分桶数为 8，则共有 [0, 1, 2, 3, 4, 5, 6, 7] 8 个分桶（Bucket)，
-    每个 Bucket 内会有一个或多个子表（Tablet), 子表数量取决于表的分区数(Partition): 为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个Tablet。
+    Colocation Join 功能，是将一组拥有相同 CGS 的 Table 组成一个 CG。并保证这些 Table 对应的数据分片会落在同一个 BE 节点上。
+    使得当 CG 内的表进行分桶列上的 Join 操作时，可以通过直接进行本地数据 Join，减少数据在节点间的传输耗时。
+
+    一个表的数据，最终会根据分桶列值 Hash、对桶数取模的后落在某一个分桶内。假设一个 Table 的分桶数为 8，则共有 [0, 1, 2, 3, 4, 5, 6, 7] 8 个分桶（Bucket），
+    我们称这样一个序列为一个 BucketsSequence。每个 Bucket 内会有一个或多个数据分片（Tablet）。当表为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个。
 
 ###### [29）、Doris的窗口函数？]()  
     窗口函数的语法：
