@@ -447,5 +447,14 @@
     物化视图则在覆盖了 Rollup 的功能的同时，还能支持更丰富的聚合函数。所以物化视图其实是 Rollup 的一个超集。
     也就是说，之前 ALTER TABLE ADD ROLLUP 语法支持的功能现在均可以通过 CREATE MATERIALIZED VIEW 实现。
 
+###### [40）、Doris的Join有哪些？]() 
+    1、Broadcast Join
+    
+    2、Shuffle Join，也被称作 Partitioned Join。
+    
+    3、Lateral Join
+    
+    4、Colocation Join
+
 
 
