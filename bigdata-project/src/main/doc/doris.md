@@ -262,38 +262,81 @@
     Tablet：DorisDB 表的逻辑分片，也是DorisDB中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### [20）、Doris分区？]()
-    DorisDB使用先分区后分桶的方式, 可灵活地支持支持二种分布方式:
-    Hash分布:  不采用分区方式, 整个table作为一个分区, 指定分桶的数量.
-    Range-Hash的组合数据分布: 即指定分区数量, 指定每个分区的分桶数量.
+    Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
+    1、Range 分区
+    分区列通常为时间列，以方便的管理新旧数据。
+    Partition 支持通过 VALUES LESS THAN (...) 仅指定上界，系统会将前一个分区的上界作为该分区的下界，生成一个左闭右开的区间。通过，也支持通过 VALUES [...) 指定同时指定上下界，生成一个左闭右开的区间。
+    p201701: [MIN_VALUE,  2017-02-01)
+    p201702: [2017-02-01, 2017-03-01)
+    p201703: [2017-03-01, 2017-04-01)
     
-    -- 采用Hash分布的建表语句
-    CREATE TABLE site_access(
-    site_id INT DEFAULT '10',
-    city_code SMALLINT,
-    user_name VARCHAR(32) DEFAULT '',
-    pv BIGINT SUM DEFAULT '0'
-    )
-    AGGREGATE KEY(site_id, city_code, user_name)
-    DISTRIBUTED BY HASH(site_id) BUCKETS 10;
-    
-    -- 采用Range-Hash组合分布的建表语句
-    CREATE TABLE site_access(
-    event_day DATE,
-    site_id INT DEFAULT '10',
-    city_code VARCHAR(100),
-    user_name VARCHAR(32) DEFAULT '',
-    pv BIGINT SUM DEFAULT '0'
-    )
-    AGGREGATE KEY(event_day, site_id, city_code, user_name)
-    PARTITION BY RANGE(event_day)
+    -- Range Partition
+    CREATE TABLE IF NOT EXISTS example_db.expamle_range_tbl
     (
-    PARTITION p1 VALUES LESS THAN ('2020-01-31'),
-    PARTITION p2 VALUES LESS THAN ('2020-02-29'),
-    PARTITION p3 VALUES LESS THAN ('2020-03-31')
+        `user_id` LARGEINT NOT NULL COMMENT "用户id",
+        `date` DATE NOT NULL COMMENT "数据灌入日期时间",
+        `timestamp` DATETIME NOT NULL COMMENT "数据灌入的时间戳",
+        `city` VARCHAR(20) COMMENT "用户所在城市",
+        `age` SMALLINT COMMENT "用户年龄",
+        `sex` TINYINT COMMENT "用户性别",
+        `last_visit_date` DATETIME REPLACE DEFAULT "1970-01-01 00:00:00" COMMENT "用户最后一次访问时间",
+        `cost` BIGINT SUM DEFAULT "0" COMMENT "用户总消费",
+        `max_dwell_time` INT MAX DEFAULT "0" COMMENT "用户最大停留时间",
+        `min_dwell_time` INT MIN DEFAULT "99999" COMMENT "用户最小停留时间"
     )
-    DISTRIBUTED BY HASH(site_id) BUCKETS 10;
+    ENGINE=olap
+    AGGREGATE KEY(`user_id`, `date`, `timestamp`, `city`, `age`, `sex`)
+    PARTITION BY RANGE(`date`)
+    (
+        PARTITION `p201701` VALUES LESS THAN ("2017-02-01"),
+        PARTITION `p201702` VALUES LESS THAN ("2017-03-01"),
+        PARTITION `p201703` VALUES LESS THAN ("2017-04-01")
+    )
+    DISTRIBUTED BY HASH(`user_id`) BUCKETS 16
+    PROPERTIES
+    (
+        "replication_num" = "3",
+        "storage_medium" = "SSD",
+        "storage_cooldown_time" = "2018-01-01 12:00:00"
+    );
+
     
-    DorisDB中Range分布，被称之为分区，用于分布的列也被称之为分区列
+    2、List 分区
+    分区列支持 BOOLEAN, TINYINT, SMALLINT, INT, BIGINT, LARGEINT, DATE, DATETIME, CHAR, VARCHAR 数据类型，分区值为枚举值。只有当数据为目标分区枚举值其中之一时，才可以命中分区。
+    Partition 支持通过 VALUES IN (...) 来指定每个分区包含的枚举值。
+    p_cn: ("Beijing", "Shanghai", "Hong Kong")
+    p_usa: ("New York", "San Francisco")
+    p_jp: ("Tokyo")
+    
+    -- List Partition
+    CREATE TABLE IF NOT EXISTS example_db.expamle_list_tbl
+    (
+        `user_id` LARGEINT NOT NULL COMMENT "用户id",
+        `date` DATE NOT NULL COMMENT "数据灌入日期时间",
+        `timestamp` DATETIME NOT NULL COMMENT "数据灌入的时间戳",
+        `city` VARCHAR(20) COMMENT "用户所在城市",
+        `age` SMALLINT COMMENT "用户年龄",
+        `sex` TINYINT COMMENT "用户性别",
+        `last_visit_date` DATETIME REPLACE DEFAULT "1970-01-01 00:00:00" COMMENT "用户最后一次访问时间",
+        `cost` BIGINT SUM DEFAULT "0" COMMENT "用户总消费",
+        `max_dwell_time` INT MAX DEFAULT "0" COMMENT "用户最大停留时间",
+        `min_dwell_time` INT MIN DEFAULT "99999" COMMENT "用户最小停留时间"
+    )
+    ENGINE=olap
+    AGGREGATE KEY(`user_id`, `date`, `timestamp`, `city`, `age`, `sex`)
+    PARTITION BY LIST(`city`)
+    (
+        PARTITION `p_cn` VALUES IN ("Beijing", "Shanghai", "Hong Kong"),
+        PARTITION `p_usa` VALUES IN ("New York", "San Francisco"),
+        PARTITION `p_jp` VALUES IN ("Tokyo")
+    )
+    DISTRIBUTED BY HASH(`user_id`) BUCKETS 16
+    PROPERTIES
+    (
+        "replication_num" = "3",
+        "storage_medium" = "SSD",
+        "storage_cooldown_time" = "2018-01-01 12:00:00"
+    );
 
 ###### [21）、Doris分桶？]()
 
