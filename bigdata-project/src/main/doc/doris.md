@@ -60,15 +60,24 @@
     1.3、Duplicate（冗余模型）
     数据既没有主键，也没有聚合需求。
     这种数据模型区别于 Aggregate 和 Uniq 模型。数据完全按照导入文件中的数据进行存储，不会有任何聚合。即使两行数据完全相同，也都会保留。 
-
-###### [2）、Doris底层存储原理？]()
-    Doris是基于MPP架构的交互式SQL数据仓库，主要用于解决近实时的报表和多维分析。
     
+    数据模型的选择建议
+    Aggregate 模型可以通过预聚合，极大地降低聚合查询时所需扫描的数据量和查询的计算量，非常适合有固定模式的报表类查询场景。但是该模型对 count(*) 查询很不友好。同时因为固定了 Value 列上的聚合  方式，在进行其他类型的聚合查询时，需要考虑语意正确性。
+    Uniq 模型针对需要唯一主键约束的场景，可以保证主键唯一性约束。但是无法利用 ROLLUP 等预聚合带来的查询优势（因为本质是 REPLACE，没有 SUM 这种聚合方式）。
+    Duplicate 适合任意维度的 Ad-hoc 查询。虽然同样无法利用预聚合的特性，但是不受聚合模型的约束，可以发挥列存模型的优势（只读取相关列，而不需要读取所有 Key 列）。
+
+###### [2）、Doris底层存储结构？]()
+    Doris是基于MPP架构的交互式SQL数据仓库，主要用于解决近实时的报表和多维分析。
     Doris分成两部分FE和BE，FE 负责存储以及维护集群元数据、接收、解析、查询、设计规划整体查询流程，BE 负责数据存储和具体的实施过程。
     
-    在 Doris 的存储引擎中，用户数据被水平划分为若干个数据分片（Tablet，也称作数据分桶）。每个 Tablet 包含若干数据行。
-    多个 Tablet 在逻辑上归属于不同的分区Partition。一个 Tablet 只属于一个 Partition。而一个 Partition 包含若干个 Tablet。
-    Tablet 是数据移动、复制等操作的最小物理存储单元。
+    在 Doris 中，数据都以表（Table）的形式进行逻辑上的描述。
+    一张表包括行（Row）和列（Column）。Row 即用户的一行数据。Column 用于描述一行数据中不同的字段。
+    Column 可以分为两大类：Key 和 Value。从业务角度看，Key 和 Value 可以分别对应维度列和指标列。从聚合模型的角度来说，Key 列相同的行，会聚合成一行。其中 Value 列的聚合方式由用户在建表时指定。
+    
+    在 Doris 的存储引擎中，用户数据被水平划分为若干个数据分片（Tablet，也称作数据分桶）。每个 Tablet 包含若干数据行。各个 Tablet 之间的数据没有交集，并且在物理上是独立存储的。
+    多个 Tablet 在逻辑上归属于不同的分区（Partition）。一个 Tablet 只属于一个 Partition。而一个 Partition 包含若干个 Tablet。
+    因为 Tablet 在物理上是独立存储的，所以可以视为 Partition 在物理上也是独立。Tablet 是数据移动、复制等操作的最小物理存储单元。
+    若干个 Partition 组成一个 Table。Partition 可以视为是逻辑上最小的管理单元。数据的导入与删除，都可以或仅能针对一个 Partition 进行。
 
 ###### [3）、MPP引擎的选型？]()
     目前开源的比较受关注的OLAP引擎很多，比如Greenplum、Apache Impala、Presto、Doris、ClickHouse、Druid、TiDB等等
@@ -253,38 +262,81 @@
     Tablet：DorisDB 表的逻辑分片，也是DorisDB中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### [20）、Doris分区？]()
-    DorisDB使用先分区后分桶的方式, 可灵活地支持支持二种分布方式:
-    Hash分布:  不采用分区方式, 整个table作为一个分区, 指定分桶的数量.
-    Range-Hash的组合数据分布: 即指定分区数量, 指定每个分区的分桶数量.
+    Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
+    1、Range 分区
+    分区列通常为时间列，以方便的管理新旧数据。
+    Partition 支持通过 VALUES LESS THAN (...) 仅指定上界，系统会将前一个分区的上界作为该分区的下界，生成一个左闭右开的区间。通过，也支持通过 VALUES [...) 指定同时指定上下界，生成一个左闭右开的区间。
+    p201701: [MIN_VALUE,  2017-02-01)
+    p201702: [2017-02-01, 2017-03-01)
+    p201703: [2017-03-01, 2017-04-01)
     
-    -- 采用Hash分布的建表语句
-    CREATE TABLE site_access(
-    site_id INT DEFAULT '10',
-    city_code SMALLINT,
-    user_name VARCHAR(32) DEFAULT '',
-    pv BIGINT SUM DEFAULT '0'
-    )
-    AGGREGATE KEY(site_id, city_code, user_name)
-    DISTRIBUTED BY HASH(site_id) BUCKETS 10;
-    
-    -- 采用Range-Hash组合分布的建表语句
-    CREATE TABLE site_access(
-    event_day DATE,
-    site_id INT DEFAULT '10',
-    city_code VARCHAR(100),
-    user_name VARCHAR(32) DEFAULT '',
-    pv BIGINT SUM DEFAULT '0'
-    )
-    AGGREGATE KEY(event_day, site_id, city_code, user_name)
-    PARTITION BY RANGE(event_day)
+    -- Range Partition
+    CREATE TABLE IF NOT EXISTS example_db.expamle_range_tbl
     (
-    PARTITION p1 VALUES LESS THAN ('2020-01-31'),
-    PARTITION p2 VALUES LESS THAN ('2020-02-29'),
-    PARTITION p3 VALUES LESS THAN ('2020-03-31')
+        `user_id` LARGEINT NOT NULL COMMENT "用户id",
+        `date` DATE NOT NULL COMMENT "数据灌入日期时间",
+        `timestamp` DATETIME NOT NULL COMMENT "数据灌入的时间戳",
+        `city` VARCHAR(20) COMMENT "用户所在城市",
+        `age` SMALLINT COMMENT "用户年龄",
+        `sex` TINYINT COMMENT "用户性别",
+        `last_visit_date` DATETIME REPLACE DEFAULT "1970-01-01 00:00:00" COMMENT "用户最后一次访问时间",
+        `cost` BIGINT SUM DEFAULT "0" COMMENT "用户总消费",
+        `max_dwell_time` INT MAX DEFAULT "0" COMMENT "用户最大停留时间",
+        `min_dwell_time` INT MIN DEFAULT "99999" COMMENT "用户最小停留时间"
     )
-    DISTRIBUTED BY HASH(site_id) BUCKETS 10;
+    ENGINE=olap
+    AGGREGATE KEY(`user_id`, `date`, `timestamp`, `city`, `age`, `sex`)
+    PARTITION BY RANGE(`date`)
+    (
+        PARTITION `p201701` VALUES LESS THAN ("2017-02-01"),
+        PARTITION `p201702` VALUES LESS THAN ("2017-03-01"),
+        PARTITION `p201703` VALUES LESS THAN ("2017-04-01")
+    )
+    DISTRIBUTED BY HASH(`user_id`) BUCKETS 16
+    PROPERTIES
+    (
+        "replication_num" = "3",
+        "storage_medium" = "SSD",
+        "storage_cooldown_time" = "2018-01-01 12:00:00"
+    );
+
     
-    DorisDB中Range分布，被称之为分区，用于分布的列也被称之为分区列
+    2、List 分区
+    分区列支持 BOOLEAN, TINYINT, SMALLINT, INT, BIGINT, LARGEINT, DATE, DATETIME, CHAR, VARCHAR 数据类型，分区值为枚举值。只有当数据为目标分区枚举值其中之一时，才可以命中分区。
+    Partition 支持通过 VALUES IN (...) 来指定每个分区包含的枚举值。
+    p_cn: ("Beijing", "Shanghai", "Hong Kong")
+    p_usa: ("New York", "San Francisco")
+    p_jp: ("Tokyo")
+    
+    -- List Partition
+    CREATE TABLE IF NOT EXISTS example_db.expamle_list_tbl
+    (
+        `user_id` LARGEINT NOT NULL COMMENT "用户id",
+        `date` DATE NOT NULL COMMENT "数据灌入日期时间",
+        `timestamp` DATETIME NOT NULL COMMENT "数据灌入的时间戳",
+        `city` VARCHAR(20) COMMENT "用户所在城市",
+        `age` SMALLINT COMMENT "用户年龄",
+        `sex` TINYINT COMMENT "用户性别",
+        `last_visit_date` DATETIME REPLACE DEFAULT "1970-01-01 00:00:00" COMMENT "用户最后一次访问时间",
+        `cost` BIGINT SUM DEFAULT "0" COMMENT "用户总消费",
+        `max_dwell_time` INT MAX DEFAULT "0" COMMENT "用户最大停留时间",
+        `min_dwell_time` INT MIN DEFAULT "99999" COMMENT "用户最小停留时间"
+    )
+    ENGINE=olap
+    AGGREGATE KEY(`user_id`, `date`, `timestamp`, `city`, `age`, `sex`)
+    PARTITION BY LIST(`city`)
+    (
+        PARTITION `p_cn` VALUES IN ("Beijing", "Shanghai", "Hong Kong"),
+        PARTITION `p_usa` VALUES IN ("New York", "San Francisco"),
+        PARTITION `p_jp` VALUES IN ("Tokyo")
+    )
+    DISTRIBUTED BY HASH(`user_id`) BUCKETS 16
+    PROPERTIES
+    (
+        "replication_num" = "3",
+        "storage_medium" = "SSD",
+        "storage_cooldown_time" = "2018-01-01 12:00:00"
+    );
 
 ###### [21）、Doris分桶？]()
 
@@ -301,7 +353,9 @@
     此时需要读取数据块确认目标值是否存在。另外，Bloom Filter索引无法确定具体是哪一行数据具有该指定的值。
 
 ###### [23）、Doris物化视图？]()
+    物化视图是将预先计算（根据定义好的 SELECT 语句）好的数据集，存储在 Doris 中的一个特殊的表。
     在实际的业务场景中，通常存在两种场景并存的分析需求：对固定维度的聚合分析 和 对原始明细数据任意维度的分析。
+    物化视图的出现主要是为了满足用户，既能对原始明细数据的任意维度分析，也能快速的对固定维度进行分析查询。
     
     创建物化视图：
     CREATE MATERIALIZED VIEW materialized_view_name
@@ -313,6 +367,10 @@
     Base 表：DorisDB 中通过 CREATE TABLE 命令创建出来的表。
     Materialized Views 表：简称 MVs，物化视图。
     
+    优势
+    对于那些经常重复的使用相同的子查询结果的查询性能大幅提升。
+    Doris自动维护物化视图的数据，无论是新的导入，还是删除操作都能保证base 表和物化视图表的数据一致性。无需任何额外的人工维护成本。
+    查询时，会自动匹配到最优物化视图，并直接从物化视图中读取数据。
 
 ###### [24）、Doris系统架构？]()
 
@@ -320,8 +378,11 @@
 
 
 ###### [25）、Doris的Rollup？]()  
+    在 Doris 中，我们将用户通过建表语句创建出来的表称为 Base 表（Base Table）。Base 表中保存着按用户建表语句指定的方式存储的基础数据。
+    在 Base 表之上，我们可以创建任意多个 ROLLUP 表。这些 ROLLUP 的数据是基于 Base 表产生的，并且在物理上是独立存储的。
+    ROLLUP 表的基本作用，在于在 Base 表的基础上，获得更粗粒度的聚合数据。
+
     Rollup也就是上卷，是一种在多维分析中比较常用的操作——也就是从细粒度的数据向高层的聚合。
-    
     在Doris中，我们提供了在聚合模型上的构建Rollup功能，将数据根据更少的维度进行预聚合。
     将本身在用户查询时才会进行聚合计算的数据预先计算好，并存储在Doris中，从而达到提升用户粗粒度上的查询效率。
 
@@ -345,14 +406,18 @@
     如果基数在亿级以上，并且需要精确去重，那么只能用Bitmap类型；如果可以接受近似去重，那么还可以使用HLL类型。
 
 ###### [28）、Doris的Colocation Join？]()  
-    Colocation Group（CG）：一个 CG 中会包含一张及以上的 Table。一个CG内的Table 的相同的分桶方式和副本放置方式, 使用Colocation Group Schema描述.
-    Colocation Group Schema（CGS）： 包含CG的分桶键，分桶数以及副本数等信息。
+    Colocation Join 是在 Doris 0.9 版本中引入的新功能。旨在为某些 Join 查询提供本地性优化，来减少数据在节点间的传输耗时，加速查询。
     
-    Colocation Join 功能，是将一组拥有相同 CGS 的 Table 组成一个 CG。并保证这些 Table 对应的分桶副本会落在相同一组BE 节点上。
-    使得当 CG 内的表进行分桶列上的 Join 操作时，可以直接进行本地数据 Join，减少数据在节点间的传输耗时。
+    FE：Frontend，Doris 的前端节点。负责元数据管理和请求接入。
+    BE：Backend，Doris 的后端节点。负责查询执行和数据存储。
+    Colocation Group（CG）：一个 CG 中会包含一张及以上的 Table。在同一个 Group 内的 Table 有着相同的 Colocation Group Schema，并且有着相同的数据分片分布。
+    Colocation Group Schema（CGS）：用于描述一个 CG 中的 Table，和 Colocation 相关的通用 Schema 信息。包括分桶列类型，分桶数以及副本数等。
     
-    分桶键hash值, 对分桶数取模得到桶的序号(Bucket Seq),  假设一个 Table 的分桶数为 8，则共有 [0, 1, 2, 3, 4, 5, 6, 7] 8 个分桶（Bucket)，
-    每个 Bucket 内会有一个或多个子表（Tablet), 子表数量取决于表的分区数(Partition): 为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个Tablet。
+    Colocation Join 功能，是将一组拥有相同 CGS 的 Table 组成一个 CG。并保证这些 Table 对应的数据分片会落在同一个 BE 节点上。
+    使得当 CG 内的表进行分桶列上的 Join 操作时，可以通过直接进行本地数据 Join，减少数据在节点间的传输耗时。
+
+    一个表的数据，最终会根据分桶列值 Hash、对桶数取模的后落在某一个分桶内。假设一个 Table 的分桶数为 8，则共有 [0, 1, 2, 3, 4, 5, 6, 7] 8 个分桶（Bucket），
+    我们称这样一个序列为一个 BucketsSequence。每个 Bucket 内会有一个或多个数据分片（Tablet）。当表为单分区表时，一个 Bucket 内仅有一个 Tablet。如果是多分区表，则会有多个。
 
 ###### [29）、Doris的窗口函数？]()  
     窗口函数的语法：
@@ -410,6 +475,39 @@
 
 
 ###### [36）、Doris用户权限？]() 
+    DorisDB 的权限管理系统参照了 MySQL 的权限管理机制，支持表级别细粒度的权限控制、基于角色的权限访问控制，以及白名单机制。
+
+###### [37）、Doris分区缓存？]() 
+    大部分数据分析场景是写少读多，数据写入一次，多次频繁读取，比如一张报表涉及的维度和指标，数据在凌晨一次性计算好，但每天有数百甚至数千次的页面访问，因此非常适合把结果集缓存起来。
+    
+    本分区缓存策略可以解决上面的问题，优先保证数据一致性，在此基础上细化缓存粒度，提升命中率，因此有如下特点
+    1、用户无需担心数据一致性，通过版本来控制缓存失效，缓存的数据和从BE中查询的数据是一致的
+    2、没有额外的组件和成本，缓存结果存储在BE的内存中，用户可以根据需要调整缓存内存大小
+    3、实现了两种缓存策略，SQLCache和PartitionCache，后者缓存粒度更细
+    4、用一致性哈希解决BE节点上下线的问题，BE中的缓存算法是改进的LRU
+
+###### [38）、Doris动态分区？]() 
+    动态分区是在 Doris 0.12 版本中引入的新功能。旨在对表级别的分区实现生命周期管理(TTL)，减少用户的使用负担。
+    目前实现了动态添加分区及动态删除分区的功能。
+    动态分区只支持 Range 分区。
+
+    在某些使用场景下，用户会将表按照天进行分区划分，每天定时执行例行任务，这时需要使用方手动管理分区，否则可能由于使用方没有创建分区导致数据导入失败，这给使用方带来了额外的维护成本。
+    通过动态分区功能，用户可以在建表时设定动态分区的规则。FE 会启动一个后台线程，根据用户指定的规则创建或删除分区。用户也可以在运行时对现有规则进行变更。
+
+###### [39）、Doris物化视图 VS Rollup？]() 
+    在没有物化视图功能之前，用户一般都是使用 Rollup 功能通过预聚合方式提升查询效率的。但是 Rollup 具有一定的局限性，他不能基于明细模型做预聚合。
+    物化视图则在覆盖了 Rollup 的功能的同时，还能支持更丰富的聚合函数。所以物化视图其实是 Rollup 的一个超集。
+    也就是说，之前 ALTER TABLE ADD ROLLUP 语法支持的功能现在均可以通过 CREATE MATERIALIZED VIEW 实现。
+
+###### [40）、Doris的Join有哪些？]() 
+    1、Broadcast Join
+    系统默认实现 Join 的方式，是将小表进行条件过滤后，将其广播到大表所在的各个节点上，形成一个内存 Hash 表，然后流式读出大表的数据进行Hash Join。
+    但是如果当小表过滤后的数据量无法放入内存的话，此时 Join 将无法完成，通常的报错应该是首先造成内存超限。
+    2、Shuffle Join，也被称作 Partitioned Join。
+    将小表和大表都按照 Join 的 key 进行 Hash，然后进行分布式的 Join。这个对内存的消耗就会分摊到集群的所有计算节点上。
+    3、Lateral Join
+    
+    4、Colocation Join
 
 
 
