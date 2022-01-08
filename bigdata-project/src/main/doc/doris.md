@@ -413,3 +413,5 @@
 
 
 
+###### [37）、Doris的Broker？]()  
+    Broker 是 Doris 集群中一种可选进程，主要用于支持 Doris 读写远端存储上的文件和目录，如 HDFS、BOS 和 AFS 等。
