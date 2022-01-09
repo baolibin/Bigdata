@@ -536,7 +536,30 @@
     Broker 仅作为一个数据通路，并不参与任何计算，因此仅需占用较少的内存。通常一个 Doris 系统中会部署一个或多个 Broker 进程。
     并且相同类型的 Broker 会组成一个组，并设定一个 名称（Broker name）。
 
-###### [41）、Doris的Broker Load？]()  
+###### [42）、Doris的Binlog Load？]()  
+    Binlog Load提供了一种使Doris增量同步用户在Mysql数据库的对数据更新操作的CDC(Change Data Capture)功能。
+    
+    1、适用场景
+    INSERT/UPDATE/DELETE支持
+    过滤Query
+    暂不兼容DDL语句
+    
+    2、名词解释
+    Frontend（FE）：Doris 系统的元数据和调度节点。在导入流程中主要负责导入 plan 生成和导入任务的调度工作。
+    Backend（BE）：Doris 系统的计算和存储节点。在导入流程中主要负责数据的 ETL 和存储。
+    Canal：阿里巴巴开源的Mysql Binlog日志解析工具。提供增量数据订阅&消费等功能。
+    Batch：Canal发送到客户端的一批数据，具有全局唯一自增的ID。
+    SyncJob：用户提交的一个数据同步作业。
+    Receiver: 负责订阅并接收Canal的数据。
+    Consumer: 负责分发Receiver接收的数据到各个Channel。
+    Channel: 接收Consumer分发的数据的渠道，创建发送数据的子任务，控制单个表事务的开启、提交、终止。
+    Task：Channel向Be发送数据的子任务。
+    
+    3、基本原理
+    在第一期的设计中，Binlog Load需要依赖canal作为中间媒介，让canal伪造成一个从节点去获取Mysql主节点上的Binlog并解析，
+    再由Doris去获取Canal上解析好的数据，主要涉及Mysql端、Canal端以及Doris端
+
+###### [43）、Doris的Broker Load？]()  
     Broker load 是一个异步的导入方式，支持的数据源取决于 Broker 进程支持的数据源。
     用户需要通过 MySQL 协议 创建 Broker load 导入，并通过查看导入命令检查导入结果。
     
