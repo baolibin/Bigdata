@@ -145,8 +145,9 @@
     ③ 支持的数据格式有: CSV, Parquet, ORC等.
     ④ 导入发起方式有: 用RESTful接口, 执行SQL命令.
     
-    Broker Load通过部署的Broker程序，DorisDB可读取对应数据源（如HDFS, S3）上的数据，利用自身的计算资源对数据进行预处理和导入。
-    这是一种异步的导入方式，用户需要通过MySQL协议创建导入，并通过查看导入命令检查导入结果。
+    Broker Load 功能通过 Broker 进程读取远端存储上的文件数据并导入到 Doris 中。
+    Broker load 是一个异步的导入方式，支持的数据源取决于 Broker 进程支持的数据源。
+    用户需要通过 MySQL 协议 创建 Broker load 导入，并通过查看导入命令检查导入结果。
     
     Spark Load 通过外部的 Spark 资源实现对导入数据的预处理，提高 DorisDB 大数据量的导入性能并且节省 Doris 集群的计算资源。
     主要用于初次迁移、大数据量导入 DorisDB 的场景（数据量可到TB级别）。
@@ -527,3 +528,11 @@
 
 ###### [41）、Doris的Broker？]()  
     Broker 是 Doris 集群中一种可选进程，主要用于支持 Doris 读写远端存储上的文件和目录，如 HDFS、BOS 和 AFS 等。
+    
+    Broker 通过提供一个 RPC 服务端口来提供服务，是一个无状态的 Java 进程，负责为远端存储的读写操作封装一些类 POSIX 的文件操作，
+    如 open，pread，pwrite 等等。除此之外，Broker 不记录任何其他信息，所以包括远端存储的连接信息、文件信息、权限信息等等，
+    都需要通过参数在 RPC 调用中传递给 Broker 进程，才能使得 Broker 能够正确读写文件。
+    
+    Broker 仅作为一个数据通路，并不参与任何计算，因此仅需占用较少的内存。通常一个 Doris 系统中会部署一个或多个 Broker 进程。
+    并且相同类型的 Broker 会组成一个组，并设定一个 名称（Broker name）。
+
