@@ -577,3 +577,15 @@
     用户在提交导入任务后，FE 会生成对应的 Plan 并根据目前 BE 的个数和文件的大小，将 Plan 分给 多个 BE 执行，每个 BE 执行一部分导入数据。
     BE 在执行的过程中会从 Broker 拉取数据，在对数据 transform 之后将数据导入系统。所有 BE 均完成导入，由 FE 最终决定导入是否成功。
 
+###### [44）、Doris的Routine Load？]()  
+    例行导入（Routine Load）功能为用户提供了一种自动从指定数据源进行数据导入的功能。
+    当前仅支持从 Kafka 系统进行例行导入。
+
+    1、名词解释
+    FE：Frontend，Doris 的前端节点。负责元数据管理和请求接入。
+    BE：Backend，Doris 的后端节点。负责查询执行和数据存储。
+    RoutineLoadJob：用户提交的一个例行导入作业。
+    JobScheduler：例行导入作业调度器，用于调度和拆分一个 RoutineLoadJob 为多个 Task。
+    Task：RoutineLoadJob 被 JobScheduler 根据规则拆分的子任务。
+    TaskScheduler：任务调度器。用于调度 Task 的执行。
+
