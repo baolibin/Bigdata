@@ -26,6 +26,20 @@
     - [25）、Doris的Rollup？]()  
     - [26）、Doris用Bitmap实现精确去重？]()  
     - [27）、Doris用HLL(HyperLogLog)实现近似去重？]()  
+    - [28）、Doris的Colocation Join？]()  
+    - [29）、Doris的窗口函数？]()  
+    - [30）、Doris精确去重方式？]()  
+    - [31）、Doris传统去重计算？]()  
+    - [32）、Doris的CBO优化器？]()  
+    - [33）、Spark Doris Connector？]() 
+    - [34）、Doris数据类型？]() 
+    - [35）、Doris监控报警？]() 
+    - [36）、Doris用户权限？]() 
+    - [37）、Doris分区缓存？]() 
+    - [38）、Doris动态分区？]() 
+    - [39）、Doris物化视图 VS Rollup？]() 
+    - [40）、Doris的Join有哪些？]() 
+    - [41）、Doris的Broker？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
@@ -511,5 +525,5 @@
 
 
 
-###### [37）、Doris的Broker？]()  
+###### [41）、Doris的Broker？]()  
     Broker 是 Doris 集群中一种可选进程，主要用于支持 Doris 读写远端存储上的文件和目录，如 HDFS、BOS 和 AFS 等。
