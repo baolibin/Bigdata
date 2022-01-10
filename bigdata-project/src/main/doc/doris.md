@@ -600,7 +600,11 @@
 
 
 ###### [47）、Doris的Insert Into？]()  
-
+    Insert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 Doris 中，所有的数据写入都是一个独立的导入作业。
+    主要的 Insert Into 命令包含以下两种；
+    1、INSERT INTO tbl SELECT ...
+    2、INSERT INTO tbl (col1, col2, ...) VALUES (1, 2, ...), (1,3, ...);
+    其中第二种命令仅用于 Demo，不要使用在测试或生产环境中。
 
 ###### [48）、Doris的如何进行分区和分桶？]()  
     1、一个表的 Tablet 总数量等于 (Partition num * Bucket num)。
