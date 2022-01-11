@@ -594,7 +594,8 @@
 
 
 ###### [45）、Doris的Spark Load？]()  
-
+    Spark load 通过外部的 Spark 资源实现对导入数据的预处理，提高 Doris 大数据量的导入性能并且节省 Doris 集群的计算资源。主要用于初次迁移，大数据量导入 Doris 的场景。
+    Spark load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并通过 SHOW LOAD 查看导入结果。
 
 ###### [46）、Doris的Stream load？]()  
 
