@@ -592,13 +592,14 @@
     Task：RoutineLoadJob 被 JobScheduler 根据规则拆分的子任务。
     TaskScheduler：任务调度器。用于调度 Task 的执行。
 
-
 ###### [45）、Doris的Spark Load？]()  
     Spark load 通过外部的 Spark 资源实现对导入数据的预处理，提高 Doris 大数据量的导入性能并且节省 Doris 集群的计算资源。主要用于初次迁移，大数据量导入 Doris 的场景。
     Spark load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并通过 SHOW LOAD 查看导入结果。
 
 ###### [46）、Doris的Stream load？]()  
-
+    Stream load 是一个同步的导入方式，用户通过发送 HTTP 协议发送请求将本地文件或数据流导入到 Doris 中。
+    Stream load 同步执行导入并返回导入结果。用户可直接通过请求的返回体判断本次导入是否成功。
+    Stream load 主要适用于导入本地文件，或通过程序导入数据流中的数据。
 
 ###### [47）、Doris的Insert Into？]()  
     Insert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 Doris 中，所有的数据写入都是一个独立的导入作业。
