@@ -40,6 +40,9 @@
     - [39）、Doris物化视图 VS Rollup？]() 
     - [40）、Doris的Join有哪些？]() 
     - [41）、Doris的Broker？]()  
+    - [42）、Doris的Binlog Load？]()  
+    - [43）、Doris的Broker Load？]()  
+    - [44）、Doris的Routine Load？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
