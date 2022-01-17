@@ -592,3 +592,7 @@
     Task：RoutineLoadJob 被 JobScheduler 根据规则拆分的子任务。
     TaskScheduler：任务调度器。用于调度 Task 的执行。
 
+###### [45）、Doris的Load Json Format Data？]()  
+
+
+
