@@ -593,8 +593,9 @@
     TaskScheduler：任务调度器。用于调度 Task 的执行。
 
 ###### [45）、Doris的Load Json Format Data？]()  
-
-
+    Currently only the following load methods support data import in Json format:
+    Stream Load
+    Routine Load
 
 ###### [46）、Doris的查询性能？]()  
 
