@@ -17,7 +17,7 @@
     - [16）、MPP数据库？]() 
     - [17）、数据库架构设计？]() 
     - [18）、Doris近似去重、精确去重功能？]()
-    - [19）、DorisDB基本概念？]()
+    - [19）、Doris基本概念？]()
     - [20）、Doris分区？]()
     - [21）、Doris分桶？]()
     - [22）、Doris的Bloom Filter索引？]()
@@ -272,12 +272,11 @@
     行列转化是ETL处理过程中常见的操作，Lateral 一个特殊的Join关键字，能够按照每行和内部的子查询或者table function关联，
     通过Lateral 与unnest配合，我们可以实现一行转多行的功能。
 
-###### [19）、DorisDB基本概念？]()
-    FE：FrontEnd DorisDB的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
-    BE：BackEnd DorisDB的后端节点，负责数据存储，计算执行，以及compaction，副本管理等工作。
-    Broker：DorisDB中和外部HDFS/对象存储等外部数据对接的中转服务，辅助提供导入导出功能。
-    DorisManager：DorisDB 管理工具，提供DorisDB集群管理、在线查询、故障查询、监控报警的可视化工具。
-    Tablet：DorisDB 表的逻辑分片，也是DorisDB中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
+###### [19）、Doris基本概念？]()
+    FE：FrontEnd Doris的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
+    BE：BackEnd Doris的后端节点，负责数据存储，计算执行，以及compaction，副本管理等工作。
+    Broker：Doris中和外部HDFS/对象存储等外部数据对接的中转服务，辅助提供导入导出功能。
+    Tablet：DorisDB 表的逻辑分片，也是Doris中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### [20）、Doris分区？]()
     Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
