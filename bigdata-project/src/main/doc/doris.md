@@ -369,7 +369,7 @@
     GROUP BY id ORDER BY id’
     
     Duplicate 数据模型：DorisDB中的用于存放明细数据的数据模型，建表可指定，数据不会被聚合。
-    Base 表：DorisDB 中通过 CREATE TABLE 命令创建出来的表。
+    Base 表：Doris 中通过 CREATE TABLE 命令创建出来的表。
     Materialized Views 表：简称 MVs，物化视图。
     
     优势
