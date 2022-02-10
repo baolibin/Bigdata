@@ -43,6 +43,9 @@
     - [42）、Doris的Binlog Load？]()  
     - [43）、Doris的Broker Load？]()  
     - [44）、Doris的Routine Load？]()  
+    - [45）、Doris的Load Json Format Data？]() 
+    - [46）、Doris的查询性能？]() 
+    - [47）、Doris的分区与分桶？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
@@ -599,4 +602,5 @@
 ###### [46）、Doris的查询性能？]()  
     大查询
 
+###### [47）、Doris的分区与分桶？]()  
 
