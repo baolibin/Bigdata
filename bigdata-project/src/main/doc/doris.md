@@ -607,4 +607,5 @@
     大查询
 
 ###### [47）、Doris的分区与分桶？]()  
-
+    Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
+    也可以仅使用一层分区。使用一层分区时，只支持 Bucket 划分。
