@@ -609,3 +609,15 @@
 ###### [47）、Doris的分区与分桶？]()  
     Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
     也可以仅使用一层分区。使用一层分区时，只支持 Bucket 划分。
+    
+    Range 分区
+    分区列通常为时间列，以方便的管理新旧数据。
+    Partition 支持通过 VALUES LESS THAN (...) 仅指定上界，系统会将前一个分区的上界作为该分区的下界，生成一个左闭右开的区间。通过，也支持通过 VALUES [...) 指定同时指定上下界，生成一个左闭右开的区间。
+    
+    List 分区
+    分区列支持 BOOLEAN, TINYINT, SMALLINT, INT, BIGINT, LARGEINT, DATE, DATETIME, CHAR, VARCHAR 数据类型，分区值为枚举值。只有当数据为目标分区枚举值其中之一时，才可以命中分区。
+    Partition 支持通过 VALUES IN (...) 来指定每个分区包含的枚举值。
+    
+    Bucket
+    如果使用了 Partition，则 DISTRIBUTED ... 语句描述的是数据在各个分区内的划分规则。如果不使用 Partition，则描述的是对整个表的数据的划分规则。
+    分桶列可以是多列，但必须为 Key 列。分桶列可以和 Partition 列相同或不同。
