@@ -143,23 +143,22 @@
     ③ 支持的数据格式有: CSV, Parquet, ORC等.
     ④ 导入发起方式有: 用RESTful接口, 执行SQL命令.
     
-    Broker Load 功能通过 Broker 进程读取远端存储上的文件数据并导入到 Doris 中。
-    Broker load 是一个异步的导入方式，支持的数据源取决于 Broker 进程支持的数据源。
-    用户需要通过 MySQL 协议 创建 Broker load 导入，并通过查看导入命令检查导入结果。
-    
-    Spark Load 通过外部的 Spark 资源实现对导入数据的预处理，提高 DorisDB 大数据量的导入性能并且节省 Doris 集群的计算资源。
-    主要用于初次迁移、大数据量导入 DorisDB 的场景（数据量可到TB级别）。
-    Spark Load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并可以通过 SHOW LOAD 查看导入结果。
-    
-    Stream Load 是一种同步的导入方式，用户通过发送 HTTP 请求将本地文件或数据流导入到 DorisDB 中。Stream Load 同步执行导入并返回导入结果。
-    用户可直接通过请求的返回值判断导入是否成功。DorisDB支持从本地直接导入数据，支持CSV文件格式。数据量在10GB以下。
-    
-    Routine Load 是一种例行导入方式，DorisDB通过这种方式支持从Kafka持续不断的导入数据，并且支持通过SQL控制导入任务的暂停、重启、停止。
-    
-    Insert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 DorisDB 中，所有的数据写入都是一个独立的导入作业。
-    
-    http://doc.dorisdb.com/2145999
+    为适配不同的数据导入需求，Doris 系统提供了6种不同的导入方式。每种导入方式支持不同的数据源，存在不同的使用方式（异步，同步）。
+    所有导入方式都支持 csv 数据格式。其中 Broker load 还支持 parquet 和 orc 数据格式。
+    每个导入方式的说明请参阅单个导入方式的操作手册。
 
+    1、Broker load
+    通过 Broker 进程访问并读取外部数据源（如 HDFS）导入到 Doris。用户通过 Mysql 协议提交导入作业后，异步执行。通过 SHOW LOAD 命令查看导入结果。
+    2、Stream load
+    用户通过 HTTP 协议提交请求并携带原始数据创建导入。主要用于快速将本地文件或数据流中的数据导入到 Doris。导入命令同步返回导入结果。
+    3、Insert
+    类似 MySQL 中的 Insert 语句，Doris 提供 INSERT INTO tbl SELECT ...; 的方式从 Doris 的表中读取数据并导入到另一张表。或者通过 INSERT INTO tbl VALUES(...); 插入单条数据。
+    4、Multi load
+    用户通过 HTTP 协议提交多个导入作业。Multi Load 可以保证多个导入作业的原子生效。
+    5、Routine load
+    用户通过 MySQL 协议提交例行导入作业，生成一个常驻线程，不间断的从数据源（如 Kafka）中读取数据并导入到 Doris 中。
+    6、通过S3协议直接导入
+    用户通过S3协议直接导入数据，用法和Broker Load 类似
 
 ###### [9）、Doris优缺点？]()  
 
