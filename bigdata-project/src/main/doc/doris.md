@@ -620,3 +620,17 @@
     Bucket
     如果使用了 Partition，则 DISTRIBUTED ... 语句描述的是数据在各个分区内的划分规则。如果不使用 Partition，则描述的是对整个表的数据的划分规则。
     分桶列可以是多列，但必须为 Key 列。分桶列可以和 Partition 列相同或不同。
+
+###### [48）、Doris的Runtime Filter？]()  
+    Runtime Filter 是在 Doris 0.15 版本中正式加入的新功能。旨在为某些 Join 查询在运行时动态生成过滤条件，来减少扫描的数据量，避免不必要的I/O和网络传输，从而加速查询。
+    它的设计、实现和效果可以参阅 ISSUE 6116 (https://github.com/apache/incubator-doris/issues/6116)。
+
+    原理：Runtime Filter在查询规划时生成，在HashJoinNode中构建，在ScanNode中应用。
+    FE：Frontend，Doris 的前端节点。负责元数据管理和请求接入。
+    BE：Backend，Doris 的后端节点。负责查询执行和数据存储。
+    左表：Join查询时，左边的表。进行Probe操作。可被Join Reorder调整顺序。
+    右表：Join查询时，右边的表。进行Build操作。可被Join Reorder调整顺序。
+    Fragment：FE会将具体的SQL语句的执行转化为对应的Fragment并下发到BE进行执行。BE上执行对应Fragment，并将结果汇聚返回给FE。
+    Join on clause: A join B on A.a=B.b中的A.a=B.b，在查询规划时基于此生成join conjuncts，包含join Build和Probe使用的expr，其中Build expr在Runtime Filter中称为src expr，Probe expr在Runtime Filter中称为target expr。
+
+
