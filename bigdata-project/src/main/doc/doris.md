@@ -634,3 +634,9 @@
     Join on clause: A join B on A.a=B.b中的A.a=B.b，在查询规划时基于此生成join conjuncts，包含join Build和Probe使用的expr，其中Build expr在Runtime Filter中称为src expr，Probe expr在Runtime Filter中称为target expr。
 
 
+###### [49）、Doris监控与报警？]()  
+    Doris 使用 Prometheus (opens new window)和 Grafana (opens new window)进项监控项的采集和展示。
+
+
+
+
