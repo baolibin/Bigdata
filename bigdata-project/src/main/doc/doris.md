@@ -637,6 +637,10 @@
 ###### [49）、Doris监控与报警？]()  
     Doris 使用 Prometheus (opens new window)和 Grafana (opens new window)进项监控项的采集和展示。
 
+    Prometheus
+    Prometheus 是一款开源的系统监控和报警套件。它可以通过 Pull 或 Push 采集被监控系统的监控项，存入自身的时序数据库中。并且通过丰富的多维数据查询语言，满足用户的不同数据展示需求。
 
+    Grafana
+    Grafana 是一款开源的数据分析和展示平台。支持包括 Prometheus 在内的多个主流时序数据库源。通过对应的数据库查询语句，从数据源中获取展现数据。通过灵活可配置的 Dashboard，快速的将这些数据以图表的形式展示给用户。
 
 
