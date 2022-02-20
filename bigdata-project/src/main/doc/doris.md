@@ -17,7 +17,7 @@
     - [16）、MPP数据库？]() 
     - [17）、数据库架构设计？]() 
     - [18）、Doris近似去重、精确去重功能？]()
-    - [19）、DorisDB基本概念？]()
+    - [19）、Doris基本概念？]()
     - [20）、Doris分区？]()
     - [21）、Doris分桶？]()
     - [22）、Doris的Bloom Filter索引？]()
@@ -43,11 +43,14 @@
     - [42）、Doris的Binlog Load？]()  
     - [43）、Doris的Broker Load？]()  
     - [44）、Doris的Routine Load？]()  
+    - [45）、Doris的Load Json Format Data？]() 
+    - [46）、Doris的查询性能？]() 
+    - [47）、Doris的分区与分桶？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
 * [Doris GitHub地址](https://github.com/apache/incubator-doris/wiki)
-* [Doris 官网地址](http://doris.apache.org/master/zh-CN/)
+* [Doris 官网地址](https://doris.apache.org/zh-CN/installing/compilation.html)
 * [DorisDB企业版文档](http://doc.dorisdb.com)
 
 ###### [1）、Doris数据模型？]()
@@ -110,14 +113,6 @@
     应用场景包括：固定历史报表分析、实时数据分析、交互式数据分析等。
     一般情况下，用户的原始数据，比如日志或者在事务型数据库中的数据，经过流式系统或离线处理后，
     导入到Doris中以供上层的报表工具或者数据分析师查询使用。
-    
-    DorisDB可以满足企业级用户的多种分析需求，包括OLAP多维分析，定制报表，实时数据分析，Ad-hoc数据分析等。具体的业务场景包括：
-    数据仓库建设
-    OLAP/BI分析
-    用户行为分析
-    广告数据分析
-    系统监控分析
-    探针分析 APM（Application Performance Management）
 
 ###### [6）、Doris的查询流程？]() 
     用户可使用MySQL客户端连接FE，执行SQL查询， 获得结果。
@@ -148,23 +143,22 @@
     ③ 支持的数据格式有: CSV, Parquet, ORC等.
     ④ 导入发起方式有: 用RESTful接口, 执行SQL命令.
     
-    Broker Load 功能通过 Broker 进程读取远端存储上的文件数据并导入到 Doris 中。
-    Broker load 是一个异步的导入方式，支持的数据源取决于 Broker 进程支持的数据源。
-    用户需要通过 MySQL 协议 创建 Broker load 导入，并通过查看导入命令检查导入结果。
-    
-    Spark Load 通过外部的 Spark 资源实现对导入数据的预处理，提高 DorisDB 大数据量的导入性能并且节省 Doris 集群的计算资源。
-    主要用于初次迁移、大数据量导入 DorisDB 的场景（数据量可到TB级别）。
-    Spark Load 是一种异步导入方式，用户需要通过 MySQL 协议创建 Spark 类型导入任务，并可以通过 SHOW LOAD 查看导入结果。
-    
-    Stream Load 是一种同步的导入方式，用户通过发送 HTTP 请求将本地文件或数据流导入到 DorisDB 中。Stream Load 同步执行导入并返回导入结果。
-    用户可直接通过请求的返回值判断导入是否成功。DorisDB支持从本地直接导入数据，支持CSV文件格式。数据量在10GB以下。
-    
-    Routine Load 是一种例行导入方式，DorisDB通过这种方式支持从Kafka持续不断的导入数据，并且支持通过SQL控制导入任务的暂停、重启、停止。
-    
-    Insert Into 语句的使用方式和 MySQL 等数据库中 Insert Into 语句的使用方式类似。但在 DorisDB 中，所有的数据写入都是一个独立的导入作业。
-    
-    http://doc.dorisdb.com/2145999
+    为适配不同的数据导入需求，Doris 系统提供了6种不同的导入方式。每种导入方式支持不同的数据源，存在不同的使用方式（异步，同步）。
+    所有导入方式都支持 csv 数据格式。其中 Broker load 还支持 parquet 和 orc 数据格式。
+    每个导入方式的说明请参阅单个导入方式的操作手册。
 
+    1、Broker load
+    通过 Broker 进程访问并读取外部数据源（如 HDFS）导入到 Doris。用户通过 Mysql 协议提交导入作业后，异步执行。通过 SHOW LOAD 命令查看导入结果。
+    2、Stream load
+    用户通过 HTTP 协议提交请求并携带原始数据创建导入。主要用于快速将本地文件或数据流中的数据导入到 Doris。导入命令同步返回导入结果。
+    3、Insert
+    类似 MySQL 中的 Insert 语句，Doris 提供 INSERT INTO tbl SELECT ...; 的方式从 Doris 的表中读取数据并导入到另一张表。或者通过 INSERT INTO tbl VALUES(...); 插入单条数据。
+    4、Multi load
+    用户通过 HTTP 协议提交多个导入作业。Multi Load 可以保证多个导入作业的原子生效。
+    5、Routine load
+    用户通过 MySQL 协议提交例行导入作业，生成一个常驻线程，不间断的从数据源（如 Kafka）中读取数据并导入到 Doris 中。
+    6、通过S3协议直接导入
+    用户通过S3协议直接导入数据，用法和Broker Load 类似
 
 ###### [9）、Doris优缺点？]()  
 
@@ -272,12 +266,11 @@
     行列转化是ETL处理过程中常见的操作，Lateral 一个特殊的Join关键字，能够按照每行和内部的子查询或者table function关联，
     通过Lateral 与unnest配合，我们可以实现一行转多行的功能。
 
-###### [19）、DorisDB基本概念？]()
-    FE：FrontEnd DorisDB的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
-    BE：BackEnd DorisDB的后端节点，负责数据存储，计算执行，以及compaction，副本管理等工作。
-    Broker：DorisDB中和外部HDFS/对象存储等外部数据对接的中转服务，辅助提供导入导出功能。
-    DorisManager：DorisDB 管理工具，提供DorisDB集群管理、在线查询、故障查询、监控报警的可视化工具。
-    Tablet：DorisDB 表的逻辑分片，也是DorisDB中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
+###### [19）、Doris基本概念？]()
+    FE：FrontEnd Doris的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
+    BE：BackEnd Doris的后端节点，负责数据存储，计算执行，以及compaction，副本管理等工作。
+    Broker：Doris中和外部HDFS/对象存储等外部数据对接的中转服务，辅助提供导入导出功能。
+    Tablet：DorisDB 表的逻辑分片，也是Doris中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### [20）、Doris分区？]()
     Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
@@ -357,18 +350,24 @@
     );
 
 ###### [21）、Doris分桶？]()
+    在 Doris 的存储引擎中，用户数据被水平划分为若干个数据分片（Tablet，也称作数据分桶）。每个 Tablet 包含若干数据行。各个 Tablet 之间的数据没有交集，并且在物理上是独立存储的。
+    多个 Tablet 在逻辑上归属于不同的分区（Partition）。一个 Tablet 只属于一个 Partition。而一个 Partition 包含若干个 Tablet。因为 Tablet 在物理上是独立存储的，所以可以视为 Partition 在物理上也是独立。Tablet 是数据移动、复制等操作的最小物理存储单元。
+    若干个 Partition 组成一个 Table。Partition 可以视为是逻辑上最小的管理单元。数据的导入与删除，都可以或仅能针对一个 Partition 进行。
 
+    Bucket
+    如果使用了 Partition，则 DISTRIBUTED ... 语句描述的是数据在各个分区内的划分规则。如果不使用 Partition，则描述的是对整个表的数据的划分规则。
 
+    分桶列可以是多列，但必须为 Key 列。分桶列可以和 Partition 列相同或不同。
+    分桶列的选择，是在 查询吞吐 和 查询并发 之间的一种权衡：
+    如果选择多个分桶列，则数据分布更均匀。如果一个查询条件不包含所有分桶列的等值条件，那么该查询会触发所有分桶同时扫描，这样查询的吞吐会增加，单个查询的延迟随之降低。这个方式适合大吞吐低并发的查询场景。
+    如果仅选择一个或少数分桶列，则对应的点查询可以仅触发一个分桶扫描。此时，当多个点查询并发时，这些查询有较大的概率分别触发不同的分桶扫描，各个查询之间的IO影响较小（尤其当不同桶分布在不同磁盘上时），所以这种方式适合高并发的点查询场景。
+    分桶的数量理论上没有上限。
 
 ###### [22）、Doris的Bloom Filter索引？]()
     Bloom Filter（布隆过滤器）是用于判断某个元素是否在一个集合中的数据结构，优点是空间效率和时间效率都比较高，缺点是有一定的误判率。
 
     布隆过滤器是由一个Bit数组和n个哈希函数构成。Bit数组初始全部为0，当插入一个元素时，n个Hash函数对元素进行计算, 得到n个slot，
     然后将Bit数组中n个slot的Bit置1。
-
-    DorisDB的建表时, 可通过PROPERTIES{"bloom_filter_columns"="c1,c2,c3"}指定需要建BloomFilter索引的列，查询时, 
-    BloomFilter可快速判断某个列中是否存在某个值。如果Bloom Filter判定该列中不存在指定的值，就不需要读取数据文件；如果是全1情形，
-    此时需要读取数据块确认目标值是否存在。另外，Bloom Filter索引无法确定具体是哪一行数据具有该指定的值。
 
 ###### [23）、Doris物化视图？]()
     物化视图是将预先计算（根据定义好的 SELECT 语句）好的数据集，存储在 Doris 中的一个特殊的表。
@@ -382,7 +381,7 @@
     GROUP BY id ORDER BY id’
     
     Duplicate 数据模型：DorisDB中的用于存放明细数据的数据模型，建表可指定，数据不会被聚合。
-    Base 表：DorisDB 中通过 CREATE TABLE 命令创建出来的表。
+    Base 表：Doris 中通过 CREATE TABLE 命令创建出来的表。
     Materialized Views 表：简称 MVs，物化视图。
     
     优势
@@ -462,8 +461,14 @@
 
 
 ###### [33）、Spark Doris Connector？]() 
-
-
+    Spark Doris Connector 是Doris在0.12版本中推出的新功能。用户可以使用该功能，直接通过Spark对Doris中存储的数据进行查询。
+    
+    早期的方案中，直接将Doris的JDBC接口提供给Spark。对于JDBC这个Datasource，Spark侧的工作原理为，Spark的Driver通过JDBC协议，访问Doris的FE，以获取对应Doris表的Schema。
+    然后，按照某一字段，将查询分位多个Partition子查询任务，下发给多个Spark的Executors。Executors将所负责的Partition转换成对应的JDBC查询，直接访问Doris的FE接口，获取对应数据。
+    这种方案几乎无需改动代码，但是因为Spark无法感知Doris的数据分布，会导致打到Doris的查询压力非常大。
+    
+    于是开发了针对Doris的新的Datasource，Spark-Doris-Connector。这种方案下，Doris可以暴露Doris数据分布给Spark。Spark的Driver访问Doris的FE获取Doris表的Schema和底层数据分布。
+    之后，依据此数据分布，合理分配数据查询任务给Executors。最后，Spark的Executors分别访问不同的BE进行查询。大大提升了查询的效率。
 
 ###### [34）、Doris数据类型？]() 
     1、数字类型
@@ -493,7 +498,7 @@
 
 
 ###### [36）、Doris用户权限？]() 
-    DorisDB 的权限管理系统参照了 MySQL 的权限管理机制，支持表级别细粒度的权限控制、基于角色的权限访问控制，以及白名单机制。
+    Doris 新的权限管理系统参照了 Mysql 的权限管理机制，做到了表级别细粒度的权限控制，基于角色的权限访问控制，并且支持白名单机制。
 
 ###### [37）、Doris分区缓存？]() 
     大部分数据分析场景是写少读多，数据写入一次，多次频繁读取，比如一张报表涉及的维度和指标，数据在凌晨一次性计算好，但每天有数百甚至数千次的页面访问，因此非常适合把结果集缓存起来。
@@ -591,4 +596,51 @@
     JobScheduler：例行导入作业调度器，用于调度和拆分一个 RoutineLoadJob 为多个 Task。
     Task：RoutineLoadJob 被 JobScheduler 根据规则拆分的子任务。
     TaskScheduler：任务调度器。用于调度 Task 的执行。
+
+###### [45）、Doris的Load Json Format Data？]()  
+    Currently only the following load methods support data import in Json format:
+    Stream Load
+    Routine Load
+
+###### [46）、Doris的查询性能？]()  
+    大查询
+
+###### [47）、Doris的分区与分桶？]()  
+    Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
+    也可以仅使用一层分区。使用一层分区时，只支持 Bucket 划分。
+    
+    Range 分区
+    分区列通常为时间列，以方便的管理新旧数据。
+    Partition 支持通过 VALUES LESS THAN (...) 仅指定上界，系统会将前一个分区的上界作为该分区的下界，生成一个左闭右开的区间。通过，也支持通过 VALUES [...) 指定同时指定上下界，生成一个左闭右开的区间。
+    
+    List 分区
+    分区列支持 BOOLEAN, TINYINT, SMALLINT, INT, BIGINT, LARGEINT, DATE, DATETIME, CHAR, VARCHAR 数据类型，分区值为枚举值。只有当数据为目标分区枚举值其中之一时，才可以命中分区。
+    Partition 支持通过 VALUES IN (...) 来指定每个分区包含的枚举值。
+    
+    Bucket
+    如果使用了 Partition，则 DISTRIBUTED ... 语句描述的是数据在各个分区内的划分规则。如果不使用 Partition，则描述的是对整个表的数据的划分规则。
+    分桶列可以是多列，但必须为 Key 列。分桶列可以和 Partition 列相同或不同。
+
+###### [48）、Doris的Runtime Filter？]()  
+    Runtime Filter 是在 Doris 0.15 版本中正式加入的新功能。旨在为某些 Join 查询在运行时动态生成过滤条件，来减少扫描的数据量，避免不必要的I/O和网络传输，从而加速查询。
+    它的设计、实现和效果可以参阅 ISSUE 6116 (https://github.com/apache/incubator-doris/issues/6116)。
+
+    原理：Runtime Filter在查询规划时生成，在HashJoinNode中构建，在ScanNode中应用。
+    FE：Frontend，Doris 的前端节点。负责元数据管理和请求接入。
+    BE：Backend，Doris 的后端节点。负责查询执行和数据存储。
+    左表：Join查询时，左边的表。进行Probe操作。可被Join Reorder调整顺序。
+    右表：Join查询时，右边的表。进行Build操作。可被Join Reorder调整顺序。
+    Fragment：FE会将具体的SQL语句的执行转化为对应的Fragment并下发到BE进行执行。BE上执行对应Fragment，并将结果汇聚返回给FE。
+    Join on clause: A join B on A.a=B.b中的A.a=B.b，在查询规划时基于此生成join conjuncts，包含join Build和Probe使用的expr，其中Build expr在Runtime Filter中称为src expr，Probe expr在Runtime Filter中称为target expr。
+
+
+###### [49）、Doris监控与报警？]()  
+    Doris 使用 Prometheus (opens new window)和 Grafana (opens new window)进项监控项的采集和展示。
+
+    Prometheus
+    Prometheus 是一款开源的系统监控和报警套件。它可以通过 Pull 或 Push 采集被监控系统的监控项，存入自身的时序数据库中。并且通过丰富的多维数据查询语言，满足用户的不同数据展示需求。
+
+    Grafana
+    Grafana 是一款开源的数据分析和展示平台。支持包括 Prometheus 在内的多个主流时序数据库源。通过对应的数据库查询语句，从数据源中获取展现数据。通过灵活可配置的 Dashboard，快速的将这些数据以图表的形式展示给用户。
+
 
