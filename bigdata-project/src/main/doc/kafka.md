@@ -117,7 +117,8 @@
     不可以
 
 ###### [16）、Kafka有内部的topic么？如果有是什么？有什么用？]()
-    根据集群的机器数量和需要的吞吐量来决定适合的分区数
+    __consumer_offsets：作用是保存 Kafka 消费者的位移信息
+    __transaction_state：用来存储事务日志消息
 
 ###### [17）、Kafka分区分配的概念？]()
 ![kafka分段索引](./images/kafka分段索引.png)
