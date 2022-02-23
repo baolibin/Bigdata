@@ -37,8 +37,22 @@
     （2）抽象类有带参数的构造函数，特质不行（如 trait t（i：Int）{} ，这种声明是错误的）
 
 ###### [4）、case class是什么？]()
-    ​Scala没有break操作，但是可以实现break原理，需要创建Breaks对象实现内部的break方法就可以像java一样跳出语句，但是在模式匹配过程中不需要跳出匹配模式，因为模式匹配只能匹配其中一个结果值。
-    ​case class代表样例类，它和class类比较来说，可以不需要序列化，而class需要序列化操作，和object很类似
+    Scala没有break操作，但是可以实现break原理，需要创建Breaks对象实现内部的break方法就可以像java一样跳出语句，但是在模式匹配过程中不需要跳出匹配模式，因为模式匹配只能匹配其中一个结果值。
+    // 导入以下包
+    import scala.util.control._
+    // 创建 Breaks 对象
+    val loop = new Breaks;
+    // 在 breakable 中循环
+    loop.breakable{
+        // 循环
+        for(...){
+           ....
+           // 循环中断
+           loop.break;
+       }
+    }
+    
+    case class代表样例类，它和class类比较来说，可以不需要序列化，而class需要序列化操作，和object很类似
 
 ###### [5）、apply和unapply区别？以及各自的使用场景？]()
     构造器：apply方法是为了自动实现样本类的对象，无需new关键字。
