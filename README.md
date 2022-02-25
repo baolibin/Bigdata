@@ -72,24 +72,25 @@
 * [精准运营]()
 * [实时监控](bigdata-project/src/main/java/realTimeMonitor/README.md)
 
-## 7、数据相关知识点
-* [数据产生](bigdata-project/src/main/data/数据产生.md)  
+## 7、数据相关知识点      
+* [1、数据仓库](bigdata-project/src/main/data/1.数据仓库.md)
+* [2、数据中台](bigdata-project/src/main/data/2.数据中台.md)   
+* [3、数据建模](bigdata-project/src/main/data/3.数据建模.md)   
+* [4、数据监控](bigdata-project/src/main/data/4.数据监控.md)
+* [5、数据治理](bigdata-project/src/main/data/5.数据治理.md)
+* [6、数据质量](bigdata-project/src/main/data/6.数据质量.md)
+* [7、数据血缘](bigdata-project/src/main/data/7.数据血缘.md)   
+* [8、数据计算](bigdata-project/src/main/data/8.数据计算.md)  
+* [9、数据存储](bigdata-project/src/main/data/9.数据存储.md)
 * [数据收集](bigdata-project/src/main/data/数据收集.md)
 * [数据压缩](bigdata-project/src/main/data/数据压缩.md)
 * [数据加解密](bigdata-project/src/main/data/数据加解密.md)
-* [数据计算处理](bigdata-project/src/main/data/数据计算处理.md)
-* [数据存储](bigdata-project/src/main/data/数据存储.md)
+* [数据产生](bigdata-project/src/main/data/数据产生.md)
 * [数据延迟](bigdata-project/src/main/data/数据延迟.md)
-* [数据质量](bigdata-project/src/main/data/数据质量.md)
-* [数据治理](bigdata-project/src/main/data/数据治理.md)
-* [数据监控](bigdata-project/src/main/data/数据监控.md)
 * [数据可视化](bigdata-project/src/main/data/数据可视化.md)
-* [数据字典](bigdata-project/src/main/data/数据字典.md)
-* [数据血缘](bigdata-project/src/main/data/数据血缘.md)      
+* [数据字典](bigdata-project/src/main/data/数据字典.md)   
 * [数据分析](bigdata-project/src/main/data/数据分析.md)      
-* [数据建模](bigdata-project/src/main/data/数据建模.md)      
-* [数据集市](bigdata-project/src/main/data/数据集市.md)       
-* [数据仓库](bigdata-project/src/main/data/数据仓库.md)           
+* [数据集市](bigdata-project/src/main/data/数据集市.md)            
 
 ## 8、大数据学习相关资料
 #####  8.1、大数据学习网站
