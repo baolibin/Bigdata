@@ -258,7 +258,7 @@
     如果有窗口的停止时间等于maxEventTime – t，那么这个窗口被触发执行。
 
 ###### [13）、Flink的checkpoint存储有哪些(状态存储)？]()
-    这些状态有三种存储方式: HeapStateBackend、MemoryStateBackend、FsStateBackend、RockDBStateBackend。
+    这些状态有三种存储方式: MemoryStateBackend、FsStateBackend、RockDBStateBackend。
     1).MemoryStateBackend: state数据保存在java堆内存中，执行checkpoint的时候，会把state的快照数据保存到jobmanager的内存中。
     2).FsStateBackend: state数据保存在taskmanager的内存中，执行checkpoint的时候，会把state的快照数据保存到配置的文件系统中，可以使用hdfs等分布式文件系统。
     3).RocksDBStateBackend: RocksDB跟上面的都略有不同，它会在本地文件系统中维护状态，state会直接写入本地rocksdb中。
