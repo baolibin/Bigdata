@@ -1,4 +1,4 @@
-* [9.9、MapReduce](bigdata-project/src/main/doc/mapreduce.md)
+* [9.9、MapReduce](../../../../bigdata-project/src/main/doc/mapreduce.md)
     - [1）、MapReduce和Spark都是并行计算，有什么区别？]()
     - [2）、Spark比MapReduce快么？为什么快？快在哪里？]()
     - [3）、MapReduce的Shuffle过程？]()
@@ -29,6 +29,10 @@
 ###### [5）、MapReduce如何读取小文件？]()
 
 ###### [6）、MapReduce调优？]()
+    程序运行的慢，优化方向
+    1、数据倾斜
+    2、Map和Reduce数设置不合理
+    3、小文件过多
 
 ###### [7）、MapReduce作业执行过程？]()
 
