@@ -223,6 +223,8 @@
     原则八：使用Kryo优化序列化性能
     原则九：优化数据结构
 
+    算子层面(RDD重用、高性能算子等)+数据层面(数据倾斜[预聚合、Key打散]等)+资源层面(core+memery配置等)
+
 ###### 13、Spark中宽依赖和窄依赖如何理解？
     Spark中RDD的高效与DAG（有向无环图）有很大的关系，在DAG调度中需要对计算的过程划分Stage，划分的依据就是RDD之间的依赖关系。
     RDD之间的依赖关系分为两种，宽依赖(wide dependency/shuffle dependency)和窄依赖（narrow dependency）。
