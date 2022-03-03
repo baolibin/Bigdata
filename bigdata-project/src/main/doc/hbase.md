@@ -29,6 +29,7 @@
     - [28）、HBase的HRegion如何划分的？]()
     - [29）、HBase的HRegion如何分裂的？]()
     - [30）、HBase的MemStore和BlockCache区别？]()
+    - [31）、HBase的HFile格式？]()
 
 ---
 ###### [1）、HBase是什么？特点有哪些？]()
@@ -254,8 +255,9 @@
 
 ###### [31）、HBase的HFile格式？]()
     HFile有多个大小相等的block组成，Block分为四种类型：Data Block，Index Block，Bloom Block和Meta Block。
-    Data Block 用于存储实际数据，通常情况下每个Data Block可以存放多条KeyValue数据对；
-    Index Block和Bloom Block 都用于优化随机读的查找路径，其中Index Block通过存储索引数据加快数据查找，而Bloom Block通过一定算法可以过滤掉部分一定不存在待查KeyValue的数据文件，减少不必要的IO操作；
-    Meta Block 主要存储整个HFile的元数据。
+    1、Data Block 用于存储实际数据，通常情况下每个Data Block可以存放多条KeyValue数据对；
+    2、Index Block和Bloom Block 都用于优化随机读的查找路径，其中Index Block通过存储索引数据加快数据查找，
+    而Bloom Block通过一定算法可以过滤掉部分一定不存在待查KeyValue的数据文件，减少不必要的IO操作；
+    3、Meta Block 主要存储整个HFile的元数据。
 
 
