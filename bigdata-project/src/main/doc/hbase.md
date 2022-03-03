@@ -252,5 +252,10 @@
     MemStore称为写缓存，HBase执行写操作首先会将数据写入MemStore，并顺序写入HLog，等满足一定条件后统一将MemStore中数据刷新到磁盘，这种设计可以极大地提升HBase的写性能。
     BlockCache称为读缓存，HBase会将一次文件查找的Block块缓存到Cache中，以便后续同一请求或者邻近数据查找请求，可以直接从内存中获取，避免昂贵的IO操作。
 
-###### [30）、HBase的HFile格式？]()
+###### [31）、HBase的HFile格式？]()
+    HFile有多个大小相等的block组成，Block分为四种类型：Data Block，Index Block，Bloom Block和Meta Block。
+    Data Block 用于存储实际数据，通常情况下每个Data Block可以存放多条KeyValue数据对；
+    Index Block和Bloom Block 都用于优化随机读的查找路径，其中Index Block通过存储索引数据加快数据查找，而Bloom Block通过一定算法可以过滤掉部分一定不存在待查KeyValue的数据文件，减少不必要的IO操作；
+    Meta Block 主要存储整个HFile的元数据。
+
 
