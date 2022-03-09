@@ -677,4 +677,20 @@
 ###### [50）、Doris支持的索引？]()  
     前缀索引、位图索引、布隆过滤器索引
 
+###### [51）、常用OLAP框架对比？]()  
+    MOLAP：Doris、Druid、Kylin
+    ROLAP：Clickhouse、Presto、Impala、GreenPlum、Elasticsearch、Hive、Spark SQL
+
+    MPP架构：Doris、Clickhouse、Presto、SparkSQL
+    
+    Doris：
+    支持明细和聚合查询，支持多表join
+    支持实时和离线导入方式
+    支持Rollup和物化视图
+    支持前缀索引、Bitmap索引、Bloom Filter索引，提高查询效率
+
+    Clickhouse：
+    分块分布式存储大表，单表聚合查询性能强劲，不适合做多表关联，不依赖hadoop生态
+
+
 
