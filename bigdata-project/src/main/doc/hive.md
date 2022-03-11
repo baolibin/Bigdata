@@ -429,3 +429,7 @@
     要启用中间压缩，需要设定hive.exec.compress.intermediate为true，同时指定压缩方式hive.intermediate.compression.codec为org.apache.hadoop.io.compress.SnappyCodec。
     另外，参数hive.intermediate.compression.type可以选择对块（BLOCK）还是记录（RECORD）压缩，BLOCK的压缩率比较高。
     输出压缩的配置基本相同，打开hive.exec.compress.output即可。
+
+###### [43）、Hive新版本以及特性?]()
+
+
