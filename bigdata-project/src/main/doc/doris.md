@@ -46,6 +46,9 @@
     - [45）、Doris的Load Json Format Data？]() 
     - [46）、Doris的查询性能？]() 
     - [47）、Doris的分区与分桶？]()  
+    - [48）、Doris的Runtime Filter？]()  
+    - [49）、Doris监控与报警？]()  
+    - [50）、Doris支持的索引？]()  
 
 ---
 ###### [0）、Doris资料网址？]()
@@ -671,4 +674,25 @@
     Grafana
     Grafana 是一款开源的数据分析和展示平台。支持包括 Prometheus 在内的多个主流时序数据库源。通过对应的数据库查询语句，从数据源中获取展现数据。通过灵活可配置的 Dashboard，快速的将这些数据以图表的形式展示给用户。
 
+###### [50）、Doris支持的索引？]()  
+    前缀索引、位图索引、布隆过滤器索引
+
+###### [51）、常用OLAP框架对比？]()  
+    MOLAP：Doris、Druid、Kylin
+    ROLAP：Clickhouse、Presto、Impala、GreenPlum、Elasticsearch、Hive、Spark SQL
+
+    MPP架构：Doris、Clickhouse、Presto、SparkSQL
+    
+    Doris：
+    支持明细和聚合查询，支持多表join
+    支持实时和离线导入方式
+    支持Rollup和物化视图
+    支持前缀索引、Bitmap索引、Bloom Filter索引，提高查询效率
+
+    Clickhouse：
+    分块分布式存储大表，单表聚合查询性能强劲，不适合做多表关联，不依赖hadoop生态
+
+    Druid：
+    可以对数据支持亚秒级别查询，支持低延迟的数据插入和更新，只支持单数据源的查询，不支持join
+    
 
