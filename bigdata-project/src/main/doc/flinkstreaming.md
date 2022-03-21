@@ -1081,6 +1081,9 @@
     Flink在2015年发布了一篇论文 Lightweight asynchronous snapshots for distributed dataflows 适合在工程上实现，而且已经应用在了 Flink 项目中。
     核心思想是在 input source 端插入 barrier 来替代 Chandy-Lamport 算法中的 Marker，通过控制 barrier 的同步来实现 snapshot 的备份和 exactly-once 语义。
 
+###### [95)、Flink作业提交流程？]() 
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
