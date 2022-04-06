@@ -1087,6 +1087,9 @@
 ###### [96)、Flink如何计算实时的topN？]() 
 
 
+
+###### [97)、Flink序列化？]() 
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
