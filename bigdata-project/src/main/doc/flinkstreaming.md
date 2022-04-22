@@ -1100,6 +1100,9 @@
 ###### [99)、Flink分布式快照原理？]() 
 
 
+###### [100)、Flink分区策略？]() 
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
