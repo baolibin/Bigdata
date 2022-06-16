@@ -1,7 +1,7 @@
 * [9.15、Doris]()
-    - [1）、Doris数据模型？]()
-    - [2）、Doris底层存储原理？]()
-    - [3）、MPP引擎的选型？]()
+    - [1）、Doris数据模型？](#1、Doris数据模型？)
+    - [2）、Doris底层存储原理？](#2、Doris底层存储结构？)
+    - [3）、MPP引擎的选型？](#3、MPP引擎的选型？)
     - [4）、Doris简介？]()
     - [5）、Doris适用场景？]()  
     - [6）、Doris的查询流程？]()  
@@ -57,7 +57,7 @@
 * [Doris 官网地址](https://doris.apache.org/zh-CN/installing/compilation.html)
 * [DorisDB企业版文档](http://doc.dorisdb.com)
 
-###### [1）、Doris数据模型？]()
+###### 1、Doris数据模型？
     在 Doris 中，数据以表（Table）的形式进行逻辑上的描述。
     一张表包括行（Row）和列（Column）。Row 即用户的一行数据。Column 用于描述一行数据中不同的字段。
     Column 可以分为两大类：Key 和 Value。从业务角度看，Key 和 Value 可以分别对应维度列和指标列。
@@ -90,7 +90,7 @@
     Uniq 模型针对需要唯一主键约束的场景，可以保证主键唯一性约束。但是无法利用 ROLLUP 等预聚合带来的查询优势（因为本质是 REPLACE，没有 SUM 这种聚合方式）。
     Duplicate 适合任意维度的 Ad-hoc 查询。虽然同样无法利用预聚合的特性，但是不受聚合模型的约束，可以发挥列存模型的优势（只读取相关列，而不需要读取所有 Key 列）。
 
-###### [2）、Doris底层存储结构？]()
+###### 2、Doris底层存储结构？
     Doris是基于MPP架构的交互式SQL数据仓库，主要用于解决近实时的报表和多维分析。
     Doris分成两部分FE和BE，FE 负责存储以及维护集群元数据、接收、解析、查询、设计规划整体查询流程，BE 负责数据存储和具体的实施过程。
     
@@ -103,7 +103,7 @@
     因为 Tablet 在物理上是独立存储的，所以可以视为 Partition 在物理上也是独立。Tablet 是数据移动、复制等操作的最小物理存储单元。
     若干个 Partition 组成一个 Table。Partition 可以视为是逻辑上最小的管理单元。数据的导入与删除，都可以或仅能针对一个 Partition 进行。
 
-###### [3）、MPP引擎的选型？]()
+###### 3、MPP引擎的选型？
     目前开源的比较受关注的OLAP引擎很多，比如Greenplum、Apache Impala、Presto、Doris、ClickHouse、Druid、TiDB等等
     
     Druid：是一个实时处理时序数据的OLAP数据库，索引首先按照时间分片，查询时候也是按照时间线去路由索引。
