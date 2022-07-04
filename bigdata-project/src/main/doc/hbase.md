@@ -203,6 +203,10 @@
     HFile 对应于列族，一个列族可以有多个 HFile，但一个 HFile 不能存储多个列族的数据。
 
 ###### [25）、HBase中scan对象的setCache和setBatch方法的使用？]()
+    cache是面向行的优化处理，batch是面向列的优化处理。
+    setCaching设置的值为每次rpc的请求记录数，默认是1；cache大可以优化性能，但是太大了会花费很长的时间进行一次传输。
+    setBatch设置每次取的column size；有些row特别大，所以需要分开传给client，就是一次传一个row的几个column。
+
     setCache用于设置缓存，即设置一次RPC请求可以获取多行数据。
     setBatch 用于设置批量处理，批量可以让用户选择每一次ResultScanner实例的next操作要取回多少列，例如，在扫描中设置setBatch(5)，则一次next()返回的Result实例会包括5列。
 

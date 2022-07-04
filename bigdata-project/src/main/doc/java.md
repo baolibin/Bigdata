@@ -75,7 +75,7 @@
     │—————-├ ArrayList（动态数组） 接口实现类， 数组， 随机访问， 没有同步， 线程不安全 
     │—————-└ Vector（动态数组） 接口实现类 数组， 同步， 线程安全 
     │ ———————-└ Stack 是Vector类的实现类 
-    └——-Set 接口： 仅接收一次，不可重复，并做内部排序 
+    └——-Set 接口： 仅接收一次，不可重复
     ├—————-└HashSet（数组+单链表/红黑树） 使用hash表（数组）存储元素 
     │————————└ LinkedHashSet（哈希表+双向链表 链表维护元素的插入次序 
     └ —————-TreeSet 底层实现为红黑树，元素排好序
@@ -371,7 +371,7 @@
     list、map、set、vector等集合类型都是可以存放null的。
     不允许存放null值：
     Hashtable不允许null，Dictionary 线程安全 
-    	ConcurrentHashMa不允许为null，AbstractMap 分段锁技术 
+    	ConcurrentHashMap不允许为null，AbstractMap 分段锁技术 
     	TreeMap不允许为null，AbstractMap线程不安全
 
     集合可以看作是一种容器，用来存储对象信息。

@@ -115,6 +115,8 @@
     concat_ws
     collect_list
     collect_set
+
+    eg：concat_ws(',',collect_set(concat（order_type,'(',order_number,')'）))
     
     4、其他函数
     cast -类型转换
