@@ -248,7 +248,6 @@
     HRegion按大小分割的，每个表开始只有一个HRegion，随着数据增多，HRegion不断增大，当增大到一个阀值的时候，HRegion就会等分会两个新的HRegion，之后会有越来越多的Region。
     HRegion是Hbase中分布式存储和负载均衡的最小单元，不同HRegion分布到不同HRegionServer上。
 
-
 ###### [29）、HBase的HRegion如何分裂的？]()
 
 
@@ -263,5 +262,3 @@
     2、Index Block和Bloom Block 都用于优化随机读的查找路径，其中Index Block通过存储索引数据加快数据查找，
     而Bloom Block通过一定算法可以过滤掉部分一定不存在待查KeyValue的数据文件，减少不必要的IO操作；
     3、Meta Block 主要存储整个HFile的元数据。
-
-
