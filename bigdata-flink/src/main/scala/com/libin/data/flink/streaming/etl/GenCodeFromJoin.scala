@@ -1,6 +1,6 @@
 package com.libin.data.flink.streaming.etl
 
-import com.libin.data.flink.streaming.etl.GenCodeFromState.env
+import com.libin.data.flink.base.streaming.FlinkStreamingTrait
 import com.libin.data.flink.streaming.loader.FlinkStreamingLoader
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala.{DataStream, OutputTag, createTypeInformation}
@@ -14,15 +14,15 @@ import org.apache.flink.util.Collector
   * <p>
   * Purpose : 多流join
   */
-object GenCodeFromJoin extends {
+object GenCodeFromJoin extends FlinkStreamingTrait[String] {
 
     implicit val inTypeInfo: TypeInformation[String] = createTypeInformation[String]
 
     def main(args: Array[String]): Unit = {
         val dataStream1 = FlinkStreamingLoader.getSourceDataBySocketFromPort(env, "localhost", 9001)
-                .map(x => (x.substring(0, 1), x))
+            .map(x => (x.substring(0, 1), x))
         val dataStream2 = FlinkStreamingLoader.getSourceDataBySocketFromPort(env, "localhost", 9002)
-                .map(x => (x.substring(0, 1), x))
+            .map(x => (x.substring(0, 1), x))
 
         process(dataStream1, dataStream2, OutputTag("join"))
 
@@ -40,16 +40,20 @@ object GenCodeFromJoin extends {
                 dataStream2: DataStream[(String, String)],
                 outputTag: OutputTag[String]): DataStream[(String, String)] = {
         val joinStream: DataStream[(String, String)] = dataStream1.join(dataStream2)
-                .where(_._1)
-                .equalTo(_._1)
-                .window(TumblingEventTimeWindows.of(Time.milliseconds(10)))
-                .apply {
-                    (d1, d2, out: Collector[(String, String)]) =>
-                        out.collect((d1._2, d2._2))
-                }.name("res")
+            .where(_._1)
+            .equalTo(_._1)
+            .window(TumblingEventTimeWindows.of(Time.milliseconds(10)))
+            .apply {
+                (d1, d2, out: Collector[(String, String)]) =>
+                    out.collect((d1._2, d2._2))
+            }.name("res")
 
         joinStream.print()
         joinStream
     }
 
+    /**
+      * 数据处理方法
+      */
+    override def process(dataStream: DataStream[String], outputTag: OutputTag[String]): Unit = ???
 }

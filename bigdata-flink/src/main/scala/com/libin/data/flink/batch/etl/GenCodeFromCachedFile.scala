@@ -1,8 +1,10 @@
 package com.libin.data.flink.batch.etl
 
 import org.apache.flink.api.common.functions.RichMapFunction
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.api.scala.{DataSet, ExecutionEnvironment}
 import org.apache.flink.configuration.Configuration
+import org.apache.flink.streaming.api.scala.createTypeInformation
 
 import scala.io.Source
 
@@ -17,6 +19,8 @@ import scala.io.Source
   * -l -p 9000
   */
 object GenCodeFromCachedFile {
+    implicit val inTypeInfo: TypeInformation[String] = createTypeInformation[String]
+
     def main(args: Array[String]): Unit = {
         val env = ExecutionEnvironment.getExecutionEnvironment
         env.setParallelism(3)

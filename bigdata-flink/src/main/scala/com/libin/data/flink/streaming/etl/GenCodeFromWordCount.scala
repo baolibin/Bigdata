@@ -7,7 +7,12 @@ import org.apache.flink.streaming.api.windowing.time.Time
   * Copyright (c) 2019/05/18. xixi Inc. All Rights Reserved.
   * Authors: libin <2578858653@qq.com>
   * <p>
-  * Purpose :  服务器上执行 nc -l 9000  , 运行代码
+  * Purpose :
+  * Linux上运行执行 nc -l 9000  , 运行代码
+  *
+  * Windows上运行命令如下：
+  * nc
+  * -l -p 9000
   */
 object GenCodeFromWordCount {
 
