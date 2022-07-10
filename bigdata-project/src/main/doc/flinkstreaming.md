@@ -1102,6 +1102,11 @@
 
 ###### [100)、Flink分区策略？]() 
 
+###### [101)、StreamExecutionEnvironment类你了解多少？]()
+    StreamExecutionEnvironment 和 StreamContextEnvironment区别
+
+    public class StreamContextEnvironment extends StreamExecutionEnvironment {}
+
 
 ---
 参考:
