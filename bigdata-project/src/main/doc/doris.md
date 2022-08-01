@@ -728,3 +728,8 @@
     2、RoaringBitmap 是一种压缩bitmap，
     其思想就是采用高低位存储方式，将一个Int类型的数据转换为高16位与低16位，也就是两个short类型的数据，
     高位存储在一个short[] 里面，低位存储在Container[]中，short[] 下标与Container[]下标是一一对应关系。
+
+###### 55、doris分区partition和分桶bucket数量和数据量的建议？
+    1、一个表的tablet数量，建议多于整个集群的磁盘数量
+    2、单个tablet的数据量建议在1~10G，过小则数据聚合效果不佳，且元数据管理压力大。过大则不利于副本迁移、同步，而且会增加schema change和rollup操作失败重试的代价。
+    3、当tablet数量和数据量冲突时候，数据量优先，比如一个很小的集群，但是数据量很大，可以多个tablet。
