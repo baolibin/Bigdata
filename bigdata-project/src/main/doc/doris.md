@@ -198,23 +198,23 @@
 
 ###### 10、Doris提取方式？
     1）、Export数据导出：
-    数据导出（Export）是 DorisDB 提供的一种将数据导出并存储到其他介质上的功能。
+    数据导出（Export）是 Doris 提供的一种将数据导出并存储到其他介质上的功能。
     该功能可以将用户指定的表或分区的数据，以文本的格式，通过 Broker 进程导出到远端存储上，如 HDFS/阿里云OSS/AWS S3（或者兼容S3协议的对象存储） 等。
     
     2）、Spark-connector：
-    Spark DorisDB Connector 可以支持通过 Spark 读取 DorisDB 中存储的数据。
-    可以将DorisDB表映射为DataFrame或者RDD，推荐使用DataFrame。
-    支持在DorisDB端完成数据过滤，减少数据传输量。
+    Spark Doris Connector 可以支持通过 Spark 读取 Doris 中存储的数据。
+    可以将Doris表映射为DataFrame或者RDD，推荐使用DataFrame。
+    支持在Doris端完成数据过滤，减少数据传输量。
 
 ###### 11、Doris的调度？
 
 ###### 12、Doris的数据分布？
-    数据分布方式：DorisDB使用先分区后分桶的方式, 可灵活地支持支持二种分布方式:
+    数据分布方式：Doris使用先分区后分桶的方式, 可灵活地支持支持二种分布方式:
     1)、Hash分布:  不采用分区方式, 整个table作为一个分区, 指定分桶的数量.
     2)、Range-Hash的组合数据分布: 即指定分区数量, 指定每个分区的分桶数量.
 
 ###### 13、Doris的Bitmap索引？ 
-    DorisDB 支持基于Bitmap索引，对于有Filter的查询有明显的加速效果。
+    Doris 支持基于Bitmap索引，对于有Filter的查询有明显的加速效果。
     Bitmap是元素为1个bit的, 取值为0,1两种情形的, 可对某一位bit进行置位(set)和清零(clear)操作的数组. Bitmap的使用场景有:
         用两个long型表示16学生的性别, 0表示女生, 1表示男生.
         用bitmap表示一组数据中是否存在null值, 0表示元素不为null, 1表示为null.
@@ -240,12 +240,12 @@
     Bitmap只能表示取值为两种情形的列数组, 当列的取值为多种取值情形枚举类型时, 例如季度(Q1, Q2, Q3, Q4),  系统平台(Linux, Windows, FreeBSD, MacOS), 
     则无法用一个Bitmap编码; 此时可以为每个取值各自建立一个Bitmap的来表示这组数据; 同时为实际枚举取值建立词典.
 
-    如上图所示，Platform列有4行数据，可能的取值有Android、Ios。DorisDB中会首先针对Platform列构建一个字典，将Android和Ios映射为int，
+    如上图所示，Platform列有4行数据，可能的取值有Android、Ios。Doris中会首先针对Platform列构建一个字典，将Android和Ios映射为int，
     然后就可以对Android和Ios分别构建Bitmap。具体来说，我们分别将Android、Ios 编码为0和1，因为Android出现在第1，2，3行，
     所以Bitmap是0111，因为Ios出现在第4行，所以Bitmap是1000。
 
-    假如有一个针对包含该Platform列的表的SQL查询，select xxx from table where Platform = iOS，DorisDB会首先查找字典，找出iOS对于的编码值是1，
-    然后再去查找 Bitmap Index，知道1对应的Bitmap是1000，我们就知道只有第4行数据符合查询条件，DorisDB就会只读取第4行数据，不会读取所有数据。
+    假如有一个针对包含该Platform列的表的SQL查询，select xxx from table where Platform = iOS，Doris会首先查找字典，找出iOS对于的编码值是1，
+    然后再去查找 Bitmap Index，知道1对应的Bitmap是1000，我们就知道只有第4行数据符合查询条件，Doris就会只读取第4行数据，不会读取所有数据。
     
 ###### 14、Doris、ClickHouse、Druid对比？
     Doris的前身是百度的Palo，后贡献给apache社区，相应的商业版本是DorisDB。其官方的性能测试也是对标的ClickHouse。
@@ -304,7 +304,7 @@
     FE：FrontEnd Doris的前端节点，负责管理元数据，管理客户端连接，进行查询规划，查询调度等工作。
     BE：BackEnd Doris的后端节点，负责数据存储，计算执行，以及compaction，副本管理等工作。
     Broker：Doris中和外部HDFS/对象存储等外部数据对接的中转服务，辅助提供导入导出功能。
-    Tablet：DorisDB 表的逻辑分片，也是Doris中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
+    Tablet：Doris 表的逻辑分片，也是Doris中副本管理的基本单位，每个表根据分区和分桶机制被划分成多个Tablet存储在不同BE节点上。
 
 ###### 20、Doris分区？
     Doris 支持两层的数据划分。第一层是 Partition，支持 Range 和 List 的划分方式。第二层是 Bucket（Tablet），仅支持 Hash 的划分方式。
@@ -413,7 +413,7 @@
     FROM  database_name.base_table
     GROUP BY id ORDER BY id’
     
-    Duplicate 数据模型：DorisDB中的用于存放明细数据的数据模型，建表可指定，数据不会被聚合。
+    Duplicate 数据模型：Doris中的用于存放明细数据的数据模型，建表可指定，数据不会被聚合。
     Base 表：Doris 中通过 CREATE TABLE 命令创建出来的表。
     Materialized Views 表：简称 MVs，物化视图。
     
@@ -448,7 +448,7 @@
     如何使用HyperLogLog？
     1）、使用HyperLogLog去重, 需要在建表语句中, 将目标的指标列的类型设置为HLL,  聚合函数设置为HLL_UNION.
     2）、目前, 只有聚合表支持HLL类型的指标列.
-    3）、当在HLL类型列上使用count distinct时，DorisDB会自动转化为HLL_UNION_AGG计算。
+    3）、当在HLL类型列上使用count distinct时，Doris会自动转化为HLL_UNION_AGG计算。
     
     Bitmap和HLL应该如何选择？如果数据集的基数在百万、千万量级，并拥有几十台机器，那么直接使用 count distinct 即可。
     如果基数在亿级以上，并且需要精确去重，那么只能用Bitmap类型；如果可以接受近似去重，那么还可以使用HLL类型。
@@ -733,3 +733,20 @@
     1、一个表的tablet数量，建议多于整个集群的磁盘数量
     2、单个tablet的数据量建议在1~10G，过小则数据聚合效果不佳，且元数据管理压力大。过大则不利于副本迁移、同步，而且会增加schema change和rollup操作失败重试的代价。
     3、当tablet数量和数据量冲突时候，数据量优先，比如一个很小的集群，但是数据量很大，可以多个tablet。
+
+###### 56、doris前缀索引、位图索引、布隆过滤器索引使用场景？
+    1、前缀索引，即在排序的基础上，实现的一种根据给定前缀列，快速查询数据的索引方式。前36个字节作为这行数据的前缀索引，当遇到 VARCHAR 类型时，前缀索引会直接截断。
+    前缀索引是以Block为粒度创建的稀疏索引，一个Block包含1024行数据，每个Block，以该Block的第一行数据的前缀列的值作为索引。
+    适用场景
+    当我们的查询条件，是前缀索引的前缀时，可以极大的加快查询速度。
+
+    2、Bitmap 索引
+    适用场景
+    适用于低基数的列上，建议在100到100000之间，如：职业、地市等。基数太高则没有明显优势；基数太低，则空间效率和性能会大大降低。
+
+    3、Bloom Filter 索引
+    用于快速的判断一个给定的值是否在一个集合中。BF索引也是以Block为粒度创建的。
+    每个Block中，指定列的值作为一个集合生成一个BF索引条目，用于在查询是快速过滤不满足条件的数据。
+    适用场景
+    由于Bloom Filter数据结构的特性，BF索引比较适合创建在高基数的列上，比如UserID。
+    因为如果创建在低基数的列上，比如”性别“列，则每个Block几乎都会包含所有取值，导致BF索引失去意义。
