@@ -110,3 +110,15 @@
 ###### 14、sql编写到执行的过程
 
 ###### 15、请用户访问网站最长连续天数，数据格式user、dt、page。
+
+###### 16、查询同时在线人数的峰值
+    select t2.live_id, max(t2.cnt) as max_online_cnt
+    from
+      (select t1.live_id, sum(t1.indexx) over(partition by t1.live_id order by t1.time) as cnt
+    from
+      (select live_id, login_time as time, 1 as indexx from live_table where dt = '20220801'
+      union all
+      select live_id, logout_time as time, -1 as indexx from live_table where dt = '20220801'
+      ) t1
+    ) t2
+    group by t2.live_id
