@@ -1102,6 +1102,9 @@
     StreamExecutionEnvironment 和 StreamContextEnvironment区别
     public class StreamContextEnvironment extends StreamExecutionEnvironment {}
 
+###### [101)、flink state生成流程原理？]()
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
