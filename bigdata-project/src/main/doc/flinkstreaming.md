@@ -1105,6 +1105,9 @@
 ###### [101)、flink state生成流程原理？]()
 
 
+###### [102)、flink 并行度与Kafka分区？]()
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
