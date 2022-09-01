@@ -1108,6 +1108,9 @@
 ###### [102)、flink 并行度与Kafka分区？]()
 
 
+###### [103)、flink 重启后，怎么判断该读取哪个ck文件？]()
+
+
 ---
 参考:
 * [1.Flink官网](http://flink.iteblog.com/dev/stream/state.html)
