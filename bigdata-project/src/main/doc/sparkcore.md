@@ -723,6 +723,9 @@
         5）、SparkR 中的向量化（Vectorization in SparkR）；
         6）、支持 Hadoop 3/JDK 11/Scala 2.12 等等。
 
+
+###### [65）、看过哪些源码设计，用到哪些数据结构?]()
+
 ---
 参考:
 * [1.Spark性能优化指南——基础篇](https://endymecy.gitbooks.io/spark-config-and-tuning/content/meituan/spark-tuning-basic.html)
