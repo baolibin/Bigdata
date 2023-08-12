@@ -135,3 +135,33 @@
       ) t1
     ) t2
     group by t2.live_id
+
+###### 17、连续登陆最长天数问题
+    常见的业务场景：
+    1. 求出连续登录7天的用户/用户数
+    2. 求出连续充电次数大于等于12次的用户数
+    3. 求出3年获得冠军的选手
+    4. ......
+
+    select count(distinct user_id)
+    from (
+    select user_id,
+           base_dt, 
+           count(1)
+    from
+    (
+        select *,
+               DATE_SUB(dt,INTERVAL rn DAY) as base_dt
+    from 
+    (
+        select *,
+               row_number() over(partition by a.user_id order by a.dt) as rn
+        from 
+        (
+               select user_id,SUBSTRING(dt,1,10) as dt from log_table group by user_id,SUBSTRING(dt,1,10)
+        ) a
+    ) b
+    ) c
+    group by user_id,base_dt HAVING COUNT(1)>=7 ) d
+
+
