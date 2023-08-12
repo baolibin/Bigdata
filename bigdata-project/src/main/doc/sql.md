@@ -110,6 +110,19 @@
 ###### 14、sql编写到执行的过程
 
 ###### 15、请用户访问网站最长连续天数，数据格式user、dt、page。
+    SELECT user_id,MAX(cc)
+    FROM
+    (
+    SELECT user_id,diff,count(*) AS cnt
+      FROM
+      (SELECT user_id,log_date,DATE_SUB(log_date,cast(rn AS INT)) AS diff
+        FROM( 
+              SELECT user_id, log_date, ROW_NUMBER() OVER(PARTITION BY user_id ORDER BY log_date) AS rn 
+              FROM table
+        )t1
+      )t2 GROUP BY user_id, diff
+    )t3
+    GROUP BY user_id;
 
 ###### 16、查询同时在线人数的峰值
     select t2.live_id, max(t2.cnt) as max_online_cnt
