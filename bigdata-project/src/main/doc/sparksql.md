@@ -107,10 +107,13 @@
 
 
 ###### 8、Spark SQL适用的场景,Spark Core不适合的?
-
+    SparkCore只侧重数据本身，没有表概念，SparkSQL要侧重：数据+表结构。
+    SparkSQL的编程有两种风格：SQL风格、DSL分格，SparkCore处理结构化的数据不能很好的基于列进行处理，每次都需要分割，这种情况SparkSQL方便些。
 
 ###### 9、Spark SQL2.0和3.0区别?
 
 
 ###### 10、Spark SQL的DataFrame和RDD有啥区别?
-
+    1、SparkCore的核心数据类型是RDD，SparkSQL核心数据类型是DataFrame
+    2、SparkCore的核心入口类是SparkContext、SparkSQL的核心入口类是：SparkSession
+    3、SparkSQL是基于SparkCore，SparkSQL代码底层就是rdd
